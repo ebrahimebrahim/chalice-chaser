@@ -1,6 +1,7 @@
 #include <Game.h>
 #include <stdexcept>
 #include <string>
+#include <functional>
 
 
 int Game::run() {
@@ -51,6 +52,7 @@ void Game::init() {
     window = glfwCreateWindow(window_width, window_height, "Garbanzo", NULL, NULL);
     if (!window)
         throw std::runtime_error("GLFW is either unable to create a window or unable to create an opengl context");
+    glfwSetWindowUserPointer(window,this); // This is so that glfw callbacks have access to this Game
     
     glfwMakeContextCurrent(window);
 
@@ -64,10 +66,11 @@ void Game::init() {
             glViewport(0,0,width,height);
         }
     );
+
     glfwSetKeyCallback(window, 
         [](GLFWwindow* window, int key, int scancode, int action, int mods){
-            if (key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE)
-                glfwSetWindowShouldClose(window, GLFW_TRUE);
+            Game * game = static_cast<Game*>(glfwGetWindowUserPointer(window));
+            game->handle_key(key, scancode, action, mods); // just forward event to Game::handle_key
         }
     );
 
@@ -80,6 +83,11 @@ void Game::uninit() {
 
 void Game::handle_input() {
     glfwPollEvents();
+}
+
+void Game::handle_key(int key, int scancode, int action, int mods) {
+    if (key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE)
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 void Game::update() {

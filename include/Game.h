@@ -25,6 +25,9 @@ class Game {
 
     /** Render game state into framebuffer and swap buffers */
     void render();
+
+    /** Handle a keypress that was polled via GLFW. */
+    void handle_key(int key, int scancode, int action, int mods);
     
     /** Get current game fps */
     double getFPS() {return 1.0/last_frame_time;}
