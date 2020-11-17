@@ -1,12 +1,12 @@
-.PHONY: run clean test debug doc
+.PHONY: build run clean test debug doc all
+
+all: build doc test
 
 build:
-	mkdir build
-	cd build; cmake ..;	make
+	if [ -d build ]; then cd build; make; else mkdir build; cd build; cmake ..; make; fi
 
 debug:
-	mkdir build
-	cd build; cmake -DCMAKE_BUILD_TYPE=Debug ..; make
+	if [ -d build ]; then cd build; make; else mkdir build; cd build; cmake -DCMAKE_BUILD_TYPE=Debug ..; make; fi
 
 run: build
 	build/garbanzo
