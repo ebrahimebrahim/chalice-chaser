@@ -1,7 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <chrono>
+#include <memory>
 
 
 /**
@@ -10,8 +13,11 @@
 
 class Game {
 
-    /** Create the window and the opengl context and load resources. */
+    /** Create the window and the opengl context and load resources. Unload later with with `Game::uninit` */
     void init();
+
+    /** Unload what was loaded via Game::init */
+    void uninit();
 
     /** Handle user input in the game loop */
     void handle_input();
@@ -25,6 +31,9 @@ class Game {
     /** Get current game fps */
     double getFPS() {return fps;}
 
+    int window_width = 800;
+    int window_height = 600;
+
 public:
     /** Run the game, returning return code on exit. 0 means no errors. */
     int run();
@@ -35,8 +44,12 @@ public:
     /** Caps framerate */
     const std::chrono::nanoseconds min_time_per_frame{16'666'666};
 
-    /** Current game fps */
+
     double fps;
+
+    /** Handle to the game window */
+    GLFWwindow * window;
+
 };
 
 #endif // GAME_H

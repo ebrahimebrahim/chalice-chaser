@@ -1,8 +1,7 @@
 #include <Game.h>
-#include <chrono>
 #include <thread>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <exception>
+
 
 int Game::run() {
     
@@ -33,8 +32,29 @@ int Game::run() {
     return 0;
 }
 
-void Game::init() {
+void glfw_error_callback(int error, const char * description) {
+    std::string error_header("GLFW Error: ");
+    throw std::runtime_error(error_header + description);
+}
 
+void Game::init() {
+    if (!glfwInit())
+        throw std::runtime_error("Unable to initialize GLFW");
+
+    glfwSetErrorCallback(glfw_error_callback);
+
+    window = glfwCreateWindow(window_width, window_height, "Garbanzo", NULL, NULL);
+    if (!window)
+        throw std::runtime_error("GLFW is either unable to create a window or unable to create an opengl context");
+    
+    glfwMakeContextCurrent(window);
+
+    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+}
+
+void Game::uninit() {
+    glfwDestroyWindow(window);
+    glfwTerminate();
 }
 
 void Game::handle_input() {
