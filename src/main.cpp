@@ -1,5 +1,5 @@
-#include <iostream>
+#include <Game.h>
 
 int main() {
-    std::cout << "peup." << std::endl;
+    
 }
