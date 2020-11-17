@@ -2,7 +2,7 @@
 # This is not meant to be used to build the application.
 # See readme for how to build the application.
 
-.PHONY: build run clean test debug doc all
+.PHONY: build run clean test debug doc all showdoc
 
 all: build doc test
 
@@ -20,3 +20,6 @@ clean:
 
 doc: 
 	doxygen doxygen_settings.cfg
+
+showdoc: doc
+	firefox doc/html/index.html
