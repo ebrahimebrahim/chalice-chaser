@@ -87,7 +87,7 @@ void Game::handle_input() {
 
 void Game::handle_key(int key, int scancode, int action, int mods) {
     if (key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+        glfwSetWindowShouldClose(window, 1);
 }
 
 void Game::update() {
