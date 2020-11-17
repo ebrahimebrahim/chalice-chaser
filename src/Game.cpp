@@ -5,7 +5,7 @@
 int Game::run() {
     
     init();
-    std::chrono::milliseconds update_lag{0};
+    std::chrono::nanoseconds update_lag{0};
     while (true) {
         auto frame_start_time = std::chrono::steady_clock::now();
 
@@ -19,13 +19,13 @@ int Game::run() {
         
         render();
 
-        auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - frame_start_time);
+        auto elapsed_time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - frame_start_time);
         if (elapsed_time < min_time_per_frame){
             std::this_thread::sleep_for(min_time_per_frame - elapsed_time);
         }
-        elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - frame_start_time);
+        elapsed_time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - frame_start_time);
         update_lag += elapsed_time;
-        fps = 1000.0/elapsed_time.count();
+        fps = double(1e9)/elapsed_time.count();
     }
 
     return 0;
@@ -40,7 +40,6 @@ void Game::handle_input() {
 }
 
 void Game::update() {
-
 }
 
 void Game::render() {

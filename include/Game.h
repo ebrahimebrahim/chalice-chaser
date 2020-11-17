@@ -30,10 +30,10 @@ public:
     int run();
 
     /** Fixed update step size in milliseconds, for deterministic updates to game state */
-    const std::chrono::milliseconds time_per_update{100};
+    const std::chrono::nanoseconds time_per_update{16'666'666};
 
     /** Caps framerate */
-    const std::chrono::milliseconds min_time_per_frame{500};
+    const std::chrono::nanoseconds min_time_per_frame{16'666'666};
 
     /** Current game fps */
     double fps;
