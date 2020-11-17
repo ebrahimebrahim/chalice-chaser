@@ -29,25 +29,18 @@ int Game::run() {
     return 0;
 }
 
-void glfw_error_callback(int error, const char * description) {
-    std::string error_header("GLFW Error: ");
-    throw std::runtime_error(error_header + description);
-}
 
-void glfw_resize_callback(GLFWwindow* window, int width, int height){
-    glViewport(0,0,width,height);
-}
-
-void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-    if (key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
 
 void Game::init() {
     if (!glfwInit())
         throw std::runtime_error("Unable to initialize GLFW");
 
-    glfwSetErrorCallback(glfw_error_callback);
+    glfwSetErrorCallback(
+        [](int error, const char * description){
+            std::string error_header("GLFW Error: ");
+            throw std::runtime_error(error_header + description);
+        }
+    );
 
     // We don't plan to use compatibility features
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -65,8 +58,18 @@ void Game::init() {
 
     glfwSwapInterval(1); // vsync
     glViewport(0,0,window_width,window_height); // tell opengl how to scale its internal coords to window coords
-    glfwSetFramebufferSizeCallback(window, glfw_resize_callback);
-    glfwSetKeyCallback(window, glfw_key_callback);
+
+    glfwSetFramebufferSizeCallback(window, 
+        [](GLFWwindow* window, int width, int height) {
+            glViewport(0,0,width,height);
+        }
+    );
+    glfwSetKeyCallback(window, 
+        [](GLFWwindow* window, int key, int scancode, int action, int mods){
+            if (key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE)
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+    );
 
 }
 
@@ -85,7 +88,8 @@ void Game::update() {
 }
 
 void Game::render() {
-
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glfwSwapBuffers(window);
 }
