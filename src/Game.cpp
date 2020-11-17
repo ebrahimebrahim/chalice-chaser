@@ -1,15 +1,15 @@
 #include <Game.h>
-#include <thread>
-#include <exception>
+#include <stdexcept>
+#include <string>
 
 
 int Game::run() {
     
     init();
 
-    std::chrono::nanoseconds update_lag{0};
+    double update_lag = 0.0;
     while (!quit) {
-        auto frame_start_time = std::chrono::steady_clock::now();
+        double frame_start_time = glfwGetTime(); // seconds
 
         handle_input();
         
@@ -18,16 +18,10 @@ int Game::run() {
             update_lag -= time_per_update;
         }
         
-        
         render();
 
-        auto elapsed_time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - frame_start_time);
-        if (elapsed_time < min_time_per_frame){
-            std::this_thread::sleep_for(min_time_per_frame - elapsed_time);
-        }
-        elapsed_time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - frame_start_time);
-        update_lag += elapsed_time;
-        fps = double(1e9)/elapsed_time.count();
+        last_frame_time = glfwGetTime() - frame_start_time;
+        update_lag += last_frame_time;
     }
 
     uninit();
@@ -38,6 +32,10 @@ int Game::run() {
 void glfw_error_callback(int error, const char * description) {
     std::string error_header("GLFW Error: ");
     throw std::runtime_error(error_header + description);
+}
+
+void glfw_resize_callback(GLFWwindow* window, int width, int height){
+    glViewport(0,0,width,height);
 }
 
 void Game::init() {
@@ -60,7 +58,10 @@ void Game::init() {
 
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-    glViewport(0,0,window_width,window_height);
+    glfwSwapInterval(1); // vsync
+    glViewport(0,0,window_width,window_height); // tell opengl how to scale its internal coords to window coords
+    glfwSetFramebufferSizeCallback(window, glfw_resize_callback);
+
 }
 
 void Game::uninit() {
@@ -79,4 +80,6 @@ void Game::update() {
 
 void Game::render() {
 
+
+    glfwSwapBuffers(window);
 }

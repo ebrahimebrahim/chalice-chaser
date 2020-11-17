@@ -3,8 +3,6 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <chrono>
-#include <memory>
 
 
 /**
@@ -22,14 +20,14 @@ class Game {
     /** Handle user input in the game loop */
     void handle_input();
 
-    /** Update game by one tick/frame/whatever */
+    /** Update game state by one time_per_update */
     void update();
 
     /** Render game state into framebuffer and swap buffers */
     void render();
     
     /** Get current game fps */
-    double getFPS() {return fps;}
+    double getFPS() {return 1.0/last_frame_time;}
 
     int window_width = 800;
     int window_height = 600;
@@ -38,13 +36,15 @@ public:
     /** Run the game, returning return code on exit. 0 means no errors. */
     int run();
 
-    /** Fixed update step size in milliseconds, for deterministic updates to game state */
-    const std::chrono::nanoseconds time_per_update{16'666'666};
+    /** Fixed update step size in seconds, for deterministic updates to game state */
+    const double time_per_update{0.016666667};
 
     /** Caps framerate */
-    const std::chrono::nanoseconds min_time_per_frame{16'666'666};
+    const double min_time_per_frame{0.016666667};
 
-    double fps{};
+    /** Time spent on the last frame of rendering, in seconds. */
+    double last_frame_time{};
+
     bool quit = false;
 
     /** Handle to the game window */
