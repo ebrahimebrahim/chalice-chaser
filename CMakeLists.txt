@@ -6,3 +6,4 @@ project(SymmetricalGarbanzo VERSION 0.0
 
 add_executable(garbanzo src/main.cpp src/Game.cpp)
 target_include_directories(garbanzo PUBLIC include/)
+target_compile_features(garbanzo PUBLIC cxx_std_17)
