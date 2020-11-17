@@ -1,6 +1,8 @@
 #include <Game.h>
 #include <chrono>
 #include <thread>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 int Game::run() {
     
