@@ -6,8 +6,9 @@
 int Game::run() {
     
     init();
+
     std::chrono::nanoseconds update_lag{0};
-    while (true) {
+    while (!quit) {
         auto frame_start_time = std::chrono::steady_clock::now();
 
         handle_input();
@@ -29,6 +30,8 @@ int Game::run() {
         fps = double(1e9)/elapsed_time.count();
     }
 
+    uninit();
+
     return 0;
 }
 
@@ -43,6 +46,12 @@ void Game::init() {
 
     glfwSetErrorCallback(glfw_error_callback);
 
+    // We don't plan to use compatibility features
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Need at least OpenGL version 3.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     window = glfwCreateWindow(window_width, window_height, "Garbanzo", NULL, NULL);
     if (!window)
         throw std::runtime_error("GLFW is either unable to create a window or unable to create an opengl context");
@@ -50,6 +59,8 @@ void Game::init() {
     glfwMakeContextCurrent(window);
 
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+    glViewport(0,0,window_width,window_height);
 }
 
 void Game::uninit() {
@@ -58,10 +69,12 @@ void Game::uninit() {
 }
 
 void Game::handle_input() {
-
+    glfwPollEvents();
 }
 
 void Game::update() {
+    if (glfwWindowShouldClose(window))
+        quit = true;
 }
 
 void Game::render() {

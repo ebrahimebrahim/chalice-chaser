@@ -44,8 +44,8 @@ public:
     /** Caps framerate */
     const std::chrono::nanoseconds min_time_per_frame{16'666'666};
 
-
-    double fps;
+    double fps{};
+    bool quit = false;
 
     /** Handle to the game window */
     GLFWwindow * window;
