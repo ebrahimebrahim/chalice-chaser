@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.3) # The lowest version I have tested on
+cmake_minimum_required(VERSION 3.13) # The lowest version I have tested on
 
 project(SymmetricalGarbanzo VERSION 0.0
                             DESCRIPTION "a game"
