@@ -3,6 +3,9 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <Shader.h>
+
+#define BUFFER_OFFSET(offset) ((void *)(offset))
 
 const int window_width = 800;
 const int window_height = 600;
@@ -52,6 +55,56 @@ int main() {
         }
     );
 
+    // The "loading phase" for various graphics objects, let's call them "walls" and "prize"
+
+    // First, prize
+    const int prize_num_verts = 5;
+    static const GLfloat prize_vertices[prize_num_verts][3] = {
+        { 0.0f, 0.0f, 0.0f }, // center of fan
+        { -0.3f, -0.3f, -0.3f },
+        { 0.3f, -0.3f, -0.3f },
+        { 0.3f, -0.3f, 0.3f },
+        { -0.3f, -0.3f, 0.3f },
+    };
+    GLuint prize_vbo{};
+    glCreateBuffers(1,&prize_vbo);
+    glNamedBufferStorage(prize_vbo, sizeof(prize_vertices), prize_vertices, 0);
+
+    GLuint prize_vao{};
+    glCreateVertexArrays(1,&prize_vao);
+    glBindVertexArray(prize_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, prize_vbo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(0);
+
+    Shader * prize_shader = new Shader("src/shader.vert","src/shader.frag");
+
+
+    // Next, walls
+    const int walls_num_verts = 6;
+    static const GLfloat walls_vertices[walls_num_verts][3] = {
+        { -0.5f,  0.5f, -0.5f }, 
+        { -0.5f, -0.5f, -0.5f },
+        { -0.4f,  0.5f,  0.5f },
+        { -0.4f, -0.5f,  0.5f },
+        { -0.0f,  0.5f,  0.7f },
+        { -0.0f, -0.5f,  0.7f },
+    };
+    GLuint walls_vbo{};
+    glCreateBuffers(1,&walls_vbo);
+    glNamedBufferStorage(walls_vbo, sizeof(walls_vertices), walls_vertices, 0);
+
+    GLuint walls_vao{};
+    glCreateVertexArrays(1,&walls_vao);
+    glBindVertexArray(walls_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, walls_vbo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(0);
+
+    Shader * walls_shader = new Shader("src/shader.vert","src/shader.frag");
+
+
+
     // Game loop
 
     bool quit = false;
@@ -66,6 +119,8 @@ int main() {
         while (update_lag >= time_per_update) {
             if (glfwWindowShouldClose(window))
                 quit = true;
+            
+            
             update_lag -= time_per_update;
         }
         
@@ -74,6 +129,16 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Render prize
+        prize_shader->use();
+        glBindVertexArray(prize_vao);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, prize_num_verts);
+        
+        // Render walls
+        walls_shader->use();
+        glBindVertexArray(walls_vao);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, walls_num_verts);
+
         glfwSwapBuffers(window);
         
         // ------------ End Rendering ------------
@@ -81,6 +146,9 @@ int main() {
         last_frame_time = glfwGetTime() - frame_start_time;
         update_lag += last_frame_time;
     }
+
+    delete prize_shader;
+    delete walls_shader;
 
     glfwDestroyWindow(window);
     glfwTerminate();
