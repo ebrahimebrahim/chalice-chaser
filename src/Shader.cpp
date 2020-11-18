@@ -1,7 +1,9 @@
-#include "Shader.h"
+#include <Shader.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+#include <glm/gtc/type_ptr.hpp>
 
 std::string fileToString(const char* filename){
   std::ifstream is(filename);
@@ -95,4 +97,18 @@ Shader& Shader::operator=(Shader&& s){
 void Shader::use() const {
   //use this shader_program_id for future drawing commands
   glUseProgram(shader_program_id);
+}
+
+// Note: setting uniform variables needs to be done AFTER glUseProgram on shader
+// So make sure to use "use" method above before doing this
+void Shader::setUniform(const char* name, const glm::mat4 & mat) const {
+  if (!shader_program_id)
+    throw std::runtime_error("Attempted to set a uniform in an uninitialized Shader");
+  GLint location = glGetUniformLocation(shader_program_id,name);
+  if (location == -1) {
+    std::stringstream error_msg;
+    error_msg << "Error looking up a uniform variable: " << name;
+    throw std::runtime_error(error_msg.str());
+  }
+  glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(mat));
 }

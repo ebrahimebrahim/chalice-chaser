@@ -5,6 +5,14 @@
 #include <string>
 #include <Shader.h>
 
+#include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/geometric.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+
+
 #define BUFFER_OFFSET(offset) ((void *)(offset))
 
 const int window_width = 800;
@@ -55,7 +63,7 @@ int main() {
         }
     );
 
-    // The "loading phase" for various graphics objects, let's call them "walls" and "prize"
+    // -------- The "loading phase" for various graphics objects, let's call them "walls" and "prize"  -------
 
     // First, prize
     GLuint prize_vao{};
@@ -104,6 +112,40 @@ int main() {
     glEnableVertexAttribArray(0);
 
     Shader * walls_shader = new Shader("src/shader.vert","src/shader.frag");
+    // hmm i guess shades should be part of GameWindow. Maybe GameWindow needs a better name like "OpenGLWidnow"
+    // so that it feels right to move all things handling opengl context to it. it can be my personaly wrapper for opengl
+    // when new game entity is created, we tell this opengl wrapper what its mesh/texture data is to get it loaded
+    // perhaps a factory does this.
+    // objects should know how to update themselves, but NOT how to draw themselves. drawing is managed by Game's render method,
+    // since it has to consider entire game state to decide how to draw things. 
+
+    // ------------ end graphics object loading phase ----------------
+
+
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f),float(window_width)/float(window_height),0.1f,100.0f);
+
+
+    // -- Setting up a camera
+
+    auto cameraPos = glm::vec3(0.0f,0.0f,3.0f); // cam origin
+    auto cameraTarget = glm::vec3(0.0f,0.0f,0.0f);
+    auto cameraNegDirection = glm::normalize(cameraPos - cameraTarget); // cam z axis
+    auto cameraDir = - cameraNegDirection;
+    auto cameraRight = glm::normalize(glm::cross(glm::vec3(0.0,1.0,0.0),cameraNegDirection)); // cam x axis
+    auto cameraUp = glm::normalize(glm::cross(cameraNegDirection,cameraRight)); // cam y axis
+
+    glm::mat4 view = glm::lookAt(cameraPos,cameraTarget,glm::vec3(0.0,1.0,0.0));
+    std::cout << glm::to_string(projection * view * model * glm::vec4(-0.5f,  0.5f, -0.5f, 1.0f)) << std::endl;
+    // Note: now we are actually just going to recompute view matrix at each frame
+
+
+    // -- End setting up camera
+
+    // setting uniform for projection
+    prize_shader->setUniform("projection",projection);
+    walls_shader->setUniform("projection",projection);
+
 
 
 
@@ -130,16 +172,25 @@ int main() {
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        // Upate view matrix
+        //view = glm::lookAt(cameraPos,cameraPos+cameraDir,glm::vec3(0.0,1.0,0.0));
 
         // Render prize
         prize_shader->use();
+        prize_shader->setUniform("model",model);
+        prize_shader->setUniform("view",view);
+        prize_shader->setUniform("projection",projection);
         glBindVertexArray(prize_vao);
         glDrawArrays(GL_TRIANGLE_FAN, 0, prize_num_verts);
         
         // Render walls
-            walls_shader->use();
-            glBindVertexArray(walls_vao);
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, walls_num_verts);
+        walls_shader->use();
+        walls_shader->setUniform("model",model);
+        walls_shader->setUniform("view",view);
+        walls_shader->setUniform("projection",projection);
+        glBindVertexArray(walls_vao);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, walls_num_verts);
 
         glfwSwapBuffers(window);
         

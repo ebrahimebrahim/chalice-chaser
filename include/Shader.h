@@ -2,6 +2,7 @@
 #define SHADER_H
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <string>
@@ -26,6 +27,8 @@ class Shader {
 
         // Tell OpenGL that we are now using this shader
         void use() const;
+
+        void setUniform(const char* name, const glm::mat4 & mat) const;
 };
 
 
