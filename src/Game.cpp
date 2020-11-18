@@ -1,7 +1,6 @@
 #include <Game.h>
 #include <stdexcept>
 #include <string>
-#include <functional>
 
 
 int Game::run() {
