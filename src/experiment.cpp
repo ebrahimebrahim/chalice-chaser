@@ -130,22 +130,9 @@ int main() {
 
     auto cameraPos = glm::vec3(0.0f,0.0f,3.0f); // cam origin
     auto cameraTarget = glm::vec3(0.0f,0.0f,0.0f);
-    auto cameraNegDirection = glm::normalize(cameraPos - cameraTarget); // cam z axis
-    auto cameraDir = - cameraNegDirection;
-    auto cameraRight = glm::normalize(glm::cross(glm::vec3(0.0,1.0,0.0),cameraNegDirection)); // cam x axis
-    auto cameraUp = glm::normalize(glm::cross(cameraNegDirection,cameraRight)); // cam y axis
-
     glm::mat4 view = glm::lookAt(cameraPos,cameraTarget,glm::vec3(0.0,1.0,0.0));
-    std::cout << glm::to_string(projection * view * model * glm::vec4(-0.5f,  0.5f, -0.5f, 1.0f)) << std::endl;
-    // Note: now we are actually just going to recompute view matrix at each frame
-
 
     // -- End setting up camera
-
-    // setting uniform for projection
-    prize_shader->setUniform("projection",projection);
-    walls_shader->setUniform("projection",projection);
-
 
 
 
