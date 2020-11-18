@@ -112,7 +112,7 @@ int main() {
     glEnableVertexAttribArray(0);
 
     Shader * walls_shader = new Shader("src/shader.vert","src/shader.frag");
-    // hmm i guess shades should be part of GameWindow. Maybe GameWindow needs a better name like "OpenGLWidnow"
+    // hmm i guess shaders should be part of GameWindow. Maybe GameWindow needs a better name like "OpenGLWidnow"
     // so that it feels right to move all things handling opengl context to it. it can be my personaly wrapper for opengl
     // when new game entity is created, we tell this opengl wrapper what its mesh/texture data is to get it loaded
     // perhaps a factory does this.
@@ -130,6 +130,8 @@ int main() {
 
     auto cameraPos = glm::vec3(0.0f,0.0f,3.0f); // cam origin
     auto cameraTarget = glm::vec3(0.0f,0.0f,0.0f);
+    auto cameraNegDirection = glm::normalize(cameraPos - cameraTarget); // cam z axis
+    auto cameraDir = - cameraNegDirection;
     glm::mat4 view = glm::lookAt(cameraPos,cameraTarget,glm::vec3(0.0,1.0,0.0));
 
     // -- End setting up camera
@@ -161,7 +163,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         
         // Upate view matrix
-        //view = glm::lookAt(cameraPos,cameraPos+cameraDir,glm::vec3(0.0,1.0,0.0));
+        view = glm::lookAt(cameraPos,cameraPos+cameraDir,glm::vec3(0.0,1.0,0.0));
 
         // Render prize
         prize_shader->use();
