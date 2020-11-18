@@ -6,8 +6,8 @@ int Game::run() {
 
     window = std::make_unique<GameWindow>(800, 600, "Garbanzo");
 
-    // I'd rather not touch GLFW here.
-    // But how else can I set the key callback, short of passing this entire Game into GameWidnow?
+    // I'd rather not touch the underlying GLFWwindow here.
+    // But how else can I set the key callback, short of passing this entire Game into GameWindow?
     window->set_user_ptr(this);
     window->set_key_callback(
         [](GLFWwindow* window, int key, int scancode, int action, int mods){
