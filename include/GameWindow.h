@@ -18,7 +18,11 @@ class GameWindow {
 public:
     GameWindow(int width, int height, const char * title);
     ~GameWindow();
-    // TODO: the rest of the big 5
+    GameWindow(const GameWindow &) = delete; // no copy
+    GameWindow & operator=(const GameWindow &) = delete;
+    GameWindow(GameWindow &&); /** move is okay, passes ownership of window */
+    GameWindow & operator=(GameWindow &&);
+
 
     /** Set the key callback for this window; lookup glfwSetKeyCallback for expected function */
     void set_key_callback(GLFWkeyfun);

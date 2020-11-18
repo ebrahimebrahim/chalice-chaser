@@ -38,6 +38,23 @@ GameWindow::GameWindow(int width, int height, const char * title) {
     );
 }
 
+GameWindow::GameWindow(GameWindow && src) {
+    width = src.width;
+    height = src.height;
+    window = src.window;
+    src.window = nullptr;
+}
+
+GameWindow & GameWindow::operator=(GameWindow && src) {
+    if (&src == this) return *this;
+    width = src.width;
+    height = src.height;
+    window = src.window;
+    src.window = nullptr;
+    return *this;
+}
+
+
 void GameWindow::set_user_ptr(void * ptr) {
     glfwSetWindowUserPointer(window,ptr);
 }
