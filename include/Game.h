@@ -42,9 +42,6 @@ public:
     /** Fixed update step size in seconds, for deterministic updates to game state */
     const double time_per_update{0.016666667};
 
-    /** Caps framerate */
-    const double min_time_per_frame{0.016666667};
-
     /** Time spent on the last frame of rendering, in seconds. */
     double last_frame_time{};
 
