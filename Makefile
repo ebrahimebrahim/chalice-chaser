@@ -23,3 +23,6 @@ doc:
 
 showdoc: doc
 	firefox doc/html/index.html
+
+experiment: build
+	build/experiment
