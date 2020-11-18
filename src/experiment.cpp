@@ -58,6 +58,10 @@ int main() {
     // The "loading phase" for various graphics objects, let's call them "walls" and "prize"
 
     // First, prize
+    GLuint prize_vao{};
+    glGenVertexArrays(1,&prize_vao);
+    glBindVertexArray(prize_vao);
+    
     const int prize_num_verts = 5;
     static const GLfloat prize_vertices[prize_num_verts][3] = {
         { 0.0f, 0.0f, 0.0f }, // center of fan
@@ -67,13 +71,10 @@ int main() {
         { -0.3f, -0.3f, 0.3f },
     };
     GLuint prize_vbo{};
-    glCreateBuffers(1,&prize_vbo);
-    glNamedBufferStorage(prize_vbo, sizeof(prize_vertices), prize_vertices, 0);
-
-    GLuint prize_vao{};
-    glCreateVertexArrays(1,&prize_vao);
-    glBindVertexArray(prize_vao);
+    glGenBuffers(1,&prize_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, prize_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(prize_vertices), prize_vertices,  GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(0);
 
@@ -81,6 +82,10 @@ int main() {
 
 
     // Next, walls
+    GLuint walls_vao{};
+    glGenVertexArrays(1,&walls_vao);
+    glBindVertexArray(walls_vao);
+    
     const int walls_num_verts = 6;
     static const GLfloat walls_vertices[walls_num_verts][3] = {
         { -0.5f,  0.5f, -0.5f }, 
@@ -91,13 +96,10 @@ int main() {
         { -0.0f, -0.5f,  0.7f },
     };
     GLuint walls_vbo{};
-    glCreateBuffers(1,&walls_vbo);
-    glNamedBufferStorage(walls_vbo, sizeof(walls_vertices), walls_vertices, 0);
-
-    GLuint walls_vao{};
-    glCreateVertexArrays(1,&walls_vao);
-    glBindVertexArray(walls_vao);
+    glGenBuffers(1,&walls_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, walls_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(walls_vertices), walls_vertices, GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(0);
 
@@ -120,7 +122,7 @@ int main() {
             if (glfwWindowShouldClose(window))
                 quit = true;
             
-            
+
             update_lag -= time_per_update;
         }
         
@@ -135,9 +137,9 @@ int main() {
         glDrawArrays(GL_TRIANGLE_FAN, 0, prize_num_verts);
         
         // Render walls
-        walls_shader->use();
-        glBindVertexArray(walls_vao);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, walls_num_verts);
+            walls_shader->use();
+            glBindVertexArray(walls_vao);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, walls_num_verts);
 
         glfwSwapBuffers(window);
         
