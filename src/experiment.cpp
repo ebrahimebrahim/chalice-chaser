@@ -71,7 +71,7 @@ int main() {
     glBindVertexArray(prize_vao);
     
     const int prize_num_verts = 5;
-    static const GLfloat prize_vertices[prize_num_verts][3] = {
+    const GLfloat prize_vertices[prize_num_verts][3] = {
         { 0.0f, 0.0f, 0.0f }, // center of fan
         { -0.3f, -0.3f, -0.3f },
         { 0.3f, -0.3f, -0.3f },
@@ -82,6 +82,13 @@ int main() {
     glGenBuffers(1,&prize_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, prize_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(prize_vertices), prize_vertices,  GL_STATIC_DRAW);
+
+    const int prize_num_indices = 5;
+    const GLuint prize_indices[prize_num_indices] = { 0,1,2,3,4 };
+    GLuint prize_ebo{};
+    glGenBuffers(1, &prize_ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prize_ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(prize_indices), prize_indices,  GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(0);
@@ -95,7 +102,7 @@ int main() {
     glBindVertexArray(walls_vao);
     
     const int walls_num_verts = 6;
-    static const GLfloat walls_vertices[walls_num_verts][3] = {
+    const GLfloat walls_vertices[walls_num_verts][3] = {
         { -0.5f,  0.5f, -0.5f }, 
         { -0.5f, -0.5f, -0.5f },
         { -0.4f,  0.5f,  0.5f },
@@ -108,25 +115,26 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, walls_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(walls_vertices), walls_vertices, GL_STATIC_DRAW);
 
+    const int walls_num_indices = 6;
+    const GLuint walls_indices[walls_num_indices] = { 0,1,2,3,4,5 };
+    GLuint walls_ebo{};
+    glGenBuffers(1, &walls_ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, walls_ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(walls_indices), walls_indices,  GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(0);
 
     Shader * walls_shader = new Shader("src/shader.vert","src/shader.frag");
-    // hmm i guess shaders should be part of GameWindow. Maybe GameWindow needs a better name like "OpenGLWidnow"
-    // so that it feels right to move all things handling opengl context to it. it can be my personaly wrapper for opengl
-    // when new game entity is created, we tell this opengl wrapper what its mesh/texture data is to get it loaded
-    // perhaps a factory does this.
-    // objects should know how to update themselves, but NOT how to draw themselves. drawing is managed by Game's render method,
-    // since it has to consider entire game state to decide how to draw things. 
 
     // ------------ end graphics object loading phase ----------------
 
 
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f),float(window_width)/float(window_height),0.1f,100.0f);
-
 
     // -- Setting up a camera, model, view, projection
+
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f),float(window_width)/float(window_height),0.1f,100.0f);
 
     auto cameraPos = glm::vec3(0.0f,0.0f,3.0f); // cam origin
     auto cameraTarget = glm::vec3(0.0f,0.0f,0.0f);
@@ -175,14 +183,14 @@ int main() {
         prize_shader->setUniform("model",model);
         prize_shader->setUniform("view",view);
         glBindVertexArray(prize_vao);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, prize_num_verts);
+        glDrawElements(GL_TRIANGLE_FAN, prize_num_indices, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
         
         // Render walls
         walls_shader->use();
         walls_shader->setUniform("model",model);
         walls_shader->setUniform("view",view);
         glBindVertexArray(walls_vao);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, walls_num_verts);
+        glDrawElements(GL_TRIANGLE_STRIP, walls_num_indices, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
         glfwSwapBuffers(window);
         
