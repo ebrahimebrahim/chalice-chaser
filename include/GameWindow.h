@@ -54,11 +54,14 @@ public:
     /** Add an object with a given id, creating the GraphicsObject.
      *  Once you do this, it becomes possible to call `draw` and pass in the id.
      *  Throws a runtime error if an object of the given id was already added.
+     *  Whoever called add_object does not need to worry about deleting the object.
+     *  Only delete if you want the object to disappear before this GameWindow dies.
      */
     void add_object(int id, const GraphicsData & graphics_data);
 
     /**Destroy an object, freeing it's data in video memory. 
      * Throws a runtime error if no object with the given id was ever added.
+     * Only do this if you want the object to disappear before this GameWindow dies.
      */
     void del_object(int id);
 
@@ -66,7 +69,21 @@ public:
     /** Render the object of the given id to the framebuffer.
      *  Throws a runtime error if an object of the given id was never added.
      */
-    void draw(int id, const glm::mat4 view_matrix);
+    void draw(int id);
+
+    /**Set the view matrix that transforms world coordinates to camera coordinates.
+     * It will be used for all rendering.
+     */
+    void set_view_matrix(const glm::mat4 & view);
+
+    /**Set the perspective projection matrix, to be used for all rendering  */
+    void set_projection_matrix(const glm::mat4 & projection);
+
+    /**Set the model matrix that transforms object coordinates to world coordinates.
+     * `id` is the id of the object; runtime error thrown if no object with this id
+     * was ever added via `add_object`
+     */
+    void set_object_model_matrix(int id, const glm::mat4 & model);
 
 };
 
@@ -93,6 +110,8 @@ struct GraphicsData{
 */
 class GraphicsObject {
 
+    friend GameWindow;
+
     GLuint vao{};
     GLuint vbo{};
     GLuint ebo{};
@@ -103,8 +122,9 @@ class GraphicsObject {
     std::unique_ptr<Shader> shader;
     glm::mat4 model_matrix{}; /** The matrix that transforms object coords to world coords, placing an object in the world. */
 
+    static glm::mat4 projection_matrix; /** Perspective projection matrix. */
+    static glm::mat4 view_matrix; /** The matrix that transforms world coords to camera coords */
 public:
-    static glm::mat4 projection;
 
     /** 
      * The vertex shader is assumed to have mat4 inputs named "model", "view", and "projection".
@@ -116,7 +136,7 @@ public:
     GraphicsObject & operator=(GraphicsObject &&);;
     ~GraphicsObject();
 
-    void draw(const glm::mat4 & view_matrix) const;
+    void draw() const;
     void set_model_matrix(glm::mat4 m) {model_matrix = m;}
 
 };

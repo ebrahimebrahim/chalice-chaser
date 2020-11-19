@@ -45,7 +45,7 @@ GameWindow::GameWindow(int width, int height, const char * title) {
         }
     );
 
-    GraphicsObject::projection = glm::perspective(glm::radians(45.0f),float(width)/float(height),0.1f,100.0f);
+    set_projection_matrix( glm::perspective(glm::radians(45.0f),float(width)/float(height),0.1f,100.0f) );
 }
 
 GameWindow::GameWindow(GameWindow && src) {
@@ -100,18 +100,35 @@ void GameWindow::del_object(int id) {
     id_to_graphics_object.erase(id);
 }
 
-void GameWindow::draw(int id, const glm::mat4 view_matrix) {
+void GameWindow::draw(int id) {
     if (id_to_graphics_object.find(id)== id_to_graphics_object.end()){
         std::ostringstream error_msg;
         error_msg << "A graphics object associated to id " << id << " is being requested, but no such association exists!";
         throw std::runtime_error(error_msg.str());
     }
-    id_to_graphics_object[id]->draw(view_matrix);
+    id_to_graphics_object[id]->draw();
+}
+
+void GameWindow::set_view_matrix(const glm::mat4 & view) {
+    GraphicsObject::view_matrix = view;
+}
+
+void GameWindow::set_projection_matrix(const glm::mat4 & projection) {
+    GraphicsObject::projection_matrix = projection;
+}
+
+void GameWindow::set_object_model_matrix(int id, const glm::mat4 & model) {
+    if (id_to_graphics_object.find(id) == id_to_graphics_object.end()){
+        std::ostringstream error_msg;
+        error_msg << "A graphics object associated to id " << id << " is being requested to set a model matrix, but no such id association exists!";
+        throw std::runtime_error(error_msg.str());
+    }
+    id_to_graphics_object[id]->set_model_matrix(model);
 }
 
 
-
-glm::mat4 GraphicsObject::projection{};
+glm::mat4 GraphicsObject::projection_matrix{};
+glm::mat4 GraphicsObject::view_matrix{};
 
 GraphicsObject::GraphicsObject(const GraphicsData & graphics_data) :
         num_indices{graphics_data.num_indices},
@@ -134,7 +151,7 @@ GraphicsObject::GraphicsObject(const GraphicsData & graphics_data) :
 
     shader = std::make_unique<Shader>(graphics_data.vertex_shader_path, graphics_data.fragment_shader_path);
     shader->use();
-    shader->setUniform("projection",projection);
+    shader->setUniform("projection",projection_matrix);
 }
 
 GraphicsObject::GraphicsObject(GraphicsObject && src) {
@@ -169,7 +186,7 @@ GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
     return *this;
 }
 
-void GraphicsObject::draw(const glm::mat4 & view_matrix) const {
+void GraphicsObject::draw() const {
     shader->use();
     shader->setUniform("model",model_matrix);
     shader->setUniform("view",view_matrix);
