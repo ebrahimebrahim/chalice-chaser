@@ -246,10 +246,6 @@ int main() {
         // ------------ End Rendering ------------
 
         glfwPollEvents(); //  I think this should be an exposed part of the game loop, not tucked into handle_input
-        double cursor_x, cursor_y;
-        glfwGetCursorPos(window, &cursor_x, &cursor_y);
-        cursor = glm::vec2(cursor_x,cursor_y);
-
         last_frame_mouse_delta = cursor - frame_start_cursor;
         last_frame_time = glfwGetTime() - frame_start_time;
         update_lag += last_frame_time;
