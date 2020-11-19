@@ -2,22 +2,25 @@
 #define GAME_WINDOW_H
 
 #include <memory>
+#include <unordered_map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Shader.h>
 #include <glm/glm.hpp>
 
+class GraphicsObject;
+struct GraphicsData;
+
 /**
  *  Holds a GLFW window and associated OpenGL context
  */
-
-
 class GameWindow {
 
-    GLFWwindow * window;
-    int width;
-    int height;
+    GLFWwindow * window{};
+    int width{};
+    int height{};
+    std::unordered_map<int,GraphicsObject*> id_to_graphics_object;
 
 public:
     GameWindow(int width, int height, const char * title);
@@ -47,6 +50,23 @@ public:
     
     int get_width() const {return width;}
     int get_height() const {return height;}
+
+    /** Add an object with a given id, creating the GraphicsObject.
+     *  Once you do this, it becomes possible to call `draw` and pass in the id.
+     *  Throws a runtime error if an object of the given id was already added.
+     */
+    void add_object(int id, const GraphicsData & graphics_data);
+
+    /**Destroy an object, freeing it's data in video memory. 
+     * Throws a runtime error if no object with the given id was ever added.
+     */
+    void del_object(int id);
+
+
+    /** Render the object of the given id to the framebuffer.
+     *  Throws a runtime error if an object of the given id was never added.
+     */
+    void draw(int id, const glm::mat4 view_matrix);
 
 };
 

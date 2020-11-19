@@ -1,6 +1,8 @@
 #include <GameWindow.h>
+
 #include <stdexcept>
 #include <string>
+#include <sstream>
 
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -73,9 +75,41 @@ void GameWindow::set_key_callback(GLFWkeyfun callback){
 
 
 GameWindow::~GameWindow() {
+    for (auto & pair : id_to_graphics_object)
+        delete pair.second;
     glfwDestroyWindow(window);
     glfwTerminate();
 }
+
+void GameWindow::add_object(int id, const GraphicsData & graphics_data) {
+    if (id_to_graphics_object.find(id)!= id_to_graphics_object.end()){
+        std::ostringstream error_msg;
+        error_msg << "A graphics object with id " << id << " is already registered, but the program is trying to add it!";
+        throw std::runtime_error(error_msg.str());
+    }
+    id_to_graphics_object[id] = new GraphicsObject(graphics_data);
+}
+
+void GameWindow::del_object(int id) {
+    if (id_to_graphics_object.find(id)== id_to_graphics_object.end()){
+        std::ostringstream error_msg;
+        error_msg << "A graphics object associated to id " << id << " is to be deleted, but no such association exists!";
+        throw std::runtime_error(error_msg.str());
+    }
+    delete id_to_graphics_object[id];
+    id_to_graphics_object.erase(id);
+}
+
+void GameWindow::draw(int id, const glm::mat4 view_matrix) {
+    if (id_to_graphics_object.find(id)== id_to_graphics_object.end()){
+        std::ostringstream error_msg;
+        error_msg << "A graphics object associated to id " << id << " is being requested, but no such association exists!";
+        throw std::runtime_error(error_msg.str());
+    }
+    id_to_graphics_object[id]->draw(view_matrix);
+}
+
+
 
 glm::mat4 GraphicsObject::projection{};
 
