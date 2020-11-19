@@ -2,6 +2,12 @@
 #include <stdexcept>
 #include <string>
 
+#include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/geometric.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 GameWindow::GameWindow(int width, int height, const char * title) {
     if (!glfwInit())
@@ -36,6 +42,8 @@ GameWindow::GameWindow(int width, int height, const char * title) {
             glViewport(0,0,width,height);
         }
     );
+
+    GraphicsObject::projection = glm::perspective(glm::radians(45.0f),float(width)/float(height),0.1f,100.0f);
 }
 
 GameWindow::GameWindow(GameWindow && src) {
@@ -67,4 +75,44 @@ void GameWindow::set_key_callback(GLFWkeyfun callback){
 GameWindow::~GameWindow() {
     glfwDestroyWindow(window);
     glfwTerminate();
+}
+
+glm::mat4 GraphicsObject::projection{};
+
+GraphicsObject::GraphicsObject(const GraphicsData & graphics_data) :
+        num_indices{graphics_data.num_indices},
+        draw_mode{graphics_data.draw_mode},
+        model_matrix{1.0f}
+{
+    glGenVertexArrays(1,&vao);
+    glBindVertexArray(vao);
+    
+    glGenBuffers(1,&vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(graphics_data.vertices), graphics_data.vertices,  GL_STATIC_DRAW);
+
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(graphics_data.indices), graphics_data.indices,  GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    shader = std::make_unique<Shader>(graphics_data.vertex_shader_path, graphics_data.fragment_shader_path);
+    shader->use();
+    shader->setUniform("projection",projection);
+}
+
+void GraphicsObject::draw(glm::mat4 view_matrix) const {
+    shader->use();
+    shader->setUniform("model",model_matrix);
+    shader->setUniform("view",view_matrix);
+    glBindVertexArray(vao);
+    glDrawElements(draw_mode, num_indices, GL_UNSIGNED_INT, 0);
+}
+
+GraphicsObject::~GraphicsObject() {
+    glDeleteVertexArrays(1,&vao);
+    glDeleteBuffers(1,&ebo);
+    glDeleteBuffers(1,&vbo);
 }
