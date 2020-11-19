@@ -18,6 +18,7 @@
 const int window_width = 800;
 const int window_height = 600;
 double time_per_update = 0.016666667;
+glm::vec2 cursor;
 
 int main() {
 
@@ -62,6 +63,18 @@ int main() {
                 glfwSetWindowShouldClose(window, 1);
         }
     );
+
+
+    glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window,
+        [](GLFWwindow* window, double xpos, double ypos){
+            cursor = glm::vec2(xpos,ypos);
+        }
+    );
+    double initial_cursor_xpos, initial_cursor_ypos;  
+    glfwGetCursorPos(window, &initial_cursor_xpos, &initial_cursor_ypos);
+    cursor = glm::vec2(initial_cursor_xpos,initial_cursor_ypos);
+
 
     // -------- The "loading phase" for various graphics objects, let's call them "walls" and "prize"  -------
 
@@ -156,16 +169,52 @@ int main() {
     bool quit = false;
     double update_lag = 0.0;
     double last_frame_time{};
+    glm::vec2 last_frame_mouse_delta{};
     while (!quit) {
         double frame_start_time = glfwGetTime(); // seconds
+        glm::vec2 frame_start_cursor = cursor;
 
-        glfwPollEvents(); // Handle input
+        // ------------ Handle input ------------
+
         
+        float walkSpeed = 2.0f;
+        float mouseSensitivity = 0.0015f;
+        float walkDist = last_frame_time * walkSpeed;
+        glm::vec3 camRight = glm::normalize(glm::cross(cameraDir,glm::vec3(0.0,1.0,0.0)));
+        glm::vec3 worldUp  = glm::vec3(0.0f,1.0f,0.0f);
+        if (glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS)
+            cameraPos += walkDist * cameraDir;
+        if (glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS)
+            cameraPos -= walkDist * cameraDir;
+        if (glfwGetKey(window,GLFW_KEY_A) == GLFW_PRESS){
+            glm::vec3 camRight = glm::normalize(glm::cross(cameraDir,worldUp));
+            cameraPos -= walkDist * camRight;
+        }
+        if (glfwGetKey(window,GLFW_KEY_D) == GLFW_PRESS){
+            cameraPos += walkDist * camRight;
+        }
+
+        // set yaw
+        cameraDir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[0],worldUp);
+
+        //set pitch
+        glm::vec3 new_dir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[1],camRight);
+        if (new_dir[0]*cameraDir[0] + new_dir[2]*cameraDir[2] > 0.1f) // don't allow pitch beyond zenith/nadir
+            cameraDir = new_dir;
+        
+        view = glm::lookAt(cameraPos,cameraPos+cameraDir,glm::vec3(0.0,1.0,0.0));
+
+        
+        // ------------ End input handling ------------
+
+
         // Update game state
         while (update_lag >= time_per_update) {
             if (glfwWindowShouldClose(window))
                 quit = true;
             
+
+
 
             update_lag -= time_per_update;
         }
@@ -196,7 +245,9 @@ int main() {
         
         // ------------ End Rendering ------------
 
+        glfwPollEvents(); //  I think this should be an exposed part of the game loop, not tucked into handle_input
         last_frame_time = glfwGetTime() - frame_start_time;
+        last_frame_mouse_delta = cursor - frame_start_cursor;
         update_lag += last_frame_time;
     }
 
