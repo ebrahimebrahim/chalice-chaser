@@ -37,6 +37,9 @@ public:
     int should_close() const {return glfwWindowShouldClose(window);}
 
     void swap_buffers() {glfwSwapBuffers(window);}
+
+    /** Wrap glfwPollEvents */
+    void poll_events() {glfwPollEvents();}
     
     int get_width() const {return width;}
     int get_height() const {return height;}

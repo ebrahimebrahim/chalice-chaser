@@ -30,6 +30,7 @@ int Game::run() {
         
         render();
 
+        window->poll_events();
         last_frame_time = glfwGetTime() - frame_start_time;
         update_lag += last_frame_time;
     }
@@ -39,7 +40,7 @@ int Game::run() {
 
 
 void Game::handle_input() {
-    glfwPollEvents();
+
 }
 
 void Game::handle_key(int key, int scancode, int action, int mods) {
