@@ -71,9 +71,7 @@ int main() {
             cursor = glm::vec2(xpos,ypos);
         }
     );
-    double initial_cursor_xpos, initial_cursor_ypos;  
-    glfwGetCursorPos(window, &initial_cursor_xpos, &initial_cursor_ypos);
-    cursor = glm::vec2(initial_cursor_xpos,initial_cursor_ypos);
+    cursor = glm::vec2(window_width/2,window_height/2);
 
 
     // -------- The "loading phase" for various graphics objects, let's call them "walls" and "prize"  -------
