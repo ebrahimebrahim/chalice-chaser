@@ -1,6 +1,6 @@
 #include <Game.h>
 #include <GameWindow.h>
-
+#include <Entity.h>
 
 int Game::run() {
 
