@@ -19,6 +19,7 @@ const int window_width = 800;
 const int window_height = 600;
 double time_per_update = 0.016666667;
 glm::vec2 cursor;
+glm::vec3 world_up(0.0f, 1.0f, 0.0f);
 
 int main() {
 
@@ -106,6 +107,8 @@ int main() {
 
     Shader * prize_shader = new Shader("src/shader.vert","src/shader.frag");
 
+    glm::mat4 prize_model_mat = glm::mat4(1.0f);
+
 
     // Next, walls
     GLuint walls_vao{};
@@ -138,19 +141,21 @@ int main() {
 
     Shader * walls_shader = new Shader("src/shader.vert","src/shader.frag");
 
+    glm::mat4 walls_model_mat = glm::mat4(1.0f);
+
     // ------------ end graphics object loading phase ----------------
 
 
 
-    // -- Setting up a camera, model, view, projection
+    // -- Setting up a camera, view, projection
 
-    glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 projection = glm::perspective(glm::radians(45.0f),float(window_width)/float(window_height),0.1f,100.0f);
 
     auto cameraPos = glm::vec3(0.0f,0.0f,3.0f); // cam origin
     auto cameraTarget = glm::vec3(0.0f,0.0f,0.0f);
     auto cameraNegDirection = glm::normalize(cameraPos - cameraTarget); // cam z axis
     auto cameraDir = - cameraNegDirection;
+    glm::vec3 camRight = glm::normalize(glm::cross(cameraDir,world_up));
     glm::mat4 view = glm::lookAt(cameraPos,cameraTarget,glm::vec3(0.0,1.0,0.0));
 
     prize_shader->use(); // note that use needs to be called before setting uniforms!
@@ -158,8 +163,15 @@ int main() {
     walls_shader->use();
     walls_shader->setUniform("projection",projection);
 
-    // -- End setting up camera, model, view, projection
+    // -- End setting up camera, view, projection
 
+
+    // Player state vars
+    glm::vec3 player_pos = glm::vec3(0.0f,0.0f,3.0f);
+    float walkSpeed = 2.0f; // world coord units per second
+
+    // Player control messages to be received
+    glm::vec3 player_move_dir{};
 
 
     // Game loop
@@ -175,45 +187,38 @@ int main() {
         // ------------ Handle input ------------
 
         
-        float walkSpeed = 2.0f; // world coord units per second
-        float mouseSensitivity = 0.0015f; // radians per screen pixel
-        float walkDist = last_frame_time * walkSpeed;
-        glm::vec3 worldUp  = glm::vec3(0.0f,1.0f,0.0f);
-        glm::vec3 camRight = glm::normalize(glm::cross(cameraDir,worldUp));
         
-        // set yaw
-        cameraDir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[0],worldUp);
-        
-        //set pitch
-        glm::vec3 new_dir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[1],camRight);
-        if (new_dir[0]*new_dir[0] + new_dir[2]*new_dir[2] > 0.1f) // don't allow pitch beyond zenith/nadir
-            cameraDir = new_dir;
-        
-        
-        if (glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS)
-            cameraPos += walkDist * cameraDir;
-        if (glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS)
-            cameraPos -= walkDist * cameraDir;
-        if (glfwGetKey(window,GLFW_KEY_A) == GLFW_PRESS){
-            glm::vec3 camRight = glm::normalize(glm::cross(cameraDir,worldUp));
-            cameraPos -= walkDist * camRight;
-        }
-        if (glfwGetKey(window,GLFW_KEY_D) == GLFW_PRESS){
-            cameraPos += walkDist * camRight;
-        }
 
-        // update view matrix based on camera
-        view = glm::lookAt(cameraPos,cameraPos+cameraDir,glm::vec3(0.0,1.0,0.0));
+
+        
+        player_move_dir = glm::vec3{};
+        if (glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS)
+            player_move_dir+=cameraDir;
+        if (glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS)
+            player_move_dir-=cameraDir;
+        if (glfwGetKey(window,GLFW_KEY_A) == GLFW_PRESS)
+            player_move_dir-=camRight;
+        if (glfwGetKey(window,GLFW_KEY_D) == GLFW_PRESS)
+            player_move_dir+=camRight;
+        glm::normalize(player_move_dir);
+        
 
 
         
         // ------------ End input handling ------------
 
 
-        // Update game state
+        //  ----------------- Update game state ---------------
+
         while (update_lag >= time_per_update) {
             if (glfwWindowShouldClose(window))
                 quit = true;
+            
+            // update player state
+            player_pos += float(walkSpeed * time_per_update) * player_move_dir;
+
+            // update prize state
+            
             
 
 
@@ -221,6 +226,32 @@ int main() {
             update_lag -= time_per_update;
         }
         
+        //  ----------------- end update game state ---------------
+
+
+        //  ----------------- Camera update ---------------
+
+        // Camera direction update
+        // This is not an official part of "game state" since it is part of input handling.
+        float mouseSensitivity = 0.0015f; // radians per screen pixel
+        
+        camRight = glm::normalize(glm::cross(cameraDir,world_up));
+        // set yaw
+        cameraDir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[0],world_up);
+        //set pitch
+        glm::vec3 new_dir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[1],camRight);
+        if (new_dir[0]*new_dir[0] + new_dir[2]*new_dir[2] > 0.1f) // don't allow pitch beyond zenith/nadir
+            cameraDir = new_dir;
+        
+        // Camera position update-- it's the player position.
+        // Player position will update with game state, not with input handling.
+        cameraPos = player_pos;
+
+        // update view matrix based on camera
+        view = glm::lookAt(cameraPos,cameraPos+cameraDir,glm::vec3(0.0,1.0,0.0));
+
+        // ------------ end camera update -------------------------
+
         // ------------ Rendering ------------
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -231,14 +262,14 @@ int main() {
 
         // Render prize
         prize_shader->use();
-        prize_shader->setUniform("model",model);
+        prize_shader->setUniform("model",prize_model_mat);
         prize_shader->setUniform("view",view);
         glBindVertexArray(prize_vao);
         glDrawElements(GL_TRIANGLE_FAN, prize_num_indices, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
         
         // Render walls
         walls_shader->use();
-        walls_shader->setUniform("model",model);
+        walls_shader->setUniform("model",walls_model_mat);
         walls_shader->setUniform("view",view);
         glBindVertexArray(walls_vao);
         glDrawElements(GL_TRIANGLE_STRIP, walls_num_indices, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
