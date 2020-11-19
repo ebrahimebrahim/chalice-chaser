@@ -89,11 +89,11 @@ GraphicsObject::GraphicsObject(const GraphicsData & graphics_data) :
     
     glGenBuffers(1,&vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(graphics_data.vertices), graphics_data.vertices,  GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, graphics_data.num_vertices * sizeof(GLfloat) * 3, graphics_data.vertices,  GL_STATIC_DRAW);
 
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(graphics_data.indices), graphics_data.indices,  GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, graphics_data.num_indices * sizeof(GLuint) * 1, graphics_data.indices,  GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
@@ -103,7 +103,39 @@ GraphicsObject::GraphicsObject(const GraphicsData & graphics_data) :
     shader->setUniform("projection",projection);
 }
 
-void GraphicsObject::draw(glm::mat4 view_matrix) const {
+GraphicsObject::GraphicsObject(GraphicsObject && src) {
+    vbo = src.vbo;
+    ebo = src.ebo;
+    vao = src.vao;
+    src.vbo = 0;
+    src.ebo = 0;
+    src.vao = 0;
+
+    draw_mode = src.draw_mode;
+    num_indices = src.num_indices;
+    shader = std::move(src.shader);
+    model_matrix = src.model_matrix;
+}
+
+GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
+    if (&src==this) return *this;
+
+    vbo = src.vbo;
+    ebo = src.ebo;
+    vao = src.vao;
+    src.vbo = 0;
+    src.ebo = 0;
+    src.vao = 0;
+
+    draw_mode = src.draw_mode;
+    num_indices = src.num_indices;
+    shader = std::move(src.shader);
+    model_matrix = src.model_matrix;
+
+    return *this;
+}
+
+void GraphicsObject::draw(const glm::mat4 & view_matrix) const {
     shader->use();
     shader->setUniform("model",model_matrix);
     shader->setUniform("view",view_matrix);

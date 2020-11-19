@@ -77,8 +77,8 @@ class GraphicsObject {
     GLuint vbo{};
     GLuint ebo{};
     
-    GLenum draw_mode; /** e.g. GL_TRIANGLES */
-    GLsizei num_indices; /** Number of indices in EBO */
+    GLenum draw_mode{}; /** e.g. GL_TRIANGLES */
+    GLsizei num_indices{}; /** Number of indices in EBO */
     
     std::unique_ptr<Shader> shader;
     glm::mat4 model_matrix{}; /** The matrix that transforms object coords to world coords, placing an object in the world. */
@@ -90,10 +90,13 @@ public:
      * The vertex shader is assumed to have mat4 inputs named "model", "view", and "projection".
     */
     GraphicsObject(const GraphicsData & graphics_data);
-
+    GraphicsObject(const GraphicsObject &) = delete;
+    GraphicsObject & operator=(const GraphicsObject &) = delete;
+    GraphicsObject(GraphicsObject &&);
+    GraphicsObject & operator=(GraphicsObject &&);;
     ~GraphicsObject();
 
-    void draw(glm::mat4 view_matrix) const;
+    void draw(const glm::mat4 & view_matrix) const;
     void set_model_matrix(glm::mat4 m) {model_matrix = m;}
 
 };
