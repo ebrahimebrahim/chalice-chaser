@@ -18,6 +18,7 @@
 const int window_width = 800;
 const int window_height = 600;
 double time_per_update = 0.016666667;
+const float TAU = 6.2831853f;
 glm::vec2 cursor;
 glm::vec3 world_up(0.0f, 1.0f, 0.0f);
 
@@ -218,7 +219,7 @@ int main() {
             player_pos += float(walkSpeed * time_per_update) * player_move_dir;
 
             // update prize state
-            
+            prize_model_mat = glm::rotate(prize_model_mat, (TAU/3.0f) * float(time_per_update),world_up);
             
 
 
