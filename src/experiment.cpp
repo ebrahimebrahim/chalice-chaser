@@ -175,11 +175,21 @@ int main() {
         // ------------ Handle input ------------
 
         
-        float walkSpeed = 2.0f;
-        float mouseSensitivity = 0.0015f;
+        float walkSpeed = 2.0f; // world coord units per second
+        float mouseSensitivity = 0.0015f; // radians per screen pixel
         float walkDist = last_frame_time * walkSpeed;
-        glm::vec3 camRight = glm::normalize(glm::cross(cameraDir,glm::vec3(0.0,1.0,0.0)));
         glm::vec3 worldUp  = glm::vec3(0.0f,1.0f,0.0f);
+        glm::vec3 camRight = glm::normalize(glm::cross(cameraDir,worldUp));
+        
+        // set yaw
+        cameraDir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[0],worldUp);
+        
+        //set pitch
+        glm::vec3 new_dir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[1],camRight);
+        if (new_dir[0]*new_dir[0] + new_dir[2]*new_dir[2] > 0.1f) // don't allow pitch beyond zenith/nadir
+            cameraDir = new_dir;
+        
+        
         if (glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS)
             cameraPos += walkDist * cameraDir;
         if (glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS)
@@ -192,15 +202,9 @@ int main() {
             cameraPos += walkDist * camRight;
         }
 
-        // set yaw
-        cameraDir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[0],worldUp);
-
-        //set pitch
-        glm::vec3 new_dir = glm::rotate(cameraDir,-mouseSensitivity*last_frame_mouse_delta[1],camRight);
-        if (new_dir[0]*cameraDir[0] + new_dir[2]*cameraDir[2] > 0.1f) // don't allow pitch beyond zenith/nadir
-            cameraDir = new_dir;
-        
+        // update view matrix based on camera
         view = glm::lookAt(cameraPos,cameraPos+cameraDir,glm::vec3(0.0,1.0,0.0));
+
 
         
         // ------------ End input handling ------------
