@@ -203,6 +203,14 @@ int main() {
     delete prize_shader;
     delete walls_shader;
 
+    glDeleteVertexArrays(1,&prize_vao);
+    glDeleteBuffers(1,&prize_ebo);
+    glDeleteBuffers(1,&prize_vbo);
+
+    glDeleteVertexArrays(1,&walls_vao);
+    glDeleteBuffers(1,&walls_ebo);
+    glDeleteBuffers(1,&walls_vbo);
+
     glfwDestroyWindow(window);
     glfwTerminate();
 
