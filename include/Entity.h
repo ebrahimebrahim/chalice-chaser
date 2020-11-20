@@ -12,8 +12,8 @@ public:
     Entity(GameWindow * game_window);
     virtual ~Entity() = default;
     int get_id() const {return id;}
-    virtual void update(double delta) = 0;
-    virtual void draw() = 0;
+    virtual void update(double delta) = 0; /** delta is the time step of the update in seconds */
+    virtual void draw() const = 0;
 };
 
 #endif // ENTITY_H

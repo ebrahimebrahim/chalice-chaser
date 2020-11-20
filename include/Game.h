@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 #include <Entity.h>
+#include <Camera.h>
+#include <Player.h>
 
 /**
     The game loop
@@ -29,6 +31,8 @@ class Game {
 
     std::unique_ptr<GameWindow> window;
     std::vector<std::unique_ptr<Entity>> entities;
+    Camera camera;
+    Player * player{}; /** handle to player, which is a regular entity that should be in the std::vector of entities */
 
 public:
     /** Run the game, returning return code on exit. 0 means no errors. */

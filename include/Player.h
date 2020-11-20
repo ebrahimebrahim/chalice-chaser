@@ -1,0 +1,24 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include <Entity.h>
+#include <glm/glm.hpp>
+
+class Player : public Entity {
+    bool walking = false; /** player movement state, intended to be set on each frame by some outside input handler */
+    glm::vec3 move_dir{}; /** current player movement direction vector, intended to be set on each frame by some outside input handler */
+public:
+    glm::vec3 pos;
+    const float walk_speed = 2.0f; /** world coord units per second */
+
+    Player(GameWindow * game_window);
+    void update(double delta) override;
+    void draw() const override {} // we don't draw anything for player
+
+    /** `dir` should be a unit vector, otherwise it will mess with player's speed.
+     *  (If you want to mess with speed see member variable `walk_speed`.) */
+    void set_walking(glm::vec3 dir) {walking=true; move_dir=dir;}
+    void set_not_walking() {walking=false;}
+};
+
+#endif // PLAYER_H

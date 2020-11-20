@@ -47,6 +47,10 @@ public:
 
     /** Wrap glfwPollEvents */
     void poll_events() {glfwPollEvents();}
+
+    /** Return whether the key is pressed in the last reported state of the event queue for the window
+     * See this for keys: https://www.glfw.org/docs/latest/group__keys.html */
+    bool key_pressed(int key) {return glfwGetKey(window,key) == GLFW_PRESS;}
     
     int get_width() const {return width;}
     int get_height() const {return height;}

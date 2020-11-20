@@ -33,7 +33,7 @@ void Prize::update(double delta) {
 }
 
 
-void Prize::draw() {
+void Prize::draw() const {
     game_window->set_object_model_matrix(get_id(),model_matrix);
     game_window->draw(get_id());
 }

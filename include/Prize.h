@@ -9,7 +9,7 @@ public:
     glm::mat4 model_matrix;
     Prize(GameWindow * game_window);
     void update(double delta) override;
-    void draw() override;
+    void draw() const override;
 };
 
-#endif
+#endif // PRIZE_H
