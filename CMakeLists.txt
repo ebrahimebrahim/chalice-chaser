@@ -22,3 +22,8 @@ add_executable(experiment src/experiment.cpp src/Shader.cpp)
 target_include_directories(experiment PUBLIC include lib ${GLAD_DIR}/include)
 target_compile_features(experiment PUBLIC cxx_std_17)
 target_link_libraries(experiment glfw glad ${CMAKE_DL_LIBS})
+
+# Another target to be deleted eventually
+add_executable(level_gen_test src/LevelTiles.cpp)
+target_compile_features(level_gen_test PUBLIC cxx_std_17)
+target_include_directories(level_gen_test PUBLIC lib)
