@@ -1,9 +1,10 @@
 #include <Camera.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/common.hpp>
 
 Camera::Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up) :
-    world_up(up)
+    world_up(glm::normalize(up))
 {
     set_pos(pos);
     look_at(target);
@@ -28,7 +29,7 @@ void Camera::update(glm::vec3 new_pos, glm::vec2 mouse_delta) {
     
     // set pitch
     glm::vec3 new_dir = glm::rotate(dir,-mouse_sensitivity*mouse_delta[1],right);
-    if (new_dir[0]*new_dir[0] + new_dir[2]*new_dir[2] > 0.1f) // don't allow pitch beyond zenith/nadir
+    if (glm::abs(glm::dot(new_dir,world_up)) < 0.95f) // don't allow pitch beyond zenith/nadir
         dir = new_dir;
 
     // recalculate right
