@@ -1,6 +1,7 @@
 #include<Prize.h>
 #include<GameWindow.h>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 
 const float TAU = 6.2831853f;
 
@@ -29,7 +30,8 @@ Prize::Prize(GameWindow * game_window)
 
 
 void Prize::update(double delta) {
-    model_matrix = glm::rotate(model_matrix, (TAU/3.0f) * float(delta),glm::vec3(0.0f,1.0f,0.0f));
+    rot += (TAU/3.0f) * delta;
+    model_matrix = glm::translate(pos) * glm::rotate(rot, glm::vec3(0.0f,1.0f,0.0f));
 }
 
 

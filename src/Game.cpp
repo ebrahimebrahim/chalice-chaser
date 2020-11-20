@@ -18,10 +18,14 @@ int Game::run() {
         glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
 
-    // Create entities
-    entities.emplace_back(new Prize(window.get()));
-    entities.emplace_back(new Player(window.get()));
-    player = static_cast<Player*>( entities.back().get() ); // set handle to player
+    // Create entities (TODO the "new" and then sending into unique_ptr is kinda tacky, maybe a factory instead)
+    Prize * prize1 = new Prize(window.get());
+    entities.emplace_back(prize1);
+    Prize * prize2 = new Prize(window.get());
+    prize2->pos += glm::vec3(2.0f,0.0f,0.0f);
+    entities.emplace_back(prize2);
+    player = new Player(window.get());
+    entities.emplace_back(player);
     player->pos = camera->get_pos();
 
     // Here's the actual game loop
