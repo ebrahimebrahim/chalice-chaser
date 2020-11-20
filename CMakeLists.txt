@@ -4,7 +4,7 @@ project(SymmetricalGarbanzo VERSION 0.0
                             DESCRIPTION "a game"
                             LANGUAGES C CXX)
 
-find_package(glfw3 REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
 
 set(GLAD_DIR "lib/glad")
 add_library(glad ${GLAD_DIR}/include/glad/glad.h ${GLAD_DIR}/src/glad.c)
