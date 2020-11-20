@@ -1,6 +1,8 @@
 #include <Game.h>
 #include <GameWindow.h>
 #include <Entity.h>
+#include <Prize.h>
+
 
 int Game::run() {
 
@@ -15,6 +17,9 @@ int Game::run() {
             game->handle_key(key, scancode, action, mods); // just forward event to Game::handle_key
         }
     );
+
+    // Create entities
+    entities.emplace_back(new Prize(window.get()));
 
     // Here's the actual game loop
     double update_lag = 0.0;
@@ -51,11 +56,16 @@ void Game::handle_key(int key, int scancode, int action, int mods) {
 void Game::update() {
     if (window->should_close())
         quit = true;
+    for (auto & entity : entities)
+        entity->update(time_per_update);
 }
 
 void Game::render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    for (auto & entity : entities)
+        entity->draw();
 
     window->swap_buffers();
 }

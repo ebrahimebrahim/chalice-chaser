@@ -3,6 +3,8 @@
 
 #include <GameWindow.h>
 #include <memory>
+#include <vector>
+#include <Entity.h>
 
 /**
     The game loop
@@ -26,6 +28,7 @@ class Game {
     double last_frame_time{};
 
     std::unique_ptr<GameWindow> window;
+    std::vector<std::unique_ptr<Entity>> entities;
 
 public:
     /** Run the game, returning return code on exit. 0 means no errors. */
