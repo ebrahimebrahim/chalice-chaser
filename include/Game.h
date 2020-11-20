@@ -26,6 +26,9 @@ class Game {
     /** Time spent on the last frame of rendering, in seconds. */
     double last_frame_time{};
 
+    /** Mouse movement vector on the last frame of rendering */
+    glm::vec2 last_frame_mouse_delta;
+
     std::unique_ptr<GameWindow> window;
     std::vector<std::unique_ptr<Entity>> entities;
     Camera camera;

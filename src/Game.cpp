@@ -20,6 +20,7 @@ int Game::run() {
     double update_lag = 0.0;
     while (!window->should_close()) {
         double frame_start_time = glfwGetTime(); // seconds
+        glm::vec2 frame_start_cursor = window->cursor;
 
         handle_input();
         
@@ -31,6 +32,7 @@ int Game::run() {
         render();
 
         window->poll_events();
+        last_frame_mouse_delta = window->cursor - frame_start_cursor;
         last_frame_time = glfwGetTime() - frame_start_time;
         update_lag += last_frame_time;
     }
