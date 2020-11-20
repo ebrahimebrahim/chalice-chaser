@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -58,6 +59,10 @@ GameWindow::GameWindow(int width, int height, const char * title) :
     glfwSetWindowUserPointer(window, this);
 
     glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
+    if (glfwRawMouseMotionSupported())
+        glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    else
+        std::cout << "Warning: Raw mouse motion is not supported.\n";
     glfwSetCursorPosCallback(window,
         [](GLFWwindow* window, double xpos, double ypos){
             GameWindow * gw = static_cast<GameWindow*>(glfwGetWindowUserPointer(window));
