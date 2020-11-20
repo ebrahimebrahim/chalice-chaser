@@ -31,7 +31,7 @@ class Game {
 
     std::unique_ptr<GameWindow> window;
     std::vector<std::unique_ptr<Entity>> entities;
-    Camera camera;
+    std::unique_ptr<Camera> camera;
     Player * player{}; /** handle to player, which is a regular entity that should be in the std::vector of entities */
 
 public:
