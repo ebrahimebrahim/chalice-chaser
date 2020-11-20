@@ -15,7 +15,7 @@ int Game::run() {
     camera = std::make_unique<Camera>(
         glm::vec3(0.0f,0.0f,3.0f), // position
         glm::vec3(0.0f,0.0f,0.0f), // look target
-        glm::vec3(0.0f,0.1f,0.0f)  // up direction
+        glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
 
     // Create entities
@@ -58,7 +58,7 @@ void Game::handle_input() {
         player_move_dir+=camera->get_dir();
         walking = true;
     }
-    if (window->key_pressed(GLFW_KEY_S)) {
+    else if (window->key_pressed(GLFW_KEY_S)) {
         player_move_dir-=camera->get_dir();
         walking = true;
     }
@@ -66,7 +66,7 @@ void Game::handle_input() {
         player_move_dir-=camera->get_right();
         walking = true;
     }
-    if (window->key_pressed(GLFW_KEY_D)) {
+    else if (window->key_pressed(GLFW_KEY_D)) {
         player_move_dir+=camera->get_right();
         walking = true;
     }
