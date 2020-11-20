@@ -1,8 +1,9 @@
+#ifndef PRIZE_H
+#define PRIZE_H
+
 #include<Entity.h>
 #include <glm/glm.hpp>
 
-#ifndef PRIZE_H
-#define PRIZE_H
 
 class Prize : public Entity {
 public:
