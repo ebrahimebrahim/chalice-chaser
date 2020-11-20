@@ -27,7 +27,7 @@ class Game {
     double last_frame_time{};
 
     /** Mouse movement vector on the last frame of rendering */
-    glm::vec2 last_frame_mouse_delta;
+    glm::vec2 last_frame_mouse_delta{0.0f,0.0f};
 
     std::unique_ptr<GameWindow> window;
     std::vector<std::unique_ptr<Entity>> entities;
