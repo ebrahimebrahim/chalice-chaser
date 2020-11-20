@@ -22,6 +22,7 @@ class GameWindow {
     int height{};
     std::unordered_map<int,GraphicsObject*> id_to_graphics_object;
 
+
 public:
     GameWindow(int width, int height, const char * title);
     ~GameWindow();
@@ -29,16 +30,6 @@ public:
     GameWindow & operator=(const GameWindow &) = delete;
     GameWindow(GameWindow &&); /** move is okay, passes ownership of window */
     GameWindow & operator=(GameWindow &&);
-
-
-    /** Set the key callback for this window; lookup glfwSetKeyCallback for expected function */
-    void set_key_callback(GLFWkeyfun);
-
-    /** Set a pointer that will be attached to the GLFWwindow.
-     * When defining a callback, you will have access to the underlying GLFWwindow.
-     * Then you can get whatever pointer you set using glfwGetWindowUserPointer
-     */
-    void set_user_ptr(void *);
 
     /** Return the value of the GLFW close flag of the window  */
     int should_close() const {return glfwWindowShouldClose(window);}
@@ -54,6 +45,9 @@ public:
     
     int get_width() const {return width;}
     int get_height() const {return height;}
+
+    /** Position of mouse cursor, updated regularly as polling occurs (updates on a glfwSetCursorPosCallback) */
+    glm::vec2 cursor;
 
     /** Add an object with a given id, creating the GraphicsObject.
      *  Once you do this, it becomes possible to call `draw` and pass in the id.

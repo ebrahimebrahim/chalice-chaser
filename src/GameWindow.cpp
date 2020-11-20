@@ -11,7 +11,9 @@
 #include <glm/geometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-GameWindow::GameWindow(int width, int height, const char * title) {
+GameWindow::GameWindow(int width, int height, const char * title) :
+    width(width), height(height), cursor(width/2,height/2)
+{
     if (!glfwInit())
         throw std::runtime_error("Unable to initialize GLFW");
 
@@ -45,6 +47,24 @@ GameWindow::GameWindow(int width, int height, const char * title) {
         }
     );
 
+
+    glfwSetKeyCallback(window,
+        [](GLFWwindow* window, int key, int scancode, int action, int mods){
+            if (key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE)
+                glfwSetWindowShouldClose(window,GLFW_TRUE);
+        }
+    );
+
+    glfwSetWindowUserPointer(window, this);
+
+    glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window,
+        [](GLFWwindow* window, double xpos, double ypos){
+            GameWindow * gw = static_cast<GameWindow*>(glfwGetWindowUserPointer(window));
+            gw->cursor = glm::vec2(xpos,ypos);
+        }
+    );
+
     set_projection_matrix( glm::perspective(glm::radians(45.0f),float(width)/float(height),0.1f,100.0f) );
 }
 
@@ -63,16 +83,6 @@ GameWindow & GameWindow::operator=(GameWindow && src) {
     src.window = nullptr;
     return *this;
 }
-
-
-void GameWindow::set_user_ptr(void * ptr) {
-    glfwSetWindowUserPointer(window,ptr);
-}
-
-void GameWindow::set_key_callback(GLFWkeyfun callback){
-    glfwSetKeyCallback(window, callback);
-}
-
 
 GameWindow::~GameWindow() {
     for (auto & pair : id_to_graphics_object)

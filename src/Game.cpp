@@ -10,16 +10,6 @@ int Game::run() {
 
     window = std::make_unique<GameWindow>(800, 600, "Garbanzo");
 
-    // I'd rather not touch the underlying GLFWwindow here.
-    // But how else can I set the key callback, short of passing this entire Game into GameWindow?
-    window->set_user_ptr(this);
-    window->set_key_callback(
-        [](GLFWwindow* window, int key, int scancode, int action, int mods){
-            Game * game = static_cast<Game*>(glfwGetWindowUserPointer(window));
-            game->handle_key(key, scancode, action, mods); // just forward event to Game::handle_key
-        }
-    );
-
     // Create entities
     entities.emplace_back(new Prize(window.get()));
     entities.emplace_back(new Player(window.get()));
@@ -28,7 +18,7 @@ int Game::run() {
 
     // Here's the actual game loop
     double update_lag = 0.0;
-    while (!quit) {
+    while (!window->should_close()) {
         double frame_start_time = glfwGetTime(); // seconds
 
         handle_input();
@@ -76,14 +66,8 @@ void Game::handle_input() {
         player->set_not_walking();
 }
 
-void Game::handle_key(int key, int scancode, int action, int mods) {
-    if (key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE)
-        quit = true;
-}
 
 void Game::update() {
-    if (window->should_close())
-        quit = true;
     for (auto & entity : entities)
         entity->update(time_per_update);
 }
