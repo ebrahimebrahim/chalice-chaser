@@ -6,9 +6,9 @@
 
 class Player : public Entity {
     bool walking = false; /** player movement state, intended to be set on each frame by some outside input handler */
-    glm::vec3 move_dir{}; /** current player movement direction vector, intended to be set on each frame by some outside input handler */
+    glm::vec3 move_dir{0.0f,0.0f,0.0f}; /** current player movement direction vector, intended to be set on each frame by some outside input handler */
 public:
-    glm::vec3 pos;
+    glm::vec3 pos{0.0f,0.0f,0.0f};
     const float walk_speed = 2.0f; /** world coord units per second */
 
     Player(GameWindow * game_window);
