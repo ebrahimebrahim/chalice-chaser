@@ -58,14 +58,14 @@ struct Tilemap {
         bool open_space = get_tile(loc);
         if (is_start(loc)){
             if (is_treasure(loc))
-                return '!'; // represents an error, shouldn't happen!
+                return 'X'; // represents an error, shouldn't happen!
             else
-                return (open_space ? '~' : '!');
+                return (open_space ? '~' : 'X');
         }
         else if (is_treasure(loc))
-            return (open_space ? 'O' : '!');
+            return (open_space ? 'O' : 'X');
         else    
-            return (open_space ? '.' : 'X');
+            return (open_space ? '.' : '|');
     }
 
     void validate_tile(const vec & location) const { 
@@ -214,6 +214,11 @@ int main() {
     s.push_back({LevelGen::vec(x1,0), LevelGen::vec(1,0), m, LevelGen::vec(0,1)});
     tm.set_start(s.back());
 
+    // keep trck of the iteration at which each olt in the loop below was (possibly) mined out
+    // will give a rough estimate of how 'deep' different tiles are, to help choose treasure loc
+    std::vector<std::pair<LevelGen::Olt,int>> olts_and_iter;
+    int iteration = 0;
+
     while (!s.empty()) {
         LevelGen::Olt olt;
         if (gen()%2){
@@ -224,15 +229,73 @@ int main() {
             olt =s.back();
             s.pop_back();
         }
+        olts_and_iter.emplace_back(olt,iteration);
 
         auto wall_olts = LevelGen::mine(tm, olt);
         for (auto & wall_olt : wall_olts){
             auto olts = LevelGen::subdivide(wall_olt,1,std::max(1,wall_olt.m/8),2,5);
             for (auto & o : olts) s.push_back(o);
         }
+        ++iteration;
+
         tm.print();
-        std::cout << "\n";
+        std::cout <<'\n';
     }
+
+    std::sort(olts_and_iter.begin(), olts_and_iter.end(),
+        [](std::pair<LevelGen::Olt,int> p1, std::pair<LevelGen::Olt,int> p2){return p1.second > p2.second;}
+    );
+
+    // Choose an olt as pointing (via its w) to the corrdior in which to place a teasure
+    // Do this by going through all the olts that might have been mined out, starting with the "deepest" in the iteration
+    // Since we randomly "pop_back" and "pop_front" in the loop above, this ordering is pretty rough, which is good for variation.
+    LevelGen::Olt olt_treasure; 
+    for (const auto & p : olts_and_iter) {
+        LevelGen::Olt olt = p.first;
+        bool all_open = true;
+        for (int i =0; i<olt.m; ++i){
+            if (! tm.get_tile(olt.x+i*olt.d)) {
+                all_open = false;
+                break;
+            }
+        }
+        if (all_open) {
+            olt_treasure = olt;
+            break;
+        }
+    }
+
+    int mine_depth{};
+    for (int j = 0; true; ++j) {
+
+        if (!LevelGen::within_grid(LevelGen::vec(olt_treasure.x + j*olt_treasure.w))){
+            mine_depth = j;
+            break;
+        }
+
+        bool all_open = true;
+        for (int i =0; i<olt_treasure.m; ++i){
+            if (! tm.get_tile(olt_treasure.x + j*olt_treasure.w + i*olt_treasure.d)) {
+                all_open = false;
+                break;
+            }
+        }
+        if (!all_open) {
+            mine_depth = j;
+            break;
+        }
+    }
+
+std::cout <<"peup: " << olt_treasure.m << " " << mine_depth << std::endl;
+
+    // Now we have a corrdior in which to place a treasure.
+    // In terms of olt_treasure's member vars, the locations are
+    // x + i*d + j*w running over all i in [0,m) and all j in [0,mine_depth)
+    int i = gen()%olt_treasure.m;
+    int j = gen()%mine_depth;
+    tm.treasure_location = olt_treasure.x + i*olt_treasure.d + j*olt_treasure.w;
+
+std::cout <<"peup\n";
 
 
     tm.print();
