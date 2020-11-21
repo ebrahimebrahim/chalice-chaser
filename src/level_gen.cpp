@@ -1,22 +1,17 @@
-// This will start as an experimental program with a main on its own,
-// then the class definitions and function declarations will be moved to a header,
-// main will be deleted, and the class will be part of the game program.
+#include <level_gen.h>
 
 #include <iostream>
 #include <random>
 #include <chrono>
 #include <bitset>
 #include <unordered_map>
-#include <vector>
 #include <deque>
-#include <glm/glm.hpp>
 #include <algorithm>
 #include <stdexcept>
 
 namespace LevelGen{
 
-constexpr int TILEMAP_SIZE = 50;
-typedef glm::ivec2 vec;
+
 
 bool within_grid(const vec & location) {
     return
@@ -26,68 +21,44 @@ bool within_grid(const vec & location) {
         location[1] < TILEMAP_SIZE;
 }
 
-/** "oriented line of tiles"
- *  Imagine this as a line of tiles starting at x and extending m tiles in the d direction,
- *  with the vector w pointing in the direction we want to "mine".
- *  So the tiles included are x, x+d, x+2d, ..., x+(m-1)d
- */
-struct Olt { 
-    vec x;
-    vec d;
-    int m;
-    vec w;
-};
 
-struct Tilemap {
-    bool tiles[TILEMAP_SIZE][TILEMAP_SIZE]{};
-    std::vector<vec> start_area;
-    vec treasure_location; // set/get this yo'self
 
-    Tilemap() : treasure_location(-1,-1) {}
-
-    void print() const {
-        for (int i=0; i < TILEMAP_SIZE; ++i){
-            for (int j=0; j<TILEMAP_SIZE; ++j) {
-                std::cout << tile_to_char(vec(j,i));
-            }
-            std::cout << '\n';
+void Tilemap::print() const {
+    for (int i=0; i < TILEMAP_SIZE; ++i){
+        for (int j=0; j<TILEMAP_SIZE; ++j) {
+            std::cout << tile_to_char(vec(j,i));
         }
+        std::cout << '\n';
     }
+}
 
-    char tile_to_char(const vec & loc) const {
-        bool open_space = get_tile(loc);
-        if (is_start(loc)){
-            if (is_treasure(loc))
-                return 'X'; // represents an error, shouldn't happen!
-            else
-                return (open_space ? '~' : 'X');
-        }
-        else if (is_treasure(loc))
-            return (open_space ? 'O' : 'X');
-        else    
-            return (open_space ? '.' : '|');
-    }
+void Tilemap::validate_tile(const vec & location) const { 
+    if (!within_grid(location))
+        throw std::range_error("Invalid tilemap access!");
+}
 
-    void validate_tile(const vec & location) const { 
-        if (!within_grid(location))
-            throw std::range_error("Invalid tilemap access!");
+char Tilemap::tile_to_char(const vec & loc) const {
+    bool open_space = get_tile(loc);
+    if (is_start(loc)){
+        if (is_treasure(loc))
+            return 'X'; // represents an error, shouldn't happen!
+        else
+            return (open_space ? '~' : 'X');
     }
+    else if (is_treasure(loc))
+        return (open_space ? 'O' : 'X');
+    else    
+        return (open_space ? '.' : '|');
+}
 
-    bool get_tile(const vec & location) const { validate_tile(location); return tiles[location[1]][location[0]]; }
-    void set_tile(const vec & location, bool val) { validate_tile(location); tiles[location[1]][location[0]] = val; }
-    
-    void set_start(const Olt & olt) {
-        for (int i=0; i<olt.m; ++i)
-            start_area.push_back(olt.x+i*olt.d);
-    }
-    
-    bool is_start(const vec & location) const {
-        return std::any_of(start_area.begin(), start_area.end(), [location](const vec & start_loc){return start_loc == location;});
-    }
-    
-    bool is_treasure(const vec & location) const {return treasure_location==location;}
-};
+void Tilemap::set_start(const Olt & olt) {
+    for (int i=0; i<olt.m; ++i)
+        start_area.push_back(olt.x+i*olt.d);
+}
 
+bool Tilemap::is_start(const vec & location) const {
+    return std::any_of(start_area.begin(), start_area.end(), [location](const vec & start_loc){return start_loc == location;});
+}
 
 
 /** The idea is to take an olt representing a long wall, and then
@@ -234,9 +205,6 @@ Tilemap generate_level() {
             for (auto & o : olts) s.push_back(o);
         }
         ++iteration;
-
-        tm.print();
-        std::cout <<'\n';
     }
 
     std::sort(olts_and_iter.begin(), olts_and_iter.end(),
@@ -295,8 +263,3 @@ Tilemap generate_level() {
 }
 
 } // namespace LevelGen
-
-int main(){
-    auto tm = LevelGen::generate_level();
-    tm.print();
-}

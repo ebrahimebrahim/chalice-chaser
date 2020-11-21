@@ -7,6 +7,7 @@
 #include <Entity.h>
 #include <Camera.h>
 #include <Player.h>
+#include <level_gen.h>
 
 /**
     The game loop
@@ -33,6 +34,7 @@ class Game {
     std::vector<std::unique_ptr<Entity>> entities;
     std::unique_ptr<Camera> camera;
     Player * player{}; /** handle to player, which is a regular entity that should be in the std::vector of entities */
+    LevelGen::Tilemap level;
 
 public:
     /** Run the game, returning return code on exit. 0 means no errors. */

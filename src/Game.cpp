@@ -18,7 +18,7 @@ int Game::run() {
         glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
 
-    // Create entities (TODO the "new" and then sending into unique_ptr is kinda tacky, maybe a factory instead)
+    // Create some entities (TODO the "new" and then sending into unique_ptr is kinda tacky, maybe a factory instead)
     for (int i=0; i<10; i++) {
         for (int j=0; j<10; j++){
             Prize * prize = new Prize(window.get());
@@ -29,6 +29,11 @@ int Game::run() {
     player = new Player(window.get());
     entities.emplace_back(player);
     player->pos = camera->get_pos();
+
+    // Generate level
+    level = LevelGen::generate_level();
+    level.print(); // DELETE this at some point. Will help to keep for testing.
+
 
     // Here's the actual game loop
     double update_lag = 0.0;
