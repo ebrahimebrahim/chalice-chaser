@@ -189,38 +189,35 @@ std::vector<Olt> mine(Tilemap & tm, const Olt & olt) {
     return new_olts;
 }
 
-
-
-
-
-} // namespace LevelGen
-
-
-int main() {
-    LevelGen::Tilemap tm{};
-
-
+/** Generate a tilemap.
+ *  A lot of numbers in the functon definition are hardcoded but could easily be made into parameters of this function if I later want.
+ *  They are:
+ *      m_min, m_max (the range of sizes of the level entrance/exit)
+ *      and the parameters that get passed into subdivide
+ */
+Tilemap generate_level() {
+    Tilemap tm{};
 
     int m_min = 3;
     int m_max = 8;
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
-    std::uniform_int_distribution<int> x1_chooser(0, LevelGen::TILEMAP_SIZE-m_min);
+    std::uniform_int_distribution<int> x1_chooser(0, TILEMAP_SIZE-m_min);
     int x1 = x1_chooser(gen);
     std::uniform_int_distribution<int> m_chooser(m_min,m_max);
-    int m = std::min(m_chooser(gen), LevelGen::TILEMAP_SIZE-x1);
+    int m = std::min(m_chooser(gen), TILEMAP_SIZE-x1);
 
-    std::deque<LevelGen::Olt> s;
-    s.push_back({LevelGen::vec(x1,0), LevelGen::vec(1,0), m, LevelGen::vec(0,1)});
+    std::deque<Olt> s;
+    s.push_back({vec(x1,0), vec(1,0), m, vec(0,1)});
     tm.set_start(s.back());
 
     // keep trck of the iteration at which each olt in the loop below was (possibly) mined out
     // will give a rough estimate of how 'deep' different tiles are, to help choose treasure loc
-    std::vector<std::pair<LevelGen::Olt,int>> olts_and_iter;
+    std::vector<std::pair<Olt,int>> olts_and_iter;
     int iteration = 0;
 
     while (!s.empty()) {
-        LevelGen::Olt olt;
+        Olt olt;
         if (gen()%2){
             olt = s.front();
             s.pop_front();
@@ -231,9 +228,9 @@ int main() {
         }
         olts_and_iter.emplace_back(olt,iteration);
 
-        auto wall_olts = LevelGen::mine(tm, olt);
+        auto wall_olts = mine(tm, olt);
         for (auto & wall_olt : wall_olts){
-            auto olts = LevelGen::subdivide(wall_olt,1,std::max(1,wall_olt.m/8),2,5);
+            auto olts = subdivide(wall_olt,1,std::max(1,wall_olt.m/8),2,5);
             for (auto & o : olts) s.push_back(o);
         }
         ++iteration;
@@ -243,15 +240,15 @@ int main() {
     }
 
     std::sort(olts_and_iter.begin(), olts_and_iter.end(),
-        [](std::pair<LevelGen::Olt,int> p1, std::pair<LevelGen::Olt,int> p2){return p1.second > p2.second;}
+        [](std::pair<Olt,int> p1, std::pair<Olt,int> p2){return p1.second > p2.second;}
     );
 
     // Choose an olt as pointing (via its w) to the corrdior in which to place a teasure
     // Do this by going through all the olts that might have been mined out, starting with the "deepest" in the iteration
     // Since we randomly "pop_back" and "pop_front" in the loop above, this ordering is pretty rough, which is good for variation.
-    LevelGen::Olt olt_treasure; 
+    Olt olt_treasure; 
     for (const auto & p : olts_and_iter) {
-        LevelGen::Olt olt = p.first;
+        Olt olt = p.first;
         bool all_open = true;
         for (int i =0; i<olt.m; ++i){
             if (! tm.get_tile(olt.x+i*olt.d)) {
@@ -268,7 +265,7 @@ int main() {
     int mine_depth{};
     for (int j = 0; true; ++j) {
 
-        if (!LevelGen::within_grid(LevelGen::vec(olt_treasure.x + j*olt_treasure.w))){
+        if (!within_grid(vec(olt_treasure.x + j*olt_treasure.w))){
             mine_depth = j;
             break;
         }
@@ -286,7 +283,6 @@ int main() {
         }
     }
 
-std::cout <<"peup: " << olt_treasure.m << " " << mine_depth << std::endl;
 
     // Now we have a corrdior in which to place a treasure.
     // In terms of olt_treasure's member vars, the locations are
@@ -295,9 +291,12 @@ std::cout <<"peup: " << olt_treasure.m << " " << mine_depth << std::endl;
     int j = gen()%mine_depth;
     tm.treasure_location = olt_treasure.x + i*olt_treasure.d + j*olt_treasure.w;
 
-std::cout <<"peup\n";
+    return tm;
+}
 
+} // namespace LevelGen
 
+int main(){
+    auto tm = LevelGen::generate_level();
     tm.print();
-
 }
