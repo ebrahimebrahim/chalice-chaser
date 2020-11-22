@@ -27,6 +27,7 @@ protected:
     void add_self_to_game_window();
 public:
     auto get_model_matrix() const {return model_matrix;}
+    auto get_pos() const {return pos;}
     void set_pos(const glm::vec3 new_pos);
     void rotate(float angle, glm::vec3 axis);
 

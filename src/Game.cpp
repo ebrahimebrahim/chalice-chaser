@@ -2,6 +2,7 @@
 #include <GameWindow.h>
 #include <Entity.h>
 #include <Prize.h>
+#include <Wall.h>
 #include <Player.h>
 #include <Camera.h>
 
@@ -35,6 +36,10 @@ int Game::run() {
     // Generate level
     level = LevelGen::generate_level();
     level.print(); // DELETE this at some point. Will help to keep for testing.
+    Wall * wall = new Wall(window.get());
+    wall->set_pos(glm::vec3(0,0,0));
+    entities.emplace_back(wall);
+
 
 
     // Here's the actual game loop
