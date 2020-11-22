@@ -1,26 +1,15 @@
 #ifndef PRIZE_H
 #define PRIZE_H
 
-#include<Entity.h>
-#include <glm/glm.hpp>
+#include<GraphicalEntity.h>
 
 
-class Prize : public Entity {
-    float rot{}; /** angle in radians about vertical axis */
-    glm::mat4 model_matrix;
+class Prize : public GraphicalEntity {
 public:
-    glm::vec3 pos{0.0f, 0.0f, 0.0f};
-    auto get_model_matrix() const {return model_matrix;}
-
     Prize(GameWindow * game_window);
-    Prize(const Prize &);
-    Prize(Prize &&);
-    Prize & operator=(const Prize &);
-    Prize & operator=(Prize &&);
-    ~Prize();
 
+    GraphicsData create_graphics_data() override;
     void update(double delta) override;
-    void draw() const override;
 };
 
 #endif // PRIZE_H

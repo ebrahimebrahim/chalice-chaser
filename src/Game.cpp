@@ -23,12 +23,12 @@ int Game::run() {
     for (int i=0; i<10; i++) {
         for (int j=0; j<10; j++){
             Prize * prize = new Prize(*prototype_prize);
-            prize->pos = glm::vec3(i,0,j);
+            prize->set_pos(glm::vec3(i,0,j));
             entities.emplace_back(prize);
         }
     }
     delete prototype_prize;
-    player = new Player(window.get());
+    player = new Player();
     entities.emplace_back(player);
     player->pos = camera->get_pos();
 

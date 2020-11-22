@@ -1,0 +1,41 @@
+#ifndef GRAPHICAL_ENTITY_H
+#define GRAPHICAL_ENTITY_H
+
+#include<Entity.h>
+#include <glm/glm.hpp>
+
+const float TAU = 6.2831853f;
+
+class GameWindow;
+struct GraphicsData;
+
+/**An abstract Entity that implements draw() in a way that interfaces with a GameWindow
+ * Inherit from this and override create_graphics_data to return a struct that specifies how to draw your object.
+ * Then GraphicalEntity will take care of adding the object to the game window
+ * and removing it from the game window on destruction.
+ * Duplication is done smartly in the copy constructor, sharing graphics data in video memory among duplicates.
+*/
+class GraphicalEntity : public Entity {
+    GameWindow * game_window; /** handle to game window, non-owned */
+    glm::mat4 model_matrix;
+    glm::mat4 model_matrix_without_translation;
+    glm::vec3 pos{0.0f, 0.0f, 0.0f};
+    void update_model_matrix(); // Update the model matrix by combining `pos` and `model_matrix_without_translation` and carrying out the translation
+public:
+    auto get_model_matrix() const {return model_matrix;}
+    void set_pos(const glm::vec3 new_pos);
+    void rotate(float angle, glm::vec3 axis);
+
+    GraphicalEntity(GameWindow * game_window);
+    GraphicalEntity(const GraphicalEntity &);
+    GraphicalEntity(GraphicalEntity &&);
+    GraphicalEntity & operator=(const GraphicalEntity &);
+    GraphicalEntity & operator=(GraphicalEntity &&);
+    ~GraphicalEntity();
+
+    virtual GraphicsData create_graphics_data() = 0;
+    
+    void draw() const override;
+};
+
+#endif // GRAPHICAL_ENTITY_H
