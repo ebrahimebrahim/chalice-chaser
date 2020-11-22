@@ -6,6 +6,7 @@
 #include <Player.h>
 #include <Camera.h>
 
+#include <iostream> //DELETE
 
 int Game::run() {
 
@@ -19,16 +20,8 @@ int Game::run() {
         glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
 
-    // Create some entities (TODO the "new" and then sending into unique_ptr is kinda tacky, maybe a factory instead)
-    Prize * prototype_prize = new Prize(window.get());
-    for (int i=0; i<10; i++) {
-        for (int j=0; j<10; j++){
-            Prize * prize = new Prize(*prototype_prize);
-            prize->set_pos(glm::vec3(i,0,j));
-            entities.emplace_back(prize);
-        }
-    }
-    delete prototype_prize;
+
+    // Create player
     player = new Player();
     entities.emplace_back(player);
     player->pos = camera->get_pos();
@@ -36,9 +29,32 @@ int Game::run() {
     // Generate level
     level = LevelGen::generate_level();
     level.print(); // DELETE this at some point. Will help to keep for testing.
-    Wall * wall = new Wall(window.get());
-    wall->set_pos(glm::vec3(0,0,0));
-    entities.emplace_back(wall);
+    Wall * prototype_wall = new Wall(window.get());
+    for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) {
+        for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) {
+            auto location = LevelGen::vec(i,j);
+            if (level.get_tile(location)) { // if floor
+                // TODO
+            }
+            else { // if wall
+                Wall * wall = new Wall(*prototype_wall);
+                wall->set_pos(glm::vec3(float(i), 0.0f, float(j)));
+                entities.emplace_back(wall);
+            }
+            
+            if (level.is_treasure(location)) {
+                Prize * prize = new Prize(window.get());
+                prize->set_pos(glm::vec3(float(i)+0.5, 1.0f, float(j)+0.5));
+                entities.emplace_back(prize);
+            }
+
+            if (level.is_start(location)) {
+                // TODO
+            }
+        }
+    }
+    delete prototype_wall;
+
 
 
 

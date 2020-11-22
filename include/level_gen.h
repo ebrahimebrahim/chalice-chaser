@@ -21,6 +21,15 @@ struct Olt {
     vec w;
 };
 
+
+/**Represents a generated level in the abstract as tiles with properites.
+ * The tiles are accessed via `get_tile` by putting in LevelGen::vec locations, which are glm::vec2
+ * The tiles are just bool, which indicates whether or not the tile is passable.
+ * So `true` is for floor and `false` is for wall.
+ * Additionally there is a treasure, whose location is the member variable `treasure_location`.
+ * And there are start tiles to indicate the entrance/exit. Use `is_start` to test for those.
+ * 
+*/
 struct Tilemap {
 
     Tilemap() : treasure_location(-1,-1) {}
