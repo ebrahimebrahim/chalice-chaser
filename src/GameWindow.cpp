@@ -154,11 +154,9 @@ void GameWindow::set_object_model_matrix(int id, const glm::mat4 & model) {
 }
 
 
-GraphicsObject::GraphicsObject(const GraphicsData & graphics_data, Shader * shader) :
-        num_indices{graphics_data.num_indices},
-        draw_mode{graphics_data.draw_mode},
-        model_matrix{1.0f},
-        shader(shader)
+GraphicsObjectBufferData::GraphicsObjectBufferData(const GraphicsData & graphics_data) :
+    num_indices{graphics_data.num_indices},
+    draw_mode{graphics_data.draw_mode}
 {
     glGenVertexArrays(1,&vao);
     glBindVertexArray(vao);
@@ -175,7 +173,7 @@ GraphicsObject::GraphicsObject(const GraphicsData & graphics_data, Shader * shad
     glEnableVertexAttribArray(0);
 }
 
-GraphicsObject::GraphicsObject(GraphicsObject && src) {
+GraphicsObjectBufferData::GraphicsObjectBufferData(GraphicsObjectBufferData && src) {
     vbo = src.vbo;
     ebo = src.ebo;
     vao = src.vao;
@@ -185,11 +183,9 @@ GraphicsObject::GraphicsObject(GraphicsObject && src) {
 
     draw_mode = src.draw_mode;
     num_indices = src.num_indices;
-    shader = std::move(src.shader);
-    model_matrix = src.model_matrix;
 }
 
-GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
+GraphicsObjectBufferData & GraphicsObjectBufferData::operator=(GraphicsObjectBufferData && src) {
     if (&src==this) return *this;
 
     vbo = src.vbo;
@@ -201,8 +197,66 @@ GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
 
     draw_mode = src.draw_mode;
     num_indices = src.num_indices;
-    shader = std::move(src.shader);
+
+    return *this;
+}
+
+GraphicsObjectBufferData::~GraphicsObjectBufferData() {
+    glDeleteVertexArrays(1,&vao);
+    glDeleteBuffers(1,&ebo);
+    glDeleteBuffers(1,&vbo);
+}
+
+void GraphicsObjectBufferData::bind_vao_and_draw() const {
+    glBindVertexArray(vao);
+    glDrawElements(draw_mode, num_indices, GL_UNSIGNED_INT, 0);
+}
+
+
+
+
+GraphicsObject::GraphicsObject(const GraphicsData & graphics_data, Shader * shader) :
+        
+        model_matrix{1.0f},
+        shader(shader)
+{
+    buffer_data = std::make_shared<GraphicsObjectBufferData>(graphics_data);
+}
+
+GraphicsObject::GraphicsObject(const GraphicsObject & src) {
+    buffer_data = src.buffer_data; // copy assignment of shared ptr, increases ref count
+    shader = src.shader; // copy handle to shader, which is not an owned resource
+    model_matrix = src.model_matrix; // copy
+
+}
+
+GraphicsObject & GraphicsObject::operator=(const GraphicsObject & src) {
+    if (&src==this) return *this;
+
+    buffer_data = src.buffer_data;
+    shader = src.shader;
     model_matrix = src.model_matrix;
+
+
+    return *this;
+}
+
+GraphicsObject::GraphicsObject(GraphicsObject && src) {
+    buffer_data = std::move(src.buffer_data);
+    shader = src.shader;
+    model_matrix = src.model_matrix;
+
+    src.shader = nullptr;
+}
+
+GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
+    if (&src==this) return *this;
+
+    buffer_data = std::move(src.buffer_data);
+    shader = src.shader;
+    model_matrix = src.model_matrix;
+
+    src.shader = nullptr;
 
     return *this;
 }
@@ -210,12 +264,5 @@ GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
 void GraphicsObject::draw() const {
     shader->use();
     shader->setUniform("model",model_matrix);
-    glBindVertexArray(vao);
-    glDrawElements(draw_mode, num_indices, GL_UNSIGNED_INT, 0);
-}
-
-GraphicsObject::~GraphicsObject() {
-    glDeleteVertexArrays(1,&vao);
-    glDeleteBuffers(1,&ebo);
-    glDeleteBuffers(1,&vbo);
+    buffer_data->bind_vao_and_draw();
 }

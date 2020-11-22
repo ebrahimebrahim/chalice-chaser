@@ -107,36 +107,50 @@ struct GraphicsData{
     ShaderChoice shader_choice;
 };
 
-
 /**
  * Represents and manages the data of a graphics object in the opengl buffers,
  * as well as information about how to draw it.
- * On destruction, GraphicsObjects will clean up the buffers and shaders they manage,
- * so make sure to destroy your GraphicsObjects before the opengl context is removed from under them.
+ * This is purely about the object space, nothing to do with placing the object in the world.
+ * On destruction, GraphicsObjectBufferData will clean up the buffers it manages,
+ * so make sure to destroy it before the opengl context is removed from under them.
 */
-class GraphicsObject {
-
+class GraphicsObjectBufferData{
     GLuint vao{};
     GLuint vbo{};
     GLuint ebo{};
     
     GLenum draw_mode{}; /** e.g. GL_TRIANGLES */
     GLsizei num_indices{}; /** Number of indices in EBO */
-    
+
+public:
+
+    GraphicsObjectBufferData(const GraphicsData & graphics_data);
+    GraphicsObjectBufferData(const GraphicsObjectBufferData &) = delete;
+    GraphicsObjectBufferData & operator=(const GraphicsObjectBufferData &) = delete;
+    GraphicsObjectBufferData(GraphicsObjectBufferData &&);
+    GraphicsObjectBufferData & operator=(GraphicsObjectBufferData &&);;
+    ~GraphicsObjectBufferData();
+
+    void bind_vao_and_draw() const;
+};
+
+/**
+ * Represents and manages the data of a graphics object and how to draw it,
+ * including possibly shared opengl buffer data, a choice of shader, and a model matrix that places and object in the world.
+*/
+class GraphicsObject {
+    std::shared_ptr<GraphicsObjectBufferData> buffer_data;
     Shader * shader; // handle to shader, not owned by GraphicsObject
     glm::mat4 model_matrix{}; /** The matrix that transforms object coords to world coords, placing an object in the world. */
     
 public:
 
-    /** 
-     * The vertex shader is assumed to have mat4 inputs named "model", "view", and "projection".
-    */
     GraphicsObject(const GraphicsData & graphics_data, Shader * shader);
-    GraphicsObject(const GraphicsObject &) = delete;
-    GraphicsObject & operator=(const GraphicsObject &) = delete;
+    GraphicsObject(const GraphicsObject &);
+    GraphicsObject & operator=(const GraphicsObject &);
     GraphicsObject(GraphicsObject &&);
-    GraphicsObject & operator=(GraphicsObject &&);;
-    ~GraphicsObject();
+    GraphicsObject & operator=(GraphicsObject &&);
+    ~GraphicsObject() {}
 
     void draw() const;
     void set_model_matrix(glm::mat4 m) {model_matrix = m;}
