@@ -3,7 +3,9 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-Prize::Prize(GameWindow * game_window) : GraphicalEntity(game_window) {game_window->add_object(get_id(),create_graphics_data());}
+Prize::Prize(GameWindow * game_window) : GraphicalEntity(game_window) {
+    add_self_to_game_window();
+}
 
 GraphicsData Prize::create_graphics_data() {
     GraphicsData d;

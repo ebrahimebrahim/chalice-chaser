@@ -8,9 +8,12 @@ GraphicalEntity::GraphicalEntity(GameWindow * game_window) :
     model_matrix{1.0f},
     model_matrix_without_translation{1.0f}
 {
-    //game_window->add_object(get_id(),create_graphics_data());
+    
 }
 
+void GraphicalEntity::add_self_to_game_window() {
+    game_window->add_object(get_id(),create_graphics_data());
+}
 
 GraphicalEntity::GraphicalEntity(const GraphicalEntity & src) : 
     game_window(src.game_window),

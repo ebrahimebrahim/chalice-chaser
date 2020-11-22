@@ -9,11 +9,13 @@ const float TAU = 6.2831853f;
 class GameWindow;
 struct GraphicsData;
 
-/**An abstract Entity that implements draw() in a way that interfaces with a GameWindow
- * Inherit from this and override create_graphics_data to return a struct that specifies how to draw your object.
- * Then GraphicalEntity will take care of adding the object to the game window
- * and removing it from the game window on destruction.
+/**An abstract Entity that implements draw() in a way that interfaces with a GameWindow.
+ * If you inherit from this then you *must* define a constructor that calls add_self_to_game_window. Something like this:
+ * `DerivedGraphicalEntity(GameWindow * game_window) : GraphicalEntity(game_window) { add_self_to_game_window(); }`
+ * Override create_graphics_data to return a struct that specifies how to draw your object.
+ * Then GraphicalEntity will take care of removing the object from the game window on destruction.
  * Duplication is done smartly in the copy constructor, sharing graphics data in video memory among duplicates.
+ * Moving also works.
 */
 class GraphicalEntity : public Entity {
     GameWindow * game_window; /** handle to game window, non-owned */
@@ -21,6 +23,8 @@ class GraphicalEntity : public Entity {
     glm::mat4 model_matrix_without_translation;
     glm::vec3 pos{0.0f, 0.0f, 0.0f};
     void update_model_matrix(); // Update the model matrix by combining `pos` and `model_matrix_without_translation` and carrying out the translation
+protected:
+    void add_self_to_game_window();
 public:
     auto get_model_matrix() const {return model_matrix;}
     void set_pos(const glm::vec3 new_pos);
