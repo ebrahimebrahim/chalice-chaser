@@ -13,6 +13,12 @@ public:
     auto get_model_matrix() const {return model_matrix;}
 
     Prize(GameWindow * game_window);
+    Prize(const Prize &);
+    Prize(Prize &&);
+    Prize & operator=(const Prize &);
+    Prize & operator=(Prize &&);
+    ~Prize();
+
     void update(double delta) override;
     void draw() const override;
 };

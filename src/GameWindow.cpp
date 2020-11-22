@@ -119,6 +119,37 @@ void GameWindow::del_object(int id) {
     id_to_graphics_object.erase(id);
 }
 
+void GameWindow::duplicate_object(int id_original, int id_copy) {
+    if (id_to_graphics_object.find(id_original)== id_to_graphics_object.end()){
+        std::ostringstream error_msg;
+        error_msg << "There's no graphics object with id " << id_original << ", but the program is trying to duplicate it!";
+        throw std::runtime_error(error_msg.str());
+    }
+    if (id_to_graphics_object.find(id_copy)!= id_to_graphics_object.end()){
+        std::ostringstream error_msg;
+        error_msg << "A graphics object with id " << id_copy << " already exists, but the program is trying to add it via duplication!";
+        throw std::runtime_error(error_msg.str());
+    }
+    id_to_graphics_object[id_copy] = new GraphicsObject(*id_to_graphics_object[id_original]);
+}
+
+void GameWindow::change_object_id(int id_old, int id_new) {
+    if (id_to_graphics_object.find(id_old)== id_to_graphics_object.end()){
+        std::ostringstream error_msg;
+        error_msg << "There's no graphics object with id " << id_old << ", but the program is trying to change its id!";
+        throw std::runtime_error(error_msg.str());
+    }
+    if (id_to_graphics_object.find(id_new)!= id_to_graphics_object.end()){
+        std::ostringstream error_msg;
+        error_msg << "A graphics object with id " << id_new << " already exists, but the program is trying to a rename something to it!";
+        throw std::runtime_error(error_msg.str());
+    }
+    id_to_graphics_object[id_new] = id_to_graphics_object[id_old];
+    id_to_graphics_object.erase(id_old);
+}
+
+
+
 void GameWindow::draw(int id) {
     if (id_to_graphics_object.find(id)== id_to_graphics_object.end()){
         std::ostringstream error_msg;
@@ -205,6 +236,7 @@ GraphicsObjectBufferData::~GraphicsObjectBufferData() {
     glDeleteVertexArrays(1,&vao);
     glDeleteBuffers(1,&ebo);
     glDeleteBuffers(1,&vbo);
+    std::cout << "peup "; // DELETE
 }
 
 void GraphicsObjectBufferData::bind_vao_and_draw() const {

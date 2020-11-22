@@ -19,13 +19,15 @@ int Game::run() {
     );
 
     // Create some entities (TODO the "new" and then sending into unique_ptr is kinda tacky, maybe a factory instead)
+    Prize * prototype_prize = new Prize(window.get());
     for (int i=0; i<10; i++) {
         for (int j=0; j<10; j++){
-            Prize * prize = new Prize(window.get());
+            Prize * prize = new Prize(*prototype_prize);
             prize->pos = glm::vec3(i,0,j);
             entities.emplace_back(prize);
         }
     }
+    delete prototype_prize;
     player = new Player(window.get());
     entities.emplace_back(player);
     player->pos = camera->get_pos();

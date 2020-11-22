@@ -72,6 +72,15 @@ public:
      */
     void del_object(int id);
 
+    /**Copy an object, creating a new object with the same (and in fact shared) vertex data in the opengl buffers.
+     * Give the id of the original object (which must already have been added via `add_object`)
+     * and give the desired id of the new copy.
+    */
+    void duplicate_object(int id_original, int id_copy);
+
+    /**Change the id of a previously added object*/
+    void change_object_id(int id_old, int id_new);
+
 
     /** Render the object of the given id to the framebuffer.
      *  Throws a runtime error if an object of the given id was never added.
