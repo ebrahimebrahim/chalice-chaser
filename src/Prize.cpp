@@ -26,7 +26,7 @@ Prize::Prize(GameWindow * game_window)
     game_window->add_object(get_id(),d);
 }
 
-Prize::Prize(const Prize & src) : Entity(game_window) {
+Prize::Prize(const Prize & src) : Entity(src.game_window) {
     model_matrix = src.model_matrix;
     rot=src.rot;
     game_window->duplicate_object(src.get_id(), get_id());
@@ -40,7 +40,7 @@ Prize & Prize::operator=(const Prize & src) {
     return *this;
 }
 
-Prize::Prize(Prize && src) : Entity(game_window) {
+Prize::Prize(Prize && src) : Entity(src.game_window) {
     model_matrix = src.model_matrix;
     rot = src.rot;
     game_window->change_object_id(src.get_id(), get_id());

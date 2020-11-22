@@ -236,7 +236,6 @@ GraphicsObjectBufferData::~GraphicsObjectBufferData() {
     glDeleteVertexArrays(1,&vao);
     glDeleteBuffers(1,&ebo);
     glDeleteBuffers(1,&vbo);
-    std::cout << "peup "; // DELETE
 }
 
 void GraphicsObjectBufferData::bind_vao_and_draw() const {
