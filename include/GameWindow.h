@@ -11,6 +11,7 @@
 
 class GraphicsObject;
 struct GraphicsData;
+enum class ShaderChoice {DEFAULT};
 
 /**
  *  Holds a GLFW window and associated OpenGL context
@@ -21,6 +22,14 @@ class GameWindow {
     int width{};
     int height{};
     std::unordered_map<int,GraphicsObject*> id_to_graphics_object;
+    
+    /** Shaders are actually owned by GameWindow
+     * We don't use a smart pointer because we want to carefully control order of deallocation of GameWindow's resources
+     */
+    std::unordered_map<ShaderChoice,Shader*> shaders;
+
+    glm::mat4 projection_matrix; /** Perspective projection matrix. */
+    glm::mat4 view_matrix; /** The matrix that transforms world coords to camera coords */
 
 
 public:
@@ -95,8 +104,7 @@ struct GraphicsData{
     GLuint * indices;
     GLsizei num_indices;
     GLenum draw_mode;
-    const char * vertex_shader_path;
-    const char * fragment_shader_path;
+    ShaderChoice shader_choice;
 };
 
 
@@ -108,8 +116,6 @@ struct GraphicsData{
 */
 class GraphicsObject {
 
-    friend GameWindow;
-
     GLuint vao{};
     GLuint vbo{};
     GLuint ebo{};
@@ -117,17 +123,15 @@ class GraphicsObject {
     GLenum draw_mode{}; /** e.g. GL_TRIANGLES */
     GLsizei num_indices{}; /** Number of indices in EBO */
     
-    std::unique_ptr<Shader> shader;
+    Shader * shader; // handle to shader, not owned by GraphicsObject
     glm::mat4 model_matrix{}; /** The matrix that transforms object coords to world coords, placing an object in the world. */
-
-    static glm::mat4 projection_matrix; /** Perspective projection matrix. */
-    static glm::mat4 view_matrix; /** The matrix that transforms world coords to camera coords */
+    
 public:
 
     /** 
      * The vertex shader is assumed to have mat4 inputs named "model", "view", and "projection".
     */
-    GraphicsObject(const GraphicsData & graphics_data);
+    GraphicsObject(const GraphicsData & graphics_data, Shader * shader);
     GraphicsObject(const GraphicsObject &) = delete;
     GraphicsObject & operator=(const GraphicsObject &) = delete;
     GraphicsObject(GraphicsObject &&);

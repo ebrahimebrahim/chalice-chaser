@@ -70,6 +70,8 @@ GameWindow::GameWindow(int width, int height, const char * title) :
         }
     );
 
+    shaders[ShaderChoice::DEFAULT] = new Shader("src/shader.vert", "src/shader.frag");
+
     set_projection_matrix( glm::perspective(glm::radians(45.0f),float(width)/float(height),0.1f,100.0f) );
 }
 
@@ -92,6 +94,8 @@ GameWindow & GameWindow::operator=(GameWindow && src) {
 GameWindow::~GameWindow() {
     for (auto & pair : id_to_graphics_object)
         delete pair.second;
+    for (auto & pair : shaders)
+        delete pair.second;
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -102,7 +106,7 @@ void GameWindow::add_object(int id, const GraphicsData & graphics_data) {
         error_msg << "A graphics object with id " << id << " is already registered, but the program is trying to add it!";
         throw std::runtime_error(error_msg.str());
     }
-    id_to_graphics_object[id] = new GraphicsObject(graphics_data);
+    id_to_graphics_object[id] = new GraphicsObject(graphics_data, shaders[graphics_data.shader_choice]);
 }
 
 void GameWindow::del_object(int id) {
@@ -125,11 +129,19 @@ void GameWindow::draw(int id) {
 }
 
 void GameWindow::set_view_matrix(const glm::mat4 & view) {
-    GraphicsObject::view_matrix = view;
+    view_matrix = view;
+    for (auto & pair : shaders){
+        pair.second->use();
+        pair.second->setUniform("view", view_matrix);
+    }
 }
 
 void GameWindow::set_projection_matrix(const glm::mat4 & projection) {
-    GraphicsObject::projection_matrix = projection;
+    projection_matrix = projection;
+    for (auto & pair : shaders){
+        pair.second->use();
+        pair.second->setUniform("projection", projection_matrix);
+    }
 }
 
 void GameWindow::set_object_model_matrix(int id, const glm::mat4 & model) {
@@ -142,13 +154,11 @@ void GameWindow::set_object_model_matrix(int id, const glm::mat4 & model) {
 }
 
 
-glm::mat4 GraphicsObject::projection_matrix{};
-glm::mat4 GraphicsObject::view_matrix{};
-
-GraphicsObject::GraphicsObject(const GraphicsData & graphics_data) :
+GraphicsObject::GraphicsObject(const GraphicsData & graphics_data, Shader * shader) :
         num_indices{graphics_data.num_indices},
         draw_mode{graphics_data.draw_mode},
-        model_matrix{1.0f}
+        model_matrix{1.0f},
+        shader(shader)
 {
     glGenVertexArrays(1,&vao);
     glBindVertexArray(vao);
@@ -163,10 +173,6 @@ GraphicsObject::GraphicsObject(const GraphicsData & graphics_data) :
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
-
-    shader = std::make_unique<Shader>(graphics_data.vertex_shader_path, graphics_data.fragment_shader_path);
-    shader->use();
-    shader->setUniform("projection",projection_matrix);
 }
 
 GraphicsObject::GraphicsObject(GraphicsObject && src) {
@@ -204,7 +210,6 @@ GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
 void GraphicsObject::draw() const {
     shader->use();
     shader->setUniform("model",model_matrix);
-    shader->setUniform("view",view_matrix);
     glBindVertexArray(vao);
     glDrawElements(draw_mode, num_indices, GL_UNSIGNED_INT, 0);
 }

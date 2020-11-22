@@ -21,8 +21,7 @@ Prize::Prize(GameWindow * game_window)
     d.num_indices = 5;
     GLuint prize_indices[d.num_indices] = { 0,1,2,3,4 };
     d.indices = prize_indices;
-    d.vertex_shader_path = "src/shader.vert";
-    d.fragment_shader_path = "src/shader.frag";
+    d.shader_choice = ShaderChoice::DEFAULT;
     d.draw_mode = GL_TRIANGLE_FAN;
     game_window->add_object(get_id(),d);
 }
