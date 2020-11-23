@@ -15,12 +15,12 @@ int Game::run() {
     // Create player
     player = new Player();
     entities.emplace_back(player);
-    player->pos = glm::vec3(0.0f,0.0f,3.0f);
+    player->pos = glm::vec3(0.0f,0.0f,0.0f);
 
     // Initialize camera
     camera = std::make_unique<Camera>(
         player->pos, // position
-        glm::vec3(0.0f,0.0f,0.0f), // look target
+        glm::vec3(0.0f,0.0f,1.0f), // look direction
         glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
 

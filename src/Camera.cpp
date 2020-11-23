@@ -3,11 +3,11 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/common.hpp>
 
-Camera::Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up) :
-    world_up(glm::normalize(up))
+Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up) :
+    world_up(glm::normalize(up)), dir(dir)
 {
     set_pos(pos);
-    look_at(target);
+    right = glm::normalize(glm::cross(dir,world_up));
 }
 
 glm::mat4 Camera::get_view_matrix() {

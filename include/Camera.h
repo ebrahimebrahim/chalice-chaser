@@ -19,10 +19,10 @@ class Camera {
 
 public:
 
-    /** Initialize camera at given position, star
-     *  looking at given target, and with its "up" being set as given.
+    /** Initialize camera at given position,
+     *  looking in given direction, and with its "up" being set as given.
     */
-    Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
+    Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up);
 
     auto get_pos() const {return pos;}
     auto get_dir() const {return dir;}
