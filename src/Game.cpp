@@ -12,13 +12,14 @@
 
 int Game::run() {
 
+    // Make window, creating an opengl context
     window = std::make_unique<GameWindow>(1066, 600, "Garbanzo");
 
     // Generate level
     level = LevelGen::generate_level();
     level.print();
 
-    // Make walls, floor, and ceiling
+    // Make walls, floor, and ceiling, and place prize
     Wall * prototype_wall = new Wall(window.get());
     Floor * prototype_floor = new Floor(window.get(), 1.0f, 1.0f);
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) {
