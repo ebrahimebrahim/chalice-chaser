@@ -45,6 +45,7 @@ struct Tilemap {
     
     void set_start(const Olt & olt);
     bool is_start(const vec & location) const;
+    vec get_player_spawn_location() const {return middle_of_start_area;}
     
     bool is_treasure(const vec & location) const {return treasure_location==location;}
 
@@ -53,6 +54,7 @@ struct Tilemap {
 private:
     bool tiles[TILEMAP_SIZE][TILEMAP_SIZE]{};
     std::vector<vec> start_area;
+    vec middle_of_start_area{0,0};
 };
 
 /** Generate a tilemap.

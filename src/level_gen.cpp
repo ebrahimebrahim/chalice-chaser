@@ -42,6 +42,8 @@ char Tilemap::tile_to_char(const vec & loc) const {
     if (is_start(loc)){
         if (is_treasure(loc))
             return 'X'; // represents an error, shouldn't happen!
+        else if (loc==get_player_spawn_location())
+            return (open_space ? 'P' : 'X');
         else
             return (open_space ? '~' : 'X');
     }
@@ -54,6 +56,7 @@ char Tilemap::tile_to_char(const vec & loc) const {
 void Tilemap::set_start(const Olt & olt) {
     for (int i=0; i<olt.m; ++i)
         start_area.push_back(olt.x+i*olt.d);
+    middle_of_start_area = olt.x + (olt.m/2) * olt.d;
 }
 
 bool Tilemap::is_start(const vec & location) const {
