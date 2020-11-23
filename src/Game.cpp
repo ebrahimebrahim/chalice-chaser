@@ -12,18 +12,6 @@ int Game::run() {
 
     window = std::make_unique<GameWindow>(1066, 600, "Garbanzo");
 
-    // Create player
-    player = new Player();
-    entities.emplace_back(player);
-    player->pos = glm::vec3(0.0f,0.0f,0.0f);
-
-    // Initialize camera
-    camera = std::make_unique<Camera>(
-        player->pos, // position
-        glm::vec3(0.0f,0.0f,1.0f), // look direction
-        glm::vec3(0.0f,1.0f,0.0f)  // up direction
-    );
-
     // Generate level
     level = LevelGen::generate_level();
     level.print(); // DELETE this at some point. Will help to keep for testing.
@@ -47,11 +35,24 @@ int Game::run() {
             }
 
             if (level.is_start(location)) {
-                // TODO
+                // TODO: make the entrance/exit look special
             }
         }
     }
     delete prototype_wall;
+
+    // Create player
+    player = new Player();
+    entities.emplace_back(player);
+    const auto spawn_loc = level.get_player_spawn_location();
+    player->pos = glm::vec3(float(spawn_loc[0]), 0.0f, float(spawn_loc[1]));
+
+    // Initialize camera
+    camera = std::make_unique<Camera>(
+        player->pos, // position
+        glm::vec3(0.0f,0.0f,1.0f), // look direction
+        glm::vec3(0.0f,1.0f,0.0f)  // up direction
+    );
 
 
 
