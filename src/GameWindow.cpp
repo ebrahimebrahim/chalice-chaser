@@ -223,6 +223,11 @@ void GameWindow::set_object_model_matrix(int id, const glm::mat4 & model) {
     id_to_graphics_object[id]->set_model_matrix(model);
 }
 
+template <typename T>
+void GameWindow::set_uniform(ShaderChoice shader_choice, const char * name, T value){
+    shaders[shader_choice]->set_uniform(name,value);
+}
+
 
 GraphicsObjectBufferData::GraphicsObjectBufferData(const GraphicsData & graphics_data) :
     num_indices{graphics_data.num_indices},
