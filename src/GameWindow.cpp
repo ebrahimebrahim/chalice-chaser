@@ -94,6 +94,8 @@ GameWindow::GameWindow(int windowed_width, int windowed_height, const char * tit
     shaders[SHADER_DEFAULT] = new Shader("src/shader.vert", "src/shader.frag");
 
     calculate_projection_matrix();
+
+    glEnable(GL_DEPTH_TEST); 
 }
 
 GameWindow::GameWindow(GameWindow && src) {
