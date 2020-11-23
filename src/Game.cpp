@@ -69,7 +69,7 @@ int Game::run() {
             update_lag -= time_per_update;
         }
         
-        camera->update(player->pos, last_frame_mouse_delta);
+        camera->update(player->pos + glm::vec3(0.0f, player->head_height, 0.0f), last_frame_mouse_delta);
 
         render();
 
