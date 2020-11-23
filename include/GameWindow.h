@@ -26,10 +26,12 @@ class GameWindow {
     bool fullscreen{}; /** Whether we are currently in fullscreen mode */
     std::unordered_map<int,GraphicsObject*> id_to_graphics_object;
     
-    /** Shaders are actually owned by GameWindow
-     * We don't use a smart pointer because we want to carefully control order of deallocation of GameWindow's resources
+    /** Shaders are indeed owned by GameWindow.
+     * We don't use a smart pointer because we want to carefully control order of deallocation of GameWindow's resources.
+     * The first coordinate in this map is a `ShaderChoice`, but it is written as `int` because apparently enums are not hashable
+     * in older versions of the standard.
      */
-    std::unordered_map<ShaderChoice,Shader*> shaders;
+    std::unordered_map<int,Shader*> shaders;
 
     glm::mat4 projection_matrix; /** Perspective projection matrix. */
     glm::mat4 view_matrix; /** The matrix that transforms world coords to camera coords */
