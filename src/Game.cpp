@@ -18,7 +18,7 @@ int Game::run() {
     level = LevelGen::generate_level();
     level.print(); // DELETE this at some point. Will help to keep for testing.
 
-    // Make walls
+    // Make walls, floor, and ceiling
     Wall * prototype_wall = new Wall(window.get());
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) {
         for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) {
@@ -27,6 +27,14 @@ int Game::run() {
                 Wall * wall = new Wall(*prototype_wall);
                 wall->set_pos(glm::vec3(float(i), 0.0f, float(j)));
                 entities.emplace_back(wall);
+            }
+            else { // if floor
+                Floor * floor = new Floor(window.get(), 1.0f, 1.0f);
+                floor->set_pos(glm::vec3(float(i),0,float(j)));
+                entities.emplace_back(floor);
+                Floor * ceiling = new Floor(window.get(), 1.0f, 1.0f);
+                ceiling->set_pos(glm::vec3(float(i),Wall::wall_height,float(j)));
+                entities.emplace_back(ceiling);
             }
             
             if (level.is_treasure(location)) {
@@ -57,17 +65,6 @@ int Game::run() {
         entities.emplace_back(wall);
     }
     delete prototype_wall;
-
-    // Make floor
-    Floor * floor = new Floor(window.get(), float(LevelGen::TILEMAP_SIZE), float(LevelGen::TILEMAP_SIZE));
-    floor->set_pos(glm::vec3(0,0,0));
-    entities.emplace_back(floor);
-
-    // Make ceiling
-    Floor * ceiling = new Floor(window.get(), float(LevelGen::TILEMAP_SIZE), float(LevelGen::TILEMAP_SIZE));
-    ceiling->set_pos(glm::vec3(0,Wall::wall_height,0));
-    entities.emplace_back(ceiling);
-
 
 
     // Make player
