@@ -3,6 +3,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
+const float Wall::wall_height = 2.0;
+
 Wall::Wall(GameWindow * game_window) : GraphicalEntity(game_window) {
     add_self_to_game_window();
 }
@@ -10,7 +12,6 @@ Wall::Wall(GameWindow * game_window) : GraphicalEntity(game_window) {
 GraphicsData Wall::create_graphics_data() {
     GraphicsData d;
     d.num_vertices = 8;
-    const float wall_height = 2.0;
     GLfloat vertices[d.num_vertices][3] = {
         { 0.0f, 0.0f, 0.0f },
         { 0.0f, wall_height, 0.0f },

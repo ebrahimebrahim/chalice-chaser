@@ -60,7 +60,14 @@ int Game::run() {
 
     // Make floor
     Floor * floor = new Floor(window.get(), float(LevelGen::TILEMAP_SIZE), float(LevelGen::TILEMAP_SIZE));
+    floor->set_pos(glm::vec3(0,0,0));
     entities.emplace_back(floor);
+
+    // Make ceiling
+    Floor * ceiling = new Floor(window.get(), float(LevelGen::TILEMAP_SIZE), float(LevelGen::TILEMAP_SIZE));
+    ceiling->set_pos(glm::vec3(0,Wall::wall_height,0));
+    entities.emplace_back(ceiling);
+
 
 
     // Make player

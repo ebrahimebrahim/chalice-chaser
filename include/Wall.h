@@ -8,6 +8,8 @@ class Wall : public GraphicalEntity {
 public:
     Wall(GameWindow * game_window);
 
+    static const float wall_height;
+
     GraphicsData create_graphics_data() override;
     void update(double delta) override;
 };
