@@ -19,8 +19,11 @@ enum class ShaderChoice {DEFAULT};
 class GameWindow {
 
     GLFWwindow * window{};
-    int width{};
-    int height{};
+    int windowed_width{}; /** Width to be used in windowed mode */
+    int windowed_height{}; /** Height to be used in windowed mode */
+    GLFWmonitor * monitor{}; /** The primary monitor of the user */
+    const GLFWvidmode * video_mode{}; /** The video mode of the primary monitor, saved at the start so we can do "windowed fullscreen" */
+    bool fullscreen{}; /** Whether we are currently in fullscreen mode */
     std::unordered_map<int,GraphicsObject*> id_to_graphics_object;
     
     /** Shaders are actually owned by GameWindow
@@ -30,6 +33,9 @@ class GameWindow {
 
     glm::mat4 projection_matrix; /** Perspective projection matrix. */
     glm::mat4 view_matrix; /** The matrix that transforms world coords to camera coords */
+
+    void switch_fullscreen();
+    void calculate_projection_matrix(); /**Compute and set the matrix used for perspective projection*/
 
 
 public:
@@ -52,8 +58,8 @@ public:
      * See this for keys: https://www.glfw.org/docs/latest/group__keys.html */
     bool key_pressed(int key) {return glfwGetKey(window,key) == GLFW_PRESS;}
     
-    int get_width() const {return width;}
-    int get_height() const {return height;}
+    int get_width() const {return fullscreen? video_mode->width : windowed_width;}
+    int get_height() const {return fullscreen? video_mode->height : windowed_height;}
 
     /** Position of mouse cursor, updated regularly as polling occurs (updates on a glfwSetCursorPosCallback) */
     glm::vec2 cursor;

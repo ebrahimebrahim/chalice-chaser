@@ -10,7 +10,7 @@
 
 int Game::run() {
 
-    window = std::make_unique<GameWindow>(800, 600, "Garbanzo");
+    window = std::make_unique<GameWindow>(1066, 600, "Garbanzo");
 
 
     // Initialize camera

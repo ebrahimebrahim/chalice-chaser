@@ -12,8 +12,8 @@
 #include <glm/geometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-GameWindow::GameWindow(int width, int height, const char * title) :
-    width(width), height(height), cursor(width/2,height/2)
+GameWindow::GameWindow(int windowed_width, int windowed_height, const char * title) :
+    windowed_width(windowed_width), windowed_height(windowed_height)
 {
     if (!glfwInit())
         throw std::runtime_error("Unable to initialize GLFW");
@@ -31,32 +31,54 @@ GameWindow::GameWindow(int width, int height, const char * title) :
     // Need at least OpenGL version 3.3
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    window = glfwCreateWindow(width, height, title, NULL, NULL);
+
+
+    monitor = glfwGetPrimaryMonitor();
+    video_mode = glfwGetVideoMode(monitor);
+ 
+    glfwWindowHint(GLFW_RED_BITS, video_mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, video_mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, video_mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, video_mode->refreshRate);
+
+    fullscreen = true;
+    window = glfwCreateWindow(video_mode->width, video_mode->height, title, monitor, NULL);
     if (!window)
         throw std::runtime_error("GLFW is either unable to create a window or unable to create an opengl context");
     
     glfwMakeContextCurrent(window);
 
+    cursor = glm::vec2(video_mode->width/2, video_mode->height/2);
+
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
     glfwSwapInterval(1); // vsync
-    glViewport(0,0,width,height); // tell opengl how to scale its internal coords to window coords
+    glViewport(0,0,get_width(),get_height()); // tell opengl how to scale its internal coords to window coords
 
+    
     glfwSetFramebufferSizeCallback(window, 
         [](GLFWwindow* window, int width, int height) {
-            glViewport(0,0,width,height);
-        }
-    );
-
-
-    glfwSetKeyCallback(window,
-        [](GLFWwindow* window, int key, int scancode, int action, int mods){
-            if (key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE)
-                glfwSetWindowShouldClose(window,GLFW_TRUE);
+            glViewport(0,0,width, height);  
         }
     );
 
     glfwSetWindowUserPointer(window, this);
+
+    glfwSetKeyCallback(window,
+        [](GLFWwindow* window, int key, int scancode, int action, int mods){
+            if (action != GLFW_RELEASE) return;
+
+            switch(key) {
+                case GLFW_KEY_ESCAPE:
+                    glfwSetWindowShouldClose(window,GLFW_TRUE); return;
+                case GLFW_KEY_F:
+                    GameWindow * gw = static_cast<GameWindow*>(glfwGetWindowUserPointer(window));
+                    gw->switch_fullscreen();
+                    return;
+            }
+        }
+    );
+
 
     glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
     if (glfwRawMouseMotionSupported())
@@ -72,20 +94,20 @@ GameWindow::GameWindow(int width, int height, const char * title) :
 
     shaders[ShaderChoice::DEFAULT] = new Shader("src/shader.vert", "src/shader.frag");
 
-    set_projection_matrix( glm::perspective(glm::radians(45.0f),float(width)/float(height),0.1f,100.0f) );
+    calculate_projection_matrix();
 }
 
 GameWindow::GameWindow(GameWindow && src) {
-    width = src.width;
-    height = src.height;
+    windowed_width = src.windowed_width;
+    windowed_height = src.windowed_height;
     window = src.window;
     src.window = nullptr;
 }
 
 GameWindow & GameWindow::operator=(GameWindow && src) {
     if (&src == this) return *this;
-    width = src.width;
-    height = src.height;
+    windowed_width = src.windowed_width;
+    windowed_height = src.windowed_height;
     window = src.window;
     src.window = nullptr;
     return *this;
@@ -98,6 +120,24 @@ GameWindow::~GameWindow() {
         delete pair.second;
     glfwDestroyWindow(window);
     glfwTerminate();
+}
+
+void GameWindow::calculate_projection_matrix() {
+    set_projection_matrix( glm::perspective(glm::radians(45.0f),float(get_width())/float(get_height()),0.1f,100.0f) );
+}
+
+void GameWindow::switch_fullscreen() {
+    if (fullscreen) {
+        fullscreen = false;
+        glfwSetWindowMonitor(window, NULL, 200, 200, windowed_width, windowed_height, video_mode->refreshRate);
+        calculate_projection_matrix();
+        glfwRestoreWindow(window); // switching from windowed to fullscreen ends up maximized for some reason, so restore
+    }
+    else {
+        fullscreen = true;
+        glfwSetWindowMonitor(window, monitor, 0, 0, video_mode->width, video_mode->height, video_mode->refreshRate);
+        calculate_projection_matrix();
+    }
 }
 
 void GameWindow::add_object(int id, const GraphicsData & graphics_data) {
