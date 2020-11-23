@@ -12,19 +12,17 @@ int Game::run() {
 
     window = std::make_unique<GameWindow>(1066, 600, "Garbanzo");
 
-
-    // Initialize camera
-    camera = std::make_unique<Camera>(
-        glm::vec3(0.0f,0.0f,3.0f), // position
-        glm::vec3(0.0f,0.0f,0.0f), // look target
-        glm::vec3(0.0f,1.0f,0.0f)  // up direction
-    );
-
-
     // Create player
     player = new Player();
     entities.emplace_back(player);
-    player->pos = camera->get_pos();
+    player->pos = glm::vec3(0.0f,0.0f,3.0f);
+
+    // Initialize camera
+    camera = std::make_unique<Camera>(
+        player->pos, // position
+        glm::vec3(0.0f,0.0f,0.0f), // look target
+        glm::vec3(0.0f,1.0f,0.0f)  // up direction
+    );
 
     // Generate level
     level = LevelGen::generate_level();
