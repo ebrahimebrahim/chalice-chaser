@@ -92,7 +92,7 @@ GameWindow::GameWindow(int windowed_width, int windowed_height, const char * tit
         }
     );
 
-    shaders[ShaderChoice::DEFAULT] = new Shader("src/shader.vert", "src/shader.frag");
+    shaders[SHADER_DEFAULT] = new Shader("src/shader.vert", "src/shader.frag");
 
     calculate_projection_matrix();
 }

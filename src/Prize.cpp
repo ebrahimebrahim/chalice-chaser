@@ -21,7 +21,7 @@ GraphicsData Prize::create_graphics_data() {
     d.num_indices = 5;
     GLuint prize_indices[d.num_indices] = { 0,1,2,3,4 };
     d.indices = prize_indices;
-    d.shader_choice = ShaderChoice::DEFAULT;
+    d.shader_choice = ShaderChoice::SHADER_DEFAULT;
     d.draw_mode = GL_TRIANGLE_FAN;
     return d;
     

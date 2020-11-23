@@ -25,7 +25,7 @@ GraphicsData Wall::create_graphics_data() {
     d.num_indices = 10;
     GLuint indices[d.num_indices] = { 0,1,2,3,6,7,4,5,0,1 };
     d.indices = indices;
-    d.shader_choice = ShaderChoice::DEFAULT;
+    d.shader_choice = SHADER_DEFAULT;
     d.draw_mode = GL_TRIANGLE_STRIP;
     return d;
     
