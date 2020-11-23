@@ -16,10 +16,11 @@ int Game::run() {
 
     // Generate level
     level = LevelGen::generate_level();
-    level.print(); // DELETE this at some point. Will help to keep for testing.
+    level.print();
 
     // Make walls, floor, and ceiling
     Wall * prototype_wall = new Wall(window.get());
+    Floor * prototype_floor = new Floor(window.get(), 1.0f, 1.0f);
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) {
         for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) {
             auto location = LevelGen::vec(i,j);
@@ -29,10 +30,10 @@ int Game::run() {
                 entities.emplace_back(wall);
             }
             else { // if floor
-                Floor * floor = new Floor(window.get(), 1.0f, 1.0f);
+                Floor * floor = new Floor(*prototype_floor);
                 floor->set_pos(glm::vec3(float(i),0,float(j)));
                 entities.emplace_back(floor);
-                Floor * ceiling = new Floor(window.get(), 1.0f, 1.0f);
+                Floor * ceiling = new Floor(*prototype_floor);
                 ceiling->set_pos(glm::vec3(float(i),Wall::wall_height,float(j)));
                 entities.emplace_back(ceiling);
             }
@@ -65,6 +66,7 @@ int Game::run() {
         entities.emplace_back(wall);
     }
     delete prototype_wall;
+    delete prototype_floor;
 
 
     // Make player
