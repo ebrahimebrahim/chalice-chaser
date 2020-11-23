@@ -202,7 +202,7 @@ void GameWindow::set_view_matrix(const glm::mat4 & view) {
     view_matrix = view;
     for (auto & pair : shaders){
         pair.second->use();
-        pair.second->setUniform("view", view_matrix);
+        pair.second->set_uniform("view", view_matrix);
     }
 }
 
@@ -210,7 +210,7 @@ void GameWindow::set_projection_matrix(const glm::mat4 & projection) {
     projection_matrix = projection;
     for (auto & pair : shaders){
         pair.second->use();
-        pair.second->setUniform("projection", projection_matrix);
+        pair.second->set_uniform("projection", projection_matrix);
     }
 }
 
@@ -333,6 +333,6 @@ GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
 
 void GraphicsObject::draw() const {
     shader->use();
-    shader->setUniform("model",model_matrix);
+    shader->set_uniform("model",model_matrix);
     buffer_data->bind_vao_and_draw();
 }

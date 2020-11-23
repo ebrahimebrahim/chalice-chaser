@@ -99,9 +99,8 @@ void Shader::use() const {
   glUseProgram(shader_program_id);
 }
 
-// Note: setting uniform variables needs to be done AFTER glUseProgram on shader
-// So make sure to use "use" method above before doing this
-void Shader::setUniform(const char* name, const glm::mat4 & mat) const {
+
+GLint Shader::get_uniform_location(const char * name) const {
   if (!shader_program_id)
     throw std::runtime_error("Attempted to set a uniform in an uninitialized Shader");
   GLint location = glGetUniformLocation(shader_program_id,name);
@@ -110,5 +109,16 @@ void Shader::setUniform(const char* name, const glm::mat4 & mat) const {
     error_msg << "Error looking up a uniform variable: " << name;
     throw std::runtime_error(error_msg.str());
   }
-  glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(mat));
+  return location;
+}
+
+/** Note: setting uniform variables needs to be done AFTER glUseProgram on shader
+  So make sure to use "use" method above before doing this */
+void Shader::set_uniform(const char* name, const glm::mat4 & mat) const {
+  glUniformMatrix4fv(get_uniform_location(name),1,GL_FALSE,glm::value_ptr(mat));
+}
+
+void Shader::set_uniform(const char* name, const glm::vec3 & vec) const {
+  
+  glUniform3fv(get_uniform_location(name), 1, glm::value_ptr(vec));
 }

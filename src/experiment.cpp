@@ -160,9 +160,9 @@ int main() {
     glm::mat4 view = glm::lookAt(cameraPos,cameraTarget,glm::vec3(0.0,1.0,0.0));
 
     prize_shader->use(); // note that use needs to be called before setting uniforms!
-    prize_shader->setUniform("projection",projection);
+    prize_shader->set_uniform("projection",projection);
     walls_shader->use();
-    walls_shader->setUniform("projection",projection);
+    walls_shader->set_uniform("projection",projection);
 
     // -- End setting up camera, view, projection
 
@@ -263,15 +263,15 @@ int main() {
 
         // Render prize
         prize_shader->use();
-        prize_shader->setUniform("model",prize_model_mat);
-        prize_shader->setUniform("view",view);
+        prize_shader->set_uniform("model",prize_model_mat);
+        prize_shader->set_uniform("view",view);
         glBindVertexArray(prize_vao);
         glDrawElements(GL_TRIANGLE_FAN, prize_num_indices, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
         
         // Render walls
         walls_shader->use();
-        walls_shader->setUniform("model",walls_model_mat);
-        walls_shader->setUniform("view",view);
+        walls_shader->set_uniform("model",walls_model_mat);
+        walls_shader->set_uniform("view",view);
         glBindVertexArray(walls_vao);
         glDrawElements(GL_TRIANGLE_STRIP, walls_num_indices, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
