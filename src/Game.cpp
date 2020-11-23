@@ -3,6 +3,7 @@
 #include <Entity.h>
 #include <Prize.h>
 #include <Wall.h>
+#include <Floor.h>
 #include <Player.h>
 #include <Camera.h>
 
@@ -16,14 +17,13 @@ int Game::run() {
     // Generate level
     level = LevelGen::generate_level();
     level.print(); // DELETE this at some point. Will help to keep for testing.
+
+    // Make walls
     Wall * prototype_wall = new Wall(window.get());
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) {
         for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) {
             auto location = LevelGen::vec(i,j);
-            if (level.get_tile(location)) { // if floor
-                // TODO
-            }
-            else { // if wall
+            if (!level.get_tile(location)) { // if wall
                 Wall * wall = new Wall(*prototype_wall);
                 wall->set_pos(glm::vec3(float(i), 0.0f, float(j)));
                 entities.emplace_back(wall);
@@ -58,7 +58,12 @@ int Game::run() {
     }
     delete prototype_wall;
 
-    // Create player
+    // Make floor
+    Floor * floor = new Floor(window.get(), float(LevelGen::TILEMAP_SIZE), float(LevelGen::TILEMAP_SIZE));
+    entities.emplace_back(floor);
+
+
+    // Make player
     player = new Player();
     entities.emplace_back(player);
     const auto spawn_loc = level.get_player_spawn_location();
