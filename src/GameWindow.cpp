@@ -13,7 +13,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 GameWindow::GameWindow(int windowed_width, int windowed_height, const char * title) :
-    windowed_width(windowed_width), windowed_height(windowed_height)
+    windowed_width(windowed_width), windowed_height(windowed_height), cursor(0, 0)
 {
     if (!glfwInit())
         throw std::runtime_error("Unable to initialize GLFW");
@@ -48,7 +48,6 @@ GameWindow::GameWindow(int windowed_width, int windowed_height, const char * tit
     
     glfwMakeContextCurrent(window);
 
-    cursor = glm::vec2(video_mode->width/2, video_mode->height/2);
 
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 

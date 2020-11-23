@@ -6,7 +6,8 @@
 #include <Player.h>
 #include <Camera.h>
 
-#include <iostream> //DELETE
+#include <iostream> // DELETE
+#include <glm/gtx/string_cast.hpp>  // DELETE
 
 int Game::run() {
 
@@ -54,8 +55,8 @@ int Game::run() {
         glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
 
-
-
+    // Initial event poll to throw away starting cursor pos from event queue
+    window->poll_events();
 
     // Here's the actual game loop
     double update_lag = 0.0;
