@@ -11,7 +11,7 @@ class Player : public Entity {
 public:
     glm::vec3 pos{0.0f,0.0f,0.0f}; /** world coords of player's feet */
     const float head_height = 1.5f;
-    const float walk_speed = 6.0f; /** world coord units per second */
+    const float walk_speed = 10.0f; /** world coord units per second */
 
     void update(double delta) override;
     void draw(glm::vec3) const override {} // we don't draw anything for player
