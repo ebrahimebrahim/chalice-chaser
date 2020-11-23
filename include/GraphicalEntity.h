@@ -40,7 +40,7 @@ public:
 
     virtual GraphicsData create_graphics_data() = 0;
     
-    void draw() const override;
+    void draw(glm::vec3 player_position) const override;
 };
 
 #endif // GRAPHICAL_ENTITY_H

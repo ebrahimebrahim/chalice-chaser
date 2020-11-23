@@ -54,7 +54,7 @@ GraphicalEntity::~GraphicalEntity() {
     game_window->del_object(get_id());
 }
 
-void GraphicalEntity::draw() const {
+void GraphicalEntity::draw(glm::vec3 player_position) const {
     game_window->set_object_model_matrix(get_id(),model_matrix);
     game_window->draw(get_id());
 }

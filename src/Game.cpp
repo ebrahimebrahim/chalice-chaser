@@ -125,7 +125,7 @@ void Game::render() {
     window->set_view_matrix(camera->get_view_matrix());
 
     for (auto & entity : entities)
-        entity->draw();
+        entity->draw(player->pos);
 
     window->swap_buffers();
 }
