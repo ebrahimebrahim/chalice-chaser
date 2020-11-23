@@ -110,7 +110,9 @@ public:
     void set_object_model_matrix(int id, const glm::mat4 & model);
 
     template <typename T>
-    void set_uniform(ShaderChoice shader_choice, const char * name, T value);
+    void set_uniform(ShaderChoice shader_choice, const char * name, const T & value) {
+        shaders[shader_choice]->set_uniform(name,value);
+    }
 
 };
 
