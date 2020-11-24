@@ -1,4 +1,5 @@
 #include <Player.h>
+#include <Prize.h>
 
 Player::Player() {
     collision_box = CollisionBox(
@@ -13,6 +14,7 @@ void Player::update(double delta){
         pos += float(walk_speed * delta) * move_dir;
 }
 
+
 void Player::resolve_collisions() {
     if (!walking) return;
     for (const auto e : collides_with_list) {
@@ -22,19 +24,27 @@ void Player::resolve_collisions() {
             auto collision_data_opt = collision_box.value().collision_with(get_pos(), e->get_pos(), e->get_collision_box().value());
 
             if (collision_data_opt){ // if there was a collision
-                auto & n = collision_data_opt->normal; // collision normal, pointing in direction we want to avoid
-                auto & d = collision_data_opt->distance; // distance to back out if we want to no longer be colliding
-                float dot = glm::dot(move_dir, n);
-                if (dot > 0) {
-                    // Kill the component of move_dir that points into collision plane, then renormalize
-                    move_dir = move_dir - dot * n;
-                }
 
-                // Make progress towards getting out of the collision situation
-                pos -= 0.5f*d*n;
-                // (without this, it's easy for player to get locked out of both axes of motion by ending up in several very small collisions
-                // e.g. think about what happens as you rub against a wall which is made of many collision cubes)
-                // (if we do `pos -= d*n` then you get bouncing)
+                if (!has_prize && dynamic_cast<const Prize*>(e)) { // if it's with prize, we grab the prize
+                    has_prize = true;
+                }
+                else { // if collision is with anything else
+
+                    auto & n = collision_data_opt->normal; // collision normal, pointing in direction we want to avoid
+                    auto & d = collision_data_opt->distance; // distance to back out if we want to no longer be colliding
+                    float dot = glm::dot(move_dir, n);
+                    if (dot > 0) {
+                        // Kill the component of move_dir that points into collision plane, then renormalize
+                        move_dir = move_dir - dot * n;
+                    }
+
+                    // Make progress towards getting out of the collision situation
+                    pos -= 0.5f*d*n;
+                    // (without this, it's easy for player to get locked out of both axes of motion by ending up in several very small collisions
+                    // e.g. think about what happens as you rub against a wall which is made of many collision cubes)
+                    // (if we do `pos -= d*n` then you get bouncing)
+                
+                }
 
             }
         }

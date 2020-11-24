@@ -46,6 +46,7 @@ int Game::run() {
             if (level.is_treasure(location)) {
                 Prize * prize = new Prize(window.get());
                 prize->set_pos(glm::vec3(float(i)+0.5, 1.0f, float(j)+0.5));
+                player->collides_with(prize);
                 entities.emplace_back(prize);
             }
 

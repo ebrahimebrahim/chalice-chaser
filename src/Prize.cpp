@@ -5,6 +5,10 @@
 
 Prize::Prize(GameWindow * game_window) : GraphicalEntity(game_window) {
     add_self_to_game_window();
+    collision_box = CollisionBox(
+        glm::vec3{0.0f, 0.0f, 0.0f}, // center
+        glm::vec3{0.8f, 1.0f, 0.8f}  // extents
+    );
 }
 
 GraphicsData Prize::create_graphics_data() {

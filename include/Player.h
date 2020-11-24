@@ -14,6 +14,9 @@ class Player : public Entity {
      */
     glm::vec3 move_dir{0.0f,0.0f,0.0f};
 
+    bool has_prize{false};
+    
+
 public:
     
     Player();
