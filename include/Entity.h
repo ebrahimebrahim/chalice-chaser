@@ -13,6 +13,7 @@ class Entity {
 protected:
     glm::vec3 pos{0.0f,0.0f,0.0f};
     std::vector<const Entity *> collides_with_list; /** what other entities this entity collides with */
+    std::optional<CollisionBox> collision_box;
 
 public:
     Entity() {id = next_id++;}
@@ -26,8 +27,7 @@ public:
 
     auto get_pos() const {return pos;}
     virtual void set_pos(const glm::vec3 new_pos) {pos=new_pos;}
-
-    std::optional<CollisionBox> collision_box;
+    const auto & get_collision_box() const {return collision_box;}
 };
 
 #endif // ENTITY_H

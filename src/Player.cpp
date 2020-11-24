@@ -7,9 +7,23 @@ void Player::update(double delta){
 }
 
 void Player::resolve_collisions() {
+    if (!walking) return;
     for (const auto e : collides_with_list) {
-        if (e->collision_box) {
-            // TODO: check for and resolve collision with e->collision_box.
+        if (e->get_collision_box()) {
+
+            // either null_opt or collision normal
+            auto n_opt = collision_box.value().collision_with(get_pos(), e->get_pos(), e->get_collision_box().value());
+
+            if (n_opt){ // if there was a collision
+                auto & n = *n_opt; // collision normal, pointing in direction we want to avoid
+                float dot = glm::dot(move_dir, n);
+                if (dot > 0) {
+                    // Kill the component of move_dir that points into collision plane, then renormalize
+                    move_dir = move_dir - dot * n;
+                    if (move_dir.x != 0.0f || move_dir.y != 0.0f || move_dir.z != 0.0f)
+                        move_dir = glm::normalize(move_dir);
+                }
+            }
         }
     }
 }
