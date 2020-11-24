@@ -92,10 +92,22 @@ int Game::run() {
         
         while (update_lag >= time_per_update) {
             // Update game state by one time_per_update
+
+            // First resolve all collisions
             for (auto & entity : entities)
                 entity->resolve_collisions();
+
+            // Update all entities
             for (auto & entity : entities)
                 entity->update(time_per_update);
+
+            // Delete entities that got marked for deletion
+            for (auto iter = entities.begin(); iter!=entities.end(); ){
+                if ((*iter)->marked_for_deletion)
+                    iter = entities.erase(iter); // It's a unique_ptr, so the entity will get deleted when the vector drops it.
+                else
+                    ++iter;
+            }
             update_lag -= time_per_update;
         }
         

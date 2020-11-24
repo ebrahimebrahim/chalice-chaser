@@ -27,6 +27,7 @@ void Player::resolve_collisions() {
 
                 if (!has_prize && dynamic_cast<const Prize*>(e)) { // if it's with prize, we grab the prize
                     has_prize = true;
+                    e->mark_for_deletion();
                 }
                 else { // if collision is with anything else
 
