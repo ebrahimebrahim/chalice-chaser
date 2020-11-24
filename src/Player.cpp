@@ -30,7 +30,11 @@ void Player::resolve_collisions() {
                     move_dir = move_dir - dot * n;
                 }
 
+                // Make progress towards getting out of the collision situation
                 pos -= 0.5f*d*n;
+                // (without this, it's easy for player to get locked out of both axes of motion by ending up in several very small collisions
+                // e.g. think about what happens as you rub against a wall which is made of many collision cubes)
+                // (if we do `pos -= d*n` then you get bouncing)
 
             }
         }
