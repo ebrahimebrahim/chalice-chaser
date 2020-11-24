@@ -21,14 +21,12 @@ class GraphicalEntity : public Entity {
     GameWindow * game_window; /** handle to game window, non-owned */
     glm::mat4 model_matrix;
     glm::mat4 model_matrix_without_translation;
-    glm::vec3 pos{0.0f, 0.0f, 0.0f};
     void update_model_matrix(); // Update the model matrix by combining `pos` and `model_matrix_without_translation` and carrying out the translation
 protected:
     void add_self_to_game_window();
 public:
     auto get_model_matrix() const {return model_matrix;}
-    auto get_pos() const {return pos;}
-    void set_pos(const glm::vec3 new_pos);
+    void set_pos(const glm::vec3 new_pos) override;
     void rotate(float angle, glm::vec3 axis);
 
     GraphicalEntity(GameWindow * game_window);

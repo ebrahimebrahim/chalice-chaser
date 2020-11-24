@@ -23,7 +23,7 @@ int Game::run() {
     player = new Player();
     entities.emplace_back(player);
     const auto spawn_loc = level.get_player_spawn_location();
-    player->pos = glm::vec3(float(spawn_loc[0]), 0.0f, float(spawn_loc[1]));
+    player->set_pos( glm::vec3(float(spawn_loc[0]), 0.0f, float(spawn_loc[1])) );
 
     // Make walls, floor, and ceiling, and place prize
     Wall * prototype_wall = new Wall(window.get());
@@ -78,7 +78,7 @@ int Game::run() {
 
     // Initialize camera
     camera = std::make_unique<Camera>(
-        player->pos, // position
+        player->get_pos(), // position
         glm::vec3(0.0f,0.0f,1.0f), // look direction
         glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
@@ -103,7 +103,7 @@ int Game::run() {
             update_lag -= time_per_update;
         }
         
-        camera->update(player->pos + glm::vec3(0.0f, player->head_height, 0.0f), last_frame_mouse_delta);
+        camera->update(player->get_pos() + glm::vec3(0.0f, player->head_height, 0.0f), last_frame_mouse_delta);
 
         render();
 
@@ -153,7 +153,7 @@ void Game::render() {
     window->set_view_matrix(camera->get_view_matrix());
 
     for (auto & entity : entities)
-        entity->draw(player->pos);
+        entity->draw(player->get_pos());
 
     window->swap_buffers();
 }

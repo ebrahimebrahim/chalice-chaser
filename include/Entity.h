@@ -11,6 +11,7 @@ class Entity {
     int id;
 
 protected:
+    glm::vec3 pos{0.0f,0.0f,0.0f};
     std::vector<const Entity *> collides_with_list; /** what other entities this entity collides with */
 
 public:
@@ -22,6 +23,9 @@ public:
     virtual void resolve_collisions() {} /** what to do when there is a collision */
 
     void collides_with(Entity * e) {collides_with_list.push_back(e);}
+
+    auto get_pos() const {return pos;}
+    virtual void set_pos(const glm::vec3 new_pos) {pos=new_pos;}
 
     std::optional<CollisionBox> collision_box;
 };

@@ -9,8 +9,7 @@ class Player : public Entity {
     bool walking = false; /** player movement state, intended to be set on each frame by some outside input handler */
     glm::vec3 move_dir{0.0f,0.0f,0.0f}; /** current player movement direction vector, intended to be set on each frame by some outside input handler */
 public:
-    glm::vec3 pos{0.0f,0.0f,0.0f}; /** world coords of player's feet */
-    const float head_height = 1.5f;
+    const float head_height = 1.5f; /** The position of a player is the position of the player's feet. */
     const float walk_speed = 10.0f; /** world coord units per second */
 
     void update(double delta) override;
