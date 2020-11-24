@@ -19,6 +19,12 @@ int Game::run() {
     level = LevelGen::generate_level();
     level.print();
 
+    // Make player
+    player = new Player();
+    entities.emplace_back(player);
+    const auto spawn_loc = level.get_player_spawn_location();
+    player->pos = glm::vec3(float(spawn_loc[0]), 0.0f, float(spawn_loc[1]));
+
     // Make walls, floor, and ceiling, and place prize
     Wall * prototype_wall = new Wall(window.get());
     Floor * prototype_floor = new Floor(window.get(), 1.0f, 1.0f);
@@ -28,6 +34,7 @@ int Game::run() {
             if (!level.get_tile(location)) { // if wall
                 Wall * wall = new Wall(*prototype_wall);
                 wall->set_pos(glm::vec3(float(i), 0.0f, float(j)));
+                player->collides_with(wall);
                 entities.emplace_back(wall);
             }
             else { // if floor
@@ -68,13 +75,6 @@ int Game::run() {
     }
     delete prototype_wall;
     delete prototype_floor;
-
-
-    // Make player
-    player = new Player();
-    entities.emplace_back(player);
-    const auto spawn_loc = level.get_player_spawn_location();
-    player->pos = glm::vec3(float(spawn_loc[0]), 0.0f, float(spawn_loc[1]));
 
     // Initialize camera
     camera = std::make_unique<Camera>(

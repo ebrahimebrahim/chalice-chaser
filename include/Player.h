@@ -15,6 +15,7 @@ public:
 
     void update(double delta) override;
     void draw(glm::vec3) const override {} // we don't draw anything for player
+    void resolve_collisions() override;
 
     /** `dir` should be a unit vector, otherwise it will mess with player's speed.
      *  (If you want to mess with speed see member variable `walk_speed`.) */

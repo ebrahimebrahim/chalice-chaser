@@ -5,3 +5,11 @@ void Player::update(double delta){
     if (walking)
         pos += float(walk_speed * delta) * move_dir;
 }
+
+void Player::resolve_collisions() {
+    for (const auto e : collides_with_list) {
+        if (e->collision_box) {
+            // TODO: check for and resolve collision with e->collision_box.
+        }
+    }
+}
