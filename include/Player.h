@@ -20,7 +20,7 @@ public:
 
     const float head_height = 1.5f; /** The position of a player is the position of the player's feet. */
     const float walk_speed = 10.0f; /** world coord units per second */
-    const float girth = 0.4f;
+    const float girth = 0.2f;
 
     void update(double delta) override;
     void draw(glm::vec3) const override {} // we don't draw anything for player

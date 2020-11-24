@@ -7,6 +7,7 @@
 #include <Entity.h>
 #include <Camera.h>
 #include <Player.h>
+#include <Wall.h>
 #include <level_gen.h>
 
 /**
@@ -32,6 +33,12 @@ class Game {
     std::unique_ptr<Camera> camera;
     Player * player{}; /** handle to player, which is a regular entity that should be in the std::vector of entities */
     LevelGen::Tilemap level;
+
+    /**Make a wall using the prototype, place it at the specified position, make player collide with it, and add it to the list of entities.
+     * Note that `Game::player` *must* be initialized before this is used.
+     * The purpose of the prototype is to copy it so that opengl geometry data can be shared among wall instances.
+    */
+    void place_wall(const glm::vec3 & pos, Wall * prototype_wall);
 
 public:
     /** Run the game, returning return code on exit. 0 means no errors. */

@@ -32,10 +32,7 @@ int Game::run() {
         for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) {
             auto location = LevelGen::vec(i,j);
             if (!level.get_tile(location)) { // if wall
-                Wall * wall = new Wall(*prototype_wall);
-                wall->set_pos(glm::vec3(float(i), 0.0f, float(j)));
-                player->collides_with(wall);
-                entities.emplace_back(wall);
+                place_wall(glm::vec3(float(i), 0.0f, float(j)), prototype_wall);
             }
             else { // if floor
                 Floor * floor = new Floor(*prototype_floor);
@@ -58,14 +55,8 @@ int Game::run() {
         }
     }
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) { // outside boudary walls front and back
-        Wall * wall = new Wall(*prototype_wall);
-        wall->set_pos(glm::vec3(float(i), 0.0f, -1.0f));
-        player->collides_with(wall);
-        entities.emplace_back(wall);
-        wall = new Wall(*prototype_wall);
-        wall->set_pos(glm::vec3(float(i), 0.0f, float(LevelGen::TILEMAP_SIZE)));
-        player->collides_with(wall);
-        entities.emplace_back(wall);
+        place_wall(glm::vec3(float(i), 0.0f, -1.0f), prototype_wall);
+        place_wall(glm::vec3(float(i), 0.0f, float(LevelGen::TILEMAP_SIZE)), prototype_wall);
     }
     for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) { // outside boudary walls left and right
         Wall * wall = new Wall(*prototype_wall);
@@ -160,4 +151,12 @@ void Game::render() {
         entity->draw(player->get_pos());
 
     window->swap_buffers();
+}
+
+
+void Game::place_wall(const glm::vec3 & pos, Wall * prototype_wall) {
+    Wall * wall = new Wall(*prototype_wall);
+    wall->set_pos(glm::vec3(pos));
+    player->collides_with(wall);
+    entities.emplace_back(wall);
 }
