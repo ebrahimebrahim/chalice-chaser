@@ -4,6 +4,15 @@
 #include <glm/glm.hpp>
 #include <optional>
 
+struct CollisionData {
+
+    /** a vector normal to the collision plane, pointing towards the "other". guaranteed to be a unit vector. */
+    glm::vec3 normal{0,0,0};
+
+    /** the distance to back away in direction `normal` for there to no longer be a collision. */
+    float distance;
+};
+
 /** An axis-aligned cuboid the represents a collision region in object-local coords. */
 class CollisionBox {
     
@@ -16,7 +25,7 @@ public:
         center(center), extents(extents)
         {}
     
-    /**Determines if there is a collison and if so returns a vector normal to the collision plane.
+    /**Determines if there is a collison and if so returns data including a vector normal to the collision plane.
      * The normal vector points towards the `other_box`, in the direction that ought to be avoided
      * by the owner of the present `CollisionBox`.
      * `my_pos` is the world position of the object that owns this `CollisionBox`.
@@ -24,7 +33,7 @@ public:
      * 
      * The normal vector is guaranteed to be a unit vector.
     */
-    std::optional<glm::vec3> collision_with(glm::vec3 my_pos, glm::vec3 other_pos, CollisionBox other_box);
+    std::optional<CollisionData> collision_with(glm::vec3 my_pos, glm::vec3 other_pos, CollisionBox other_box);
     
     
 

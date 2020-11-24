@@ -5,7 +5,7 @@ const glm::vec3 Y_DIR{0.0f, 1.0f, 0.0f};
 const glm::vec3 Z_DIR{0.0f, 0.0f, 1.0f};
 const glm::vec3 UNIT_VECTOR[3] = {X_DIR, Y_DIR, Z_DIR};
 
-std::optional<glm::vec3> CollisionBox::collision_with(glm::vec3 my_pos, glm::vec3 other_pos, CollisionBox other_box) {
+std::optional<CollisionData> CollisionBox::collision_with(glm::vec3 my_pos, glm::vec3 other_pos, CollisionBox other_box) {
     
     // displacement vector from my center to other center, in the world coords
     glm::vec3 d = other_pos + other_box.center - (my_pos + center);
@@ -23,7 +23,11 @@ std::optional<glm::vec3> CollisionBox::collision_with(glm::vec3 my_pos, glm::vec
         else { // if z direction has smallest overlap
             dir_of_smallest_overlap = 2;
         }
-        return glm::sign(d[dir_of_smallest_overlap]) * UNIT_VECTOR[dir_of_smallest_overlap];
+
+        return CollisionData{
+            glm::sign(d[dir_of_smallest_overlap]) * UNIT_VECTOR[dir_of_smallest_overlap], // collision normal
+            overlaps[dir_of_smallest_overlap] // collision distance
+        };
     }
  
     return std::nullopt; // no collision

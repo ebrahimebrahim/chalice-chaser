@@ -18,16 +18,20 @@ void Player::resolve_collisions() {
     for (const auto e : collides_with_list) {
         if (e->get_collision_box()) {
             
-            // either null_opt or collision normal
-            auto n_opt = collision_box.value().collision_with(get_pos(), e->get_pos(), e->get_collision_box().value());
+            // either null_opt or CollisionData
+            auto collision_data_opt = collision_box.value().collision_with(get_pos(), e->get_pos(), e->get_collision_box().value());
 
-            if (n_opt){ // if there was a collision
-                auto & n = *n_opt; // collision normal, pointing in direction we want to avoid
+            if (collision_data_opt){ // if there was a collision
+                auto & n = collision_data_opt->normal; // collision normal, pointing in direction we want to avoid
+                auto & d = collision_data_opt->distance; // distance to back out if we want to no longer be colliding
                 float dot = glm::dot(move_dir, n);
                 if (dot > 0) {
                     // Kill the component of move_dir that points into collision plane, then renormalize
                     move_dir = move_dir - dot * n;
                 }
+
+                pos -= 0.5f*d*n;
+
             }
         }
     }

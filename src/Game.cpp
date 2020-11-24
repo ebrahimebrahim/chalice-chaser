@@ -23,7 +23,7 @@ int Game::run() {
     player = new Player();
     entities.emplace_back(player);
     const auto spawn_loc = level.get_player_spawn_location();
-    player->set_pos( glm::vec3(float(spawn_loc[0]), 0.0f, float(spawn_loc[1])) );
+    player->set_pos( glm::vec3(float(spawn_loc[0])+0.5f, 0.0f, float(spawn_loc[1])+0.5f) );
 
     // Make walls, floor, and ceiling, and place prize
     Wall * prototype_wall = new Wall(window.get());
