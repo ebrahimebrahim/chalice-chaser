@@ -8,7 +8,11 @@
 class Player : public Entity {
 
     bool walking = false; /** player movement state, intended to be set on each frame by some outside input handler */
-    glm::vec3 move_dir{0.0f,0.0f,0.0f}; /** current player movement direction vector, intended to be set on each frame by some outside input handler */
+    
+    /** Current player movement direction vector, intended to be set on each frame by some outside input handler.
+     *  It is typically a unit vector, but `resolve_collisions` can make it smaller.
+     */
+    glm::vec3 move_dir{0.0f,0.0f,0.0f};
 
 public:
     

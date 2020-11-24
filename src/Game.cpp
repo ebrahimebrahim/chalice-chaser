@@ -60,17 +60,21 @@ int Game::run() {
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) { // outside boudary walls front and back
         Wall * wall = new Wall(*prototype_wall);
         wall->set_pos(glm::vec3(float(i), 0.0f, -1.0f));
+        player->collides_with(wall);
         entities.emplace_back(wall);
         wall = new Wall(*prototype_wall);
         wall->set_pos(glm::vec3(float(i), 0.0f, float(LevelGen::TILEMAP_SIZE)));
+        player->collides_with(wall);
         entities.emplace_back(wall);
     }
     for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) { // outside boudary walls left and right
         Wall * wall = new Wall(*prototype_wall);
         wall->set_pos(glm::vec3(-1.0, 0.0f, float(j)));
+        player->collides_with(wall);
         entities.emplace_back(wall);
         wall = new Wall(*prototype_wall);
         wall->set_pos(glm::vec3(float(LevelGen::TILEMAP_SIZE), 0.0f, float(j)));
+        player->collides_with(wall);
         entities.emplace_back(wall);
     }
     delete prototype_wall;

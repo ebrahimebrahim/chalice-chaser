@@ -27,8 +27,6 @@ void Player::resolve_collisions() {
                 if (dot > 0) {
                     // Kill the component of move_dir that points into collision plane, then renormalize
                     move_dir = move_dir - dot * n;
-                    if (move_dir.x != 0.0f || move_dir.y != 0.0f || move_dir.z != 0.0f)
-                        move_dir = glm::normalize(move_dir);
                 }
             }
         }
