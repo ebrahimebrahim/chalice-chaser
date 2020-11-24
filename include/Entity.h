@@ -13,6 +13,7 @@ public:
     int get_id() const {return id;}
     virtual void update(double delta) = 0; /** delta is the time step of the update in seconds */
     virtual void draw(glm::vec3 player_position) const = 0;
+    virtual void resolve_collisions() {}
 };
 
 #endif // ENTITY_H

@@ -18,9 +18,6 @@ class Game {
     /** Handle user input in the game loop */
     void handle_input();
 
-    /** Update game state by one time_per_update */
-    void update();
-
     /** Render game state into framebuffer and swap buffers */
     void render();
     

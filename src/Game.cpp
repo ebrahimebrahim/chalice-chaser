@@ -95,7 +95,11 @@ int Game::run() {
         handle_input();
         
         while (update_lag >= time_per_update) {
-            update();
+            // Update game state by one time_per_update
+            for (auto & entity : entities)
+                entity->resolve_collisions();
+            for (auto & entity : entities)
+                entity->update(time_per_update);
             update_lag -= time_per_update;
         }
         
@@ -141,10 +145,6 @@ void Game::handle_input() {
 }
 
 
-void Game::update() {
-    for (auto & entity : entities)
-        entity->update(time_per_update);
-}
 
 void Game::render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
