@@ -16,6 +16,7 @@ void GraphicalEntity::add_self_to_game_window() {
 }
 
 GraphicalEntity::GraphicalEntity(const GraphicalEntity & src) : 
+    Entity(src),
     game_window(src.game_window),
     model_matrix{src.model_matrix},
     model_matrix_without_translation{src.model_matrix_without_translation}
@@ -25,6 +26,7 @@ GraphicalEntity::GraphicalEntity(const GraphicalEntity & src) :
 
 GraphicalEntity & GraphicalEntity::operator=(const GraphicalEntity & src) {
     if (&src==this) return *this;
+    Entity::operator=(src);
     game_window = src.game_window;
     model_matrix = src.model_matrix;
     model_matrix_without_translation = src.model_matrix_without_translation;
@@ -33,6 +35,7 @@ GraphicalEntity & GraphicalEntity::operator=(const GraphicalEntity & src) {
 }
 
 GraphicalEntity::GraphicalEntity(GraphicalEntity && src) :
+    Entity(std::move(src)),
     game_window(src.game_window),
     model_matrix{src.model_matrix},
     model_matrix_without_translation{src.model_matrix_without_translation}
@@ -43,6 +46,7 @@ GraphicalEntity::GraphicalEntity(GraphicalEntity && src) :
 
 GraphicalEntity & GraphicalEntity::operator=(GraphicalEntity && src) {
     if (&src==this) return *this;
+    Entity::operator=(std::move(src));
     game_window = src.game_window;
     model_matrix = src.model_matrix;
     model_matrix_without_translation = src.model_matrix_without_translation;
