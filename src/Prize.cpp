@@ -73,9 +73,9 @@ void make_chalice_mesh(std::vector<GLfloat> & vertices, std::vector<GLuint> & in
 
     // (1a) chalice is made of cup, handle, and base. this is cup.
 
-    spline.push_back({ float_dist(0.2,0.4)(gen) , float_dist(0.4,0.6)(gen) }); // cup top
-    spline.push_back({ float_dist(0.2,0.7)(gen) , float_dist(0.2,0.4)(gen) }); // cup mid
-    spline.push_back({ float_dist(0.2,0.4)(gen) , 0.0 }); // cup bottom
+    spline.push_back({ float_dist(0.15,0.35)(gen) , float_dist(0.4,0.6)(gen) }); // cup top
+    spline.push_back({ float_dist(0.2,0.45)(gen) , float_dist(0.2,0.4)(gen) }); // cup mid
+    spline.push_back({ float_dist(0.15,0.25)(gen) , 0.0 }); // cup bottom
 
     // (1b) handle
     const int n_handle_segs = int_dist(3,10)(gen);
@@ -86,7 +86,7 @@ void make_chalice_mesh(std::vector<GLfloat> & vertices, std::vector<GLuint> & in
 
     // (1c) base
 
-    spline.push_back( { float_dist(0.4,0.6)(gen) , float_dist(-0.6,-0.5)(gen) } );
+    spline.push_back( { float_dist(0.4,0.45)(gen) , float_dist(-0.6,-0.5)(gen) } );
     
 
     // (2) make mesh using spline, in "lathe" style
