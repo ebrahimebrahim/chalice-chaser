@@ -18,11 +18,11 @@ struct GraphicsData;
  * Moving also works.
 */
 class GraphicalEntity : public Entity {
-    GameWindow * game_window; /** handle to game window, non-owned */
     glm::mat4 model_matrix;
     glm::mat4 model_matrix_without_translation;
     void update_model_matrix(); // Update the model matrix by combining `pos` and `model_matrix_without_translation` and carrying out the translation
 protected:
+    GameWindow * game_window; /** handle to game window, non-owned */
     void add_self_to_game_window();
 public:
     auto get_model_matrix() const {return model_matrix;}
@@ -38,7 +38,7 @@ public:
 
     virtual GraphicsData create_graphics_data() = 0;
     
-    void draw(glm::vec3 player_position) const override;
+    virtual void draw(glm::vec3 player_position) const override;
 };
 
 #endif // GRAPHICAL_ENTITY_H

@@ -93,6 +93,7 @@ GameWindow::GameWindow(int windowed_width, int windowed_height, const char * tit
 
     shaders[SHADER_DEFAULT] = new Shader("src/shader.vert", "src/shader.frag");
     shaders[SHADER_HUD] = new Shader("src/hud_shader.vert", "src/hud_shader.frag");
+    shaders[SHADER_PORTAL] = new Shader("src/portal_shader.vert", "src/portal_shader.frag");
 
     calculate_projection_matrix();
 
@@ -205,12 +206,16 @@ void GameWindow::set_view_matrix(const glm::mat4 & view) {
     view_matrix = view;
     shaders[SHADER_DEFAULT]->use();
     shaders[SHADER_DEFAULT]->set_uniform("view", view_matrix);
+    shaders[SHADER_PORTAL]->use();
+    shaders[SHADER_PORTAL]->set_uniform("view", view_matrix);
 }
 
 void GameWindow::set_projection_matrix(const glm::mat4 & projection) {
     projection_matrix = projection;
     shaders[SHADER_DEFAULT]->use();
     shaders[SHADER_DEFAULT]->set_uniform("projection", projection_matrix);
+    shaders[SHADER_PORTAL]->use();
+    shaders[SHADER_PORTAL]->set_uniform("projection", projection_matrix);
 }
 
 void GameWindow::set_object_model_matrix(int id, const glm::mat4 & model) {

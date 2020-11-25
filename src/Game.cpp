@@ -4,6 +4,7 @@
 #include <Prize.h>
 #include <Wall.h>
 #include <Floor.h>
+#include <Portal.h>
 #include <Player.h>
 #include <Camera.h>
 #include <Hud.h>
@@ -29,6 +30,7 @@ int Game::run() {
     // Make walls, floor, and ceiling, and place prize
     Wall * prototype_wall = new Wall(window.get());
     Floor * prototype_floor = new Floor(window.get(), 1.0f, 1.0f);
+    Portal * prototype_portal = new Portal(window.get());
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) {
         for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) {
             auto location = LevelGen::vec(i,j);
@@ -52,7 +54,9 @@ int Game::run() {
             }
 
             if (level.is_start(location)) {
-                // TODO: make the entrance/exit look special
+                Portal * portal = new Portal(*prototype_portal);
+                portal->set_pos(glm::vec3(float(i),0.0f,float(j)));
+                entities.emplace_back(portal);
             }
         }
     }
@@ -72,6 +76,7 @@ int Game::run() {
     }
     delete prototype_wall;
     delete prototype_floor;
+    delete prototype_portal;
 
     // Create HUD
     hud = std::make_unique<Hud>(window.get(), player);
