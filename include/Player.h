@@ -14,7 +14,6 @@ class Player : public Entity {
      */
     glm::vec3 move_dir{0.0f,0.0f,0.0f};
 
-    bool has_prize{false};
     
 
 public:
@@ -33,6 +32,8 @@ public:
      *  (If you want to mess with speed see member variable `walk_speed`.) */
     void set_walking(glm::vec3 dir) {walking=true; move_dir=dir;}
     void set_not_walking() {walking=false;}
+    
+    bool has_prize{false};
 };
 
 #endif // PLAYER_H

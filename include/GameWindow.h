@@ -11,7 +11,7 @@
 
 class GraphicsObject;
 struct GraphicsData;
-enum ShaderChoice {SHADER_DEFAULT};
+enum ShaderChoice {SHADER_DEFAULT, SHADER_HUD};
 
 /**
  *  Holds a GLFW window and associated OpenGL context

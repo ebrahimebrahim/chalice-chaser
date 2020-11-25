@@ -6,6 +6,7 @@
 #include <Floor.h>
 #include <Player.h>
 #include <Camera.h>
+#include <Hud.h>
 
 #include <iostream> // DELETE
 #include <glm/gtx/string_cast.hpp>  // DELETE
@@ -71,6 +72,10 @@ int Game::run() {
     }
     delete prototype_wall;
     delete prototype_floor;
+
+    // Create HUD; this needs to be drawn last I think?
+    Hud * hud = new Hud(window.get(), player);
+    entities.emplace_back(hud);
 
     // Initialize camera
     camera = std::make_unique<Camera>(
