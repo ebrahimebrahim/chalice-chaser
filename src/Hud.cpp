@@ -2,6 +2,7 @@
 #include <GameWindow.h>
 #include <Player.h>
 #include <glm/gtx/transform.hpp>
+#include <Prize.h>
 
 void Hud::update() {
     if (!player_has_prize && player->has_prize){
@@ -18,20 +19,12 @@ void Hud::draw() const {
 
 
 PrizeHud::PrizeHud(GameWindow * window) : Entity(), game_window(window) {
-    GraphicsData d;
-    d.vertices = { // TODO get this from the same source as Prize.cpp, instead of duplicating vertex data.
-        0.0f, 0.0f, 0.0f , // center of fan
-        -0.3f, -0.3f, -0.3f ,
-        0.3f, -0.3f, -0.3f ,
-        0.3f, -0.3f, 0.3f ,
-        -0.3f, -0.3f, 0.3f ,
-    };
-    d.indices = { 0,1,2,3,4 };
+    GraphicsData d = Prize::get_graphics_data();
     d.shader_choice = ShaderChoice::SHADER_HUD;
-    d.draw_mode = GL_TRIANGLE_FAN;
-    game_window->add_object(get_id(), d);
+
     glm::mat4 hud_model = glm::translate(glm::vec3(-0.95f,0.95f,0.0f)) * glm::scale(glm::vec3(0.1f,0.3f,1.0f));
 
+    game_window->add_object(get_id(), d);
     game_window->set_object_model_matrix(get_id(), hud_model);
 }
 
