@@ -23,7 +23,7 @@ PrizeHud::PrizeHud(GameWindow * window) : Entity(), game_window(window) {
     d.shader_choice = ShaderChoice::SHADER_HUD;
 
     const float aspect_ratio = float(game_window->get_height())/float(game_window->get_width()); 
-    glm::mat4 hud_model = glm::translate(glm::vec3(-0.85f,0.85f,0.0f)) * glm::scale(glm::vec3(0.15f * aspect_ratio, 0.15f, 1.0f));
+    glm::mat4 hud_model = glm::translate(glm::vec3(-1 + 0.15*aspect_ratio,0.85f,0.0f)) * glm::scale(glm::vec3(0.15f * aspect_ratio, 0.15f, 1.0f));
 
     game_window->add_object(get_id(), d);
     game_window->set_object_model_matrix(get_id(), hud_model);
