@@ -27,10 +27,14 @@ int Game::run() {
     const auto spawn_loc = level.get_player_spawn_location();
     player->set_pos( glm::vec3(float(spawn_loc[0])+0.5f, 0.0f, float(spawn_loc[1])+0.5f) );
 
+    // Make portal
+    Portal * portal = new Portal(window.get());
+    portal->set_pos(glm::vec3(float(spawn_loc[0]),0.0f,float(spawn_loc[1])));
+    entities.emplace_back(portal);
+
     // Make walls, floor, and ceiling, and place prize
     Wall * prototype_wall = new Wall(window.get());
     Floor * prototype_floor = new Floor(window.get(), 1.0f, 1.0f);
-    Portal * prototype_portal = new Portal(window.get());
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) {
         for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) {
             auto location = LevelGen::vec(i,j);
@@ -52,12 +56,6 @@ int Game::run() {
                 player->collides_with(prize);
                 entities.emplace_back(prize);
             }
-
-            if (level.is_start(location)) {
-                Portal * portal = new Portal(*prototype_portal);
-                portal->set_pos(glm::vec3(float(i),0.0f,float(j)));
-                entities.emplace_back(portal);
-            }
         }
     }
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) { // outside boudary walls front and back
@@ -76,7 +74,6 @@ int Game::run() {
     }
     delete prototype_wall;
     delete prototype_floor;
-    delete prototype_portal;
 
     // Create HUD
     hud = std::make_unique<Hud>(window.get(), player);
