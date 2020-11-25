@@ -13,18 +13,14 @@ Prize::Prize(GameWindow * game_window) : GraphicalEntity(game_window) {
 
 GraphicsData Prize::create_graphics_data() {
     GraphicsData d;
-    d.num_vertices = 5;
-    GLfloat prize_vertices[d.num_vertices][3] = {
-        { 0.0f, 0.0f, 0.0f }, // center of fan
-        { -0.3f, -0.3f, -0.3f },
-        { 0.3f, -0.3f, -0.3f },
-        { 0.3f, -0.3f, 0.3f },
-        { -0.3f, -0.3f, 0.3f },
+    d.vertices = {
+        0.0f, 0.0f, 0.0f , // center of fan
+        -0.3f, -0.3f, -0.3f ,
+        0.3f, -0.3f, -0.3f ,
+        0.3f, -0.3f, 0.3f ,
+        -0.3f, -0.3f, 0.3f ,
     };
-    d.vertices = (GLfloat*)prize_vertices;
-    d.num_indices = 5;
-    GLuint prize_indices[d.num_indices] = { 0,1,2,3,4 };
-    d.indices = prize_indices;
+    d.indices = { 0,1,2,3,4 };
     d.shader_choice = ShaderChoice::SHADER_DEFAULT;
     d.draw_mode = GL_TRIANGLE_FAN;
     return d;

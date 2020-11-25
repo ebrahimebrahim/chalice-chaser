@@ -19,18 +19,14 @@ void Hud::draw() const {
 
 PrizeHud::PrizeHud(GameWindow * window) : Entity(), game_window(window) {
     GraphicsData d;
-    d.num_vertices = 5;
-    GLfloat prize_vertices[d.num_vertices][3] = { // TODO get this from the same source as Prize.cpp, instead of duplicating vertex data.
-        { 0.0f, 0.0f, 0.0f }, // center of fan
-        { -0.3f, -0.3f, -0.3f },
-        { 0.3f, -0.3f, -0.3f },
-        { 0.3f, -0.3f, 0.3f },
-        { -0.3f, -0.3f, 0.3f },
+    d.vertices = { // TODO get this from the same source as Prize.cpp, instead of duplicating vertex data.
+        0.0f, 0.0f, 0.0f , // center of fan
+        -0.3f, -0.3f, -0.3f ,
+        0.3f, -0.3f, -0.3f ,
+        0.3f, -0.3f, 0.3f ,
+        -0.3f, -0.3f, 0.3f ,
     };
-    d.vertices = (GLfloat*)prize_vertices;
-    d.num_indices = 5;
-    GLuint prize_indices[d.num_indices] = { 0,1,2,3,4 };
-    d.indices = prize_indices;
+    d.indices = { 0,1,2,3,4 };
     d.shader_choice = ShaderChoice::SHADER_HUD;
     d.draw_mode = GL_TRIANGLE_FAN;
     game_window->add_object(get_id(), d);

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -121,10 +122,8 @@ public:
  * mainly to be passed into the constructor of GraphicsObject.
  */
 struct GraphicsData{
-    GLfloat * vertices;
-    GLsizei num_vertices;
-    GLuint * indices;
-    GLsizei num_indices;
+    std::vector<GLfloat> vertices;
+    std::vector<GLuint> indices;
     GLenum draw_mode;
     ShaderChoice shader_choice;
 };
@@ -142,7 +141,7 @@ class GraphicsObjectBufferData{
     GLuint ebo{};
     
     GLenum draw_mode{}; /** e.g. GL_TRIANGLES */
-    GLsizei num_indices{}; /** Number of indices in EBO */
+    size_t num_indices{}; /** Number of indices in EBO */
 
 public:
 
