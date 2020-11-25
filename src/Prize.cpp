@@ -28,7 +28,7 @@ void make_star_mesh(std::vector<GLfloat> & vertices, std::vector<GLuint> & indic
     }
     else
         inset_radius = radius;
-    const float thickness = float_dist(0.05,0.3)(gen);
+    const float thickness = float_dist(0.05,0.2)(gen);
     const int n_segs = 2 * int_dist(2,20)(gen);
     const float phase = float_dist(0.0,TAU)(gen);
 
@@ -60,6 +60,106 @@ void make_star_mesh(std::vector<GLfloat> & vertices, std::vector<GLuint> & indic
 }
 
 
+void make_chalice_mesh(std::vector<GLfloat> & vertices, std::vector<GLuint> & indices) {
+    vertices.clear(); // in case they weren't clear for some reason
+    indices.clear();
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
+
+    // (1) make a spline
+    
+    std::vector<std::pair<float,float>> spline; // r and z pairs (think cylindrical coordinates)
+
+    // (1a) chalice is made of cup, handle, and base. this is cup.
+
+    spline.push_back({ float_dist(0.2,0.4)(gen) , float_dist(0.4,0.6)(gen) }); // cup top
+    spline.push_back({ float_dist(0.2,0.7)(gen) , float_dist(0.2,0.4)(gen) }); // cup mid
+    spline.push_back({ float_dist(0.2,0.4)(gen) , 0.0 }); // cup bottom
+
+    // (1b) handle
+    const int n_handle_segs = int_dist(3,10)(gen);
+    for (int i=0;i<n_handle_segs;++i) {
+        spline.push_back( {  float_dist(0.05,0.08)(gen) , float(-i)/float(n_handle_segs) * 0.5  } );
+    }
+
+
+    // (1c) base
+
+    spline.push_back( { float_dist(0.4,0.6)(gen) , float_dist(-0.6,-0.5)(gen) } );
+    
+
+    // (2) make mesh using spline, in "lathe" style
+
+    const unsigned segs = 10;
+
+    for (const auto & ry : spline) {
+        const float r = ry.first;
+        const float y = ry.second;
+        for (int j = 0 ; j < segs ; ++j) {
+            const float theta = float(j)*TAU / float(segs);
+            vertices.insert(vertices.end(), {r*glm::cos(theta), y, r*glm::sin(theta)});
+        }
+    }
+
+    for (int i=0; i<spline.size()-1; ++i) {
+        const unsigned ring_start_index = i*segs;
+        const unsigned next_ring_start_index = (i+1)*segs;
+        for (int j = 0 ; j < segs ; ++j) {
+            indices.insert(indices.end(), {ring_start_index + j, next_ring_start_index + j, ring_start_index + (j+1)%segs} );
+            indices.insert(indices.end(), {next_ring_start_index + j, next_ring_start_index + (j+1)%segs, ring_start_index + (j+1)%segs} );
+        }
+    }
+
+}
+
+
+void make_gem_mesh(std::vector<GLfloat> & vertices, std::vector<GLuint> & indices) {
+    vertices.clear(); // in case they weren't clear for some reason
+    indices.clear();
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
+
+    // (1) make a spline
+    
+    std::vector<std::pair<float,float>> spline; // r and z pairs (think cylindrical coordinates)
+
+    const float y1 = float_dist(0.3,0.5)(gen);
+    const float y2 = float_dist(0.1,0.2)(gen);
+    const float r2 = float_dist(0.2,0.6)(gen);
+    const float r1 = float_dist(0.1,r2)(gen);
+
+    spline.push_back({ 0.0 , y1 });
+    spline.push_back({ r1 , y2 });
+    spline.push_back({ r2 , 0.0 });
+    spline.push_back({ r1 , -y2 });
+    spline.push_back({ 0.0 , -y1 });
+
+    // (2) make mesh using spline, in "lathe" style
+
+    const unsigned segs = int_dist(3,6)(gen);
+
+    for (const auto & ry : spline) {
+        const float r = ry.first;
+        const float y = ry.second;
+        for (int j = 0 ; j < segs ; ++j) {
+            const float theta = float(j)*TAU / float(segs);
+            vertices.insert(vertices.end(), {r*glm::cos(theta), y, r*glm::sin(theta)});
+        }
+    }
+
+    for (int i=0; i<spline.size()-1; ++i) {
+        const unsigned ring_start_index = i*segs;
+        const unsigned next_ring_start_index = (i+1)*segs;
+        for (int j = 0 ; j < segs ; ++j) {
+            indices.insert(indices.end(), {ring_start_index + j, next_ring_start_index + j, ring_start_index + (j+1)%segs} );
+            indices.insert(indices.end(), {next_ring_start_index + j, next_ring_start_index + (j+1)%segs, ring_start_index + (j+1)%segs} );
+        }
+    }
+
+}
+
 
 static GraphicsData generate_prize_graphics_data() {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -70,27 +170,12 @@ static GraphicsData generate_prize_graphics_data() {
     switch(gen()%3) {
         case 0: 
             make_star_mesh(d.vertices, d.indices);
-            break;
-        
+            break;    
         case 1: // chalices
-            d.vertices = {
-                0.0f, 0.0f, 0.0f , // center of fan
-                -0.3f, -0.3f, -0.3f ,
-                0.3f, -0.3f, -0.3f ,
-                0.3f, -0.3f, 0.3f ,
-                -0.3f, -0.3f, 0.3f ,
-            };
-            d.indices = { 0,1,2,3,4 };
+            make_chalice_mesh(d.vertices, d.indices);
             break;
         case 2: // gems
-            d.vertices = {
-                0.0f, 0.0f, 0.0f , // center of fan
-                -0.3f, -0.3f, -0.3f ,
-                0.3f, -0.3f, -0.3f ,
-                0.3f, -0.3f, 0.3f ,
-                -0.3f, -0.3f, 0.3f ,
-            };
-            d.indices = { 0,1,2,3,4 };
+            make_gem_mesh(d.vertices, d.indices);
             break;
     }
 
