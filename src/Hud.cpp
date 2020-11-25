@@ -40,7 +40,9 @@ PrizeHud::~PrizeHud() {
 }
 
 void PrizeHud::draw(glm::vec3 player_position) const {
+    glDisable(GL_DEPTH_TEST);  // Probably this should be done via method provided by GameWindow, but w/e.
     game_window->draw(get_id());
+    glEnable(GL_DEPTH_TEST); 
 }
 
 void PrizeHud::update(double delta) {
