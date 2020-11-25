@@ -7,5 +7,6 @@ in float distance_to_player;
 
 void main()
 {
-    color = vec4(0.1, max(0.1, 0.5 - distance_to_player * 0.025), 0.25, 1.0);
+    vec3 color_rgb = (8.0 / (distance_to_player+4.0) ) * vec3(0.4, 0.5, 0.4);
+    color = vec4(color_rgb ,1.0);
 }
