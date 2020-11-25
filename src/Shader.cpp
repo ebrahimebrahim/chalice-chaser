@@ -121,3 +121,7 @@ void Shader::set_uniform(const char* name, const glm::mat4 & mat) const {
 void Shader::set_uniform(const char* name, const glm::vec3 & vec) const {
   glUniform3fv(get_uniform_location(name), 1, glm::value_ptr(vec));
 }
+
+void Shader::set_uniform(const char* name, float val) const {
+  glUniform1f(get_uniform_location(name), val);
+}

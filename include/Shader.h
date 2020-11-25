@@ -34,6 +34,7 @@ class Shader {
             So make sure to use "use" method above before doing this */
         void set_uniform(const char* name, const glm::mat4 & mat) const;
         void set_uniform(const char* name, const glm::vec3 & vec) const;
+        void set_uniform(const char* name, float val) const;
         GLint get_uniform_location(const char* name) const;
 
 };
