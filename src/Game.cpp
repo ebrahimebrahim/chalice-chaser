@@ -73,9 +73,8 @@ int Game::run() {
     delete prototype_wall;
     delete prototype_floor;
 
-    // Create HUD; this needs to be drawn last I think?
-    Hud * hud = new Hud(window.get(), player);
-    entities.emplace_back(hud);
+    // Create HUD
+    hud = std::make_unique<Hud>(window.get(), player);
 
     // Initialize camera
     camera = std::make_unique<Camera>(
@@ -113,6 +112,7 @@ int Game::run() {
                 else
                     ++iter;
             }
+            hud->update(); //update hud
             update_lag -= time_per_update;
         }
         
@@ -167,6 +167,8 @@ void Game::render() {
 
     for (auto & entity : entities)
         entity->draw(player->get_pos());
+    
+    hud->draw(); //draw hud last
 
     window->swap_buffers();
 }
