@@ -12,14 +12,77 @@
 #include <iostream> // DELETE
 #include <glm/gtx/string_cast.hpp>  // DELETE
 
+
+
 int Game::run() {
 
     // Make window, creating an opengl context
-    window = std::make_unique<GameWindow>(1066, 600, "Garbanzo");
+    init_window();
 
+    // Make level, player, entities, hud, and camera
+    create_game_objects();
+
+    // Initial event poll to throw away starting cursor pos from event queue
+    window->poll_events();
+
+    // Here's the actual game loop
+    double update_lag = 0.0;
+    while (!window->should_close()) {
+        double frame_start_time = glfwGetTime(); // seconds
+        glm::vec2 frame_start_cursor = window->cursor;
+
+        handle_input();
+        
+        while (update_lag >= time_per_update) {
+            // Update game state by one time_per_update
+
+            // First resolve all collisions
+            for (auto & entity : entities)
+                entity->resolve_collisions();
+
+            // Update all entities
+            for (auto & entity : entities)
+                entity->update(time_per_update);
+
+            // Delete entities that got marked for deletion
+            for (auto iter = entities.begin(); iter!=entities.end(); ){
+                if ((*iter)->marked_for_deletion)
+                    iter = entities.erase(iter); // It's a unique_ptr, so the entity will get deleted when the vector drops it.
+                else
+                    ++iter;
+            }
+            hud->update(); //update hud
+            update_lag -= time_per_update;
+        }
+        
+        camera->update(player->get_pos() + glm::vec3(0.0f, player->head_height, 0.0f), last_frame_mouse_delta);
+
+        render();
+
+        if (window->restart_pressed) {
+            window->restart_pressed = false;
+            entities.clear();
+            create_game_objects();
+        }
+
+        window->poll_events();
+        last_frame_mouse_delta = window->cursor - frame_start_cursor;
+        last_frame_time = glfwGetTime() - frame_start_time;
+        update_lag += last_frame_time;
+    }
+
+    return 0;
+}
+
+void Game::init_window() {
+    window = std::make_unique<GameWindow>(1066, 600, "Garbanzo");
+}
+
+void Game::create_game_objects() {
     // Generate level
     level = LevelGen::generate_level();
     level.print();
+    std::cout << std::endl;
 
     // Make player
     player = new Player();
@@ -84,53 +147,7 @@ int Game::run() {
         glm::vec3(0.0f,0.0f,1.0f), // look direction
         glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
-
-    // Initial event poll to throw away starting cursor pos from event queue
-    window->poll_events();
-
-    // Here's the actual game loop
-    double update_lag = 0.0;
-    while (!window->should_close()) {
-        double frame_start_time = glfwGetTime(); // seconds
-        glm::vec2 frame_start_cursor = window->cursor;
-
-        handle_input();
-        
-        while (update_lag >= time_per_update) {
-            // Update game state by one time_per_update
-
-            // First resolve all collisions
-            for (auto & entity : entities)
-                entity->resolve_collisions();
-
-            // Update all entities
-            for (auto & entity : entities)
-                entity->update(time_per_update);
-
-            // Delete entities that got marked for deletion
-            for (auto iter = entities.begin(); iter!=entities.end(); ){
-                if ((*iter)->marked_for_deletion)
-                    iter = entities.erase(iter); // It's a unique_ptr, so the entity will get deleted when the vector drops it.
-                else
-                    ++iter;
-            }
-            hud->update(); //update hud
-            update_lag -= time_per_update;
-        }
-        
-        camera->update(player->get_pos() + glm::vec3(0.0f, player->head_height, 0.0f), last_frame_mouse_delta);
-
-        render();
-
-        window->poll_events();
-        last_frame_mouse_delta = window->cursor - frame_start_cursor;
-        last_frame_time = glfwGetTime() - frame_start_time;
-        update_lag += last_frame_time;
-    }
-
-    return 0;
 }
-
 
 void Game::handle_input() {
     bool walking;

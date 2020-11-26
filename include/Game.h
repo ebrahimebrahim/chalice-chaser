@@ -17,6 +17,12 @@
 
 class Game {
 
+    /** Make window, creating an opengl context */
+    void init_window();
+
+    /** Make level, player, entities, hud, and camera */
+    void create_game_objects();
+
     /** Handle user input in the game loop */
     void handle_input();
 

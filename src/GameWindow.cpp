@@ -66,13 +66,15 @@ GameWindow::GameWindow(int windowed_width, int windowed_height, const char * tit
     glfwSetKeyCallback(window,
         [](GLFWwindow* window, int key, int scancode, int action, int mods){
             if (action != GLFW_RELEASE) return;
-
+            GameWindow * gw = static_cast<GameWindow*>(glfwGetWindowUserPointer(window));
             switch(key) {
                 case GLFW_KEY_ESCAPE:
                     glfwSetWindowShouldClose(window,GLFW_TRUE); return;
                 case GLFW_KEY_F:
-                    GameWindow * gw = static_cast<GameWindow*>(glfwGetWindowUserPointer(window));
                     gw->switch_fullscreen();
+                    return;
+                case GLFW_KEY_R:
+                    gw->restart_pressed = true;
                     return;
             }
         }

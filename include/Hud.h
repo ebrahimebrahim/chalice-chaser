@@ -31,7 +31,7 @@ class PrizeHud : public Entity {
 protected:
 public:
     PrizeHud(GameWindow * game_window);
-    ~PrizeHud();
+    ~PrizeHud(); // TODO: implement/delete rest of the big 5
 
     void draw(glm::vec3 player_position) const override;
     void update(double delta) override;

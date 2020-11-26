@@ -37,8 +37,10 @@ class GameWindow {
     glm::mat4 projection_matrix; /** Perspective projection matrix. */
     glm::mat4 view_matrix; /** The matrix that transforms world coords to camera coords */
 
+
     void switch_fullscreen();
     void calculate_projection_matrix(); /**Compute and set the matrix used for perspective projection*/
+
 
 
 public:
@@ -66,6 +68,9 @@ public:
 
     /** Position of mouse cursor, updated regularly as polling occurs (updates on a glfwSetCursorPosCallback) */
     glm::vec2 cursor;
+
+    /** whether a game restart has been triggered by player input */
+    bool restart_pressed{false}; 
 
     /** Add an object with a given id, creating the GraphicsObject.
      *  Once you do this, it becomes possible to call `draw` and pass in the id.
