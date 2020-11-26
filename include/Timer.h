@@ -27,6 +27,8 @@ public:
 
     bool timed_out() const {return timed_out_;}
 
+    float get_fraction_remaining() const {return time_remaining/initial_time_remaining;}
+
     void draw(glm::vec3 player_position) const override {}
 
 };

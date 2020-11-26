@@ -160,7 +160,7 @@ void Game::create_game_objects() {
     delete prototype_floor;
 
     // Create HUD
-    hud = std::make_unique<Hud>(window.get(), player);
+    hud = std::make_unique<Hud>(window.get(), player, timer);
 
     // Initialize camera
     camera = std::make_unique<Camera>(
