@@ -164,7 +164,7 @@ void Game::reset_game() {
 
 
 void Game::handle_input() {
-    bool walking;
+    bool walking{};
     glm::vec3 player_move_dir{};
     if (window->key_pressed(GLFW_KEY_W)) {
         player_move_dir+=camera->get_dir();
