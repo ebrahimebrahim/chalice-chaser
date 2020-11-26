@@ -3,6 +3,7 @@
 
 #include <Entity.h>
 #include <glm/glm.hpp>
+#include <Timer.h>
 
 
 class Player : public Entity {
@@ -14,11 +15,12 @@ class Player : public Entity {
      */
     glm::vec3 move_dir{0.0f,0.0f,0.0f};
 
+    Timer * timer; /** handle to the game timer */
     
 
 public:
     
-    Player();
+    Player(Timer * timer);
 
     const float head_height = 1.5f; /** The position of a player is the position of the player's feet. */
     const float walk_speed = 10.0f; /** world coord units per second */
@@ -35,6 +37,7 @@ public:
     
     bool has_prize{false};
     bool won{false};
+    bool lost{false};
 };
 
 #endif // PLAYER_H

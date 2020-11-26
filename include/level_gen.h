@@ -6,7 +6,7 @@
 
 namespace LevelGen{
 
-const int TILEMAP_SIZE = 40;
+const int TILEMAP_SIZE = 10;
 typedef glm::ivec2 vec;
 
 /** "oriented line of tiles"

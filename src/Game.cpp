@@ -19,7 +19,7 @@ int Game::run() {
     // Make window, creating an opengl context
     init_window();
 
-    // Make level, player, entities, hud, and camera
+    // Make level, entities, hud, and camera
     create_game_objects();
 
     // Initial event poll to throw away starting cursor pos from event queue
@@ -70,6 +70,11 @@ int Game::run() {
             reset_game();
             create_game_objects();
         }
+        else if (player->lost) {
+            // TODO: make hud display "you lost!" and "press enter to restart" and wait for enter
+            reset_game();
+            create_game_objects();
+        }
 
         window->poll_events();
         last_frame_mouse_delta = window->cursor - frame_start_cursor;
@@ -91,8 +96,12 @@ void Game::create_game_objects() {
     level.print();
     std::cout << std::endl;
 
+    // Make timer
+    timer = new Timer(2.0f); // argument is in seconds
+    entities.emplace_back(timer);
+
     // Make player
-    player = new Player();
+    player = new Player(timer);
     entities.emplace_back(player);
     const auto spawn_loc = level.get_player_spawn_location();
     player->set_pos( glm::vec3(float(spawn_loc[0])+0.5f, 0.0f, float(spawn_loc[1])+0.5f) );
@@ -160,6 +169,7 @@ void Game::create_game_objects() {
 void Game::reset_game() {
     entities.clear();
     Prize::reset_graphics_data();
+    timer->reset();
 }
 
 

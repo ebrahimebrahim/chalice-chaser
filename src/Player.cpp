@@ -2,7 +2,7 @@
 #include <Prize.h>
 #include <Portal.h>
 
-Player::Player() {
+Player::Player(Timer* t) : Entity(), timer{t} {
     collision_box = CollisionBox(
         glm::vec3(0.0f, head_height/2.0f, 0.0f), // center
         glm::vec3(girth, head_height/2.0f, girth)  // extents
@@ -13,6 +13,8 @@ void Player::update(double delta){
     move_dir = glm::vec3(move_dir[0],0,move_dir[2]);
     if (walking)
         pos += float(walk_speed * delta) * move_dir;
+    if (timer->timed_out())
+        lost = true;
 }
 
 
@@ -29,6 +31,7 @@ void Player::resolve_collisions() {
                 if (!has_prize && dynamic_cast<const Prize*>(e)) { // if it's with prize, we grab the prize
                     has_prize = true;
                     e->mark_for_deletion();
+                    timer->start();
                 }
                 else if (has_prize && dynamic_cast<const Portal*>(e)) { // if it's with the portal and we already have prize, then win
                     won = true;
