@@ -59,7 +59,7 @@ int Game::run() {
 
         render();
 
-        if (window->restart_pressed) {
+        if (window->restart_pressed || player->won) {
             window->restart_pressed = false;
             entities.clear();
             create_game_objects();
@@ -93,6 +93,7 @@ void Game::create_game_objects() {
     // Make portal
     Portal * portal = new Portal(window.get());
     portal->set_pos(glm::vec3(float(spawn_loc[0]),0.0f,float(spawn_loc[1])));
+    player->collides_with(portal);
     entities.emplace_back(portal);
 
     // Make walls, floor, and ceiling, and place prize

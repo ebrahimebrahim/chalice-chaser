@@ -34,6 +34,7 @@ public:
     void set_not_walking() {walking=false;}
     
     bool has_prize{false};
+    bool won{false};
 };
 
 #endif // PLAYER_H

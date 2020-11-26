@@ -1,5 +1,6 @@
 #include <Player.h>
 #include <Prize.h>
+#include <Portal.h>
 
 Player::Player() {
     collision_box = CollisionBox(
@@ -28,6 +29,9 @@ void Player::resolve_collisions() {
                 if (!has_prize && dynamic_cast<const Prize*>(e)) { // if it's with prize, we grab the prize
                     has_prize = true;
                     e->mark_for_deletion();
+                }
+                else if (has_prize && dynamic_cast<const Portal*>(e)) { // if it's with the portal and we already have prize, then win
+                    won = true;
                 }
                 else { // if collision is with anything else
 
