@@ -1,9 +1,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <StbImage.h>
+#include <stdexcept>
 
 StbImage::StbImage(const char * filename) {
     data = stbi_load(filename, &width, &height, &num_channels, 0);
+    if (!data) {
+        throw std::runtime_error(std::string("Failed to open image: ")+filename);
+    }
 }
 
 StbImage & StbImage::operator=(StbImage && src) {
