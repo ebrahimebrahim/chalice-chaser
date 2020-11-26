@@ -47,3 +47,11 @@ Entity & Entity::operator=(Entity && src) {
     return *this;
 }
 
+void Entity::resolve_collisions() {
+    for (auto iter = collides_with_list.begin(); iter!=collides_with_list.end(); ){
+        if ((*iter)->marked_for_deletion)
+            iter = collides_with_list.erase(iter);
+        else
+            ++iter;
+    }
+}

@@ -19,6 +19,7 @@ void Player::update(double delta){
 
 
 void Player::resolve_collisions() {
+    Entity::resolve_collisions(); // prune collisions marked for deletion
     if (!walking) return;
     for (const auto e : collides_with_list) {
         if (e->get_collision_box()) {

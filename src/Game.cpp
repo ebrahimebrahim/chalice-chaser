@@ -44,10 +44,14 @@ int Game::run() {
             for (auto & entity : entities)
                 entity->update(time_per_update);
 
-            // Delete entities that got marked for deletion
+            // Process entities that got marked for deletion
             for (auto iter = entities.begin(); iter!=entities.end(); ){
-                if ((*iter)->marked_for_deletion)
+                if ((*iter)->ready_to_be_deleted)
                     iter = entities.erase(iter); // It's a unique_ptr, so the entity will get deleted when the vector drops it.
+                else if ((*iter)->marked_for_deletion) {
+                    (*iter)->ready_to_be_deleted = true;
+                    ++iter;
+                }
                 else
                     ++iter;
             }
@@ -169,7 +173,6 @@ void Game::create_game_objects() {
 void Game::reset_game() {
     entities.clear();
     Prize::reset_graphics_data();
-    timer->reset();
 }
 
 
