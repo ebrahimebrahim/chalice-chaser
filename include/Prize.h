@@ -18,6 +18,7 @@ public:
      * This way the data becomes accessible to anyone who can see the `Prize` class
      * */ 
     static GraphicsData get_graphics_data();
+    static void reset_graphics_data();
 };
 
 #endif // PRIZE_H

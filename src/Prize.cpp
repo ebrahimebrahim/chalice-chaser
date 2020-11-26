@@ -206,6 +206,10 @@ GraphicsData Prize::get_graphics_data() {
     return *graphics_data;
 }
 
+void Prize::reset_graphics_data() {
+    graphics_data = std::nullopt;
+}
+
 void Prize::update(double delta) {
     rotate((TAU/3.0f) * delta, glm::vec3(0.0f,1.0f,0.0f));
 }

@@ -59,9 +59,15 @@ int Game::run() {
 
         render();
 
-        if (window->restart_pressed || player->won) {
+        // Restarting or pausing game if needed
+        if (window->restart_pressed) {
             window->restart_pressed = false;
-            entities.clear();
+            reset_game();
+            create_game_objects();
+        }
+        else if (player->won) {
+            // TODO: make hud display "you won!" and "press enter to restart" and wait for enter
+            reset_game();
             create_game_objects();
         }
 
@@ -69,7 +75,8 @@ int Game::run() {
         last_frame_mouse_delta = window->cursor - frame_start_cursor;
         last_frame_time = glfwGetTime() - frame_start_time;
         update_lag += last_frame_time;
-    }
+
+    } // end game loop
 
     return 0;
 }
@@ -149,6 +156,12 @@ void Game::create_game_objects() {
         glm::vec3(0.0f,1.0f,0.0f)  // up direction
     );
 }
+
+void Game::reset_game() {
+    entities.clear();
+    Prize::reset_graphics_data();
+}
+
 
 void Game::handle_input() {
     bool walking;

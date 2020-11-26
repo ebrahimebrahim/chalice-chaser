@@ -23,6 +23,9 @@ class Game {
     /** Make level, player, entities, hud, and camera */
     void create_game_objects();
 
+    /** Clear out game objects so that a later call to `create_game_objects` essentially restarts the game */
+    void reset_game();
+
     /** Handle user input in the game loop */
     void handle_input();
 
