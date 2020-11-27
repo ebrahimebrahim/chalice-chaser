@@ -118,6 +118,7 @@ public:
 
     template <typename T>
     void set_uniform(ShaderChoice shader_choice, const char * name, const T & value) {
+        shaders[shader_choice]->use();
         shaders[shader_choice]->set_uniform(name,value);
     }
 

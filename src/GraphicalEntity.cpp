@@ -59,7 +59,8 @@ GraphicalEntity::~GraphicalEntity() {
 }
 
 void GraphicalEntity::draw(glm::vec3 player_position) const {
-    game_window->set_uniform(SHADER_DEFAULT, "player_pos", player_position);
+    for (auto shader_choice : {SHADER_DEFAULT, SHADER_TEXTURE})
+        game_window->set_uniform(shader_choice, "player_pos", player_position);
     game_window->set_object_model_matrix(get_id(),model_matrix);
     game_window->draw(get_id());
 }
