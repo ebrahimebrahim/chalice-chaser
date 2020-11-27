@@ -185,6 +185,7 @@ static GraphicsData generate_prize_graphics_data() {
 
     d.draw_mode = GL_TRIANGLES;
     d.shader_choice = ShaderChoice::SHADER_DEFAULT;
+    d.object_color = glm::vec3(0.702,0.686,0.267);
     
     return d;
 }

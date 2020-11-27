@@ -34,6 +34,7 @@ void Hud::draw() const {
 PrizeHud::PrizeHud(GameWindow * window) : Entity(), game_window(window) {
     GraphicsData d = Prize::get_graphics_data();
     d.shader_choice = ShaderChoice::SHADER_HUD;
+    d.object_color = std::nullopt;
 
     const float aspect_ratio = float(game_window->get_height())/float(game_window->get_width()); 
     glm::mat4 hud_model = glm::translate(glm::vec3(-1 + 0.15*aspect_ratio,0.85f,0.0f)) * glm::scale(glm::vec3(0.15f * aspect_ratio, 0.15f, 1.0f));

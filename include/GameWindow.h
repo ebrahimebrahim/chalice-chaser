@@ -10,6 +10,7 @@
 #include <Shader.h>
 #include <StbImage.h>
 #include <glm/glm.hpp>
+#include <optional>
 
 class GraphicsObject;
 struct GraphicsData;
@@ -141,6 +142,9 @@ struct GraphicsData{
 
     /** It's optional to specify a texture. If it's left null, then there's no texture. */
     std::shared_ptr<StbImage> texture; 
+
+    /** It's optional to specify a color. If you do, then the chosen shader had better have a uniform "object_color" */
+    std::optional<glm::vec3> object_color;
 };
 
 /**
@@ -179,6 +183,7 @@ class GraphicsObject {
     std::shared_ptr<GraphicsObjectBufferData> buffer_data;
     Shader * shader; // handle to shader, not owned by GraphicsObject
     glm::mat4 model_matrix{}; /** The matrix that transforms object coords to world coords, placing an object in the world. */
+    std::optional<glm::vec3> object_color; /** Optional color, which if present will be set as a uniform "object_color" in the shader */
     
 public:
 

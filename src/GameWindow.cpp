@@ -334,7 +334,8 @@ void GraphicsObjectBufferData::bind_vao_and_draw() const {
 GraphicsObject::GraphicsObject(const GraphicsData & graphics_data, Shader * shader) :
         
         model_matrix{1.0f},
-        shader(shader)
+        shader(shader),
+        object_color(graphics_data.object_color)
 {
     buffer_data = std::make_shared<GraphicsObjectBufferData>(graphics_data);
 }
@@ -343,6 +344,7 @@ GraphicsObject::GraphicsObject(const GraphicsObject & src) {
     buffer_data = src.buffer_data; // copy assignment of shared ptr, increases ref count
     shader = src.shader; // copy handle to shader, which is not an owned resource
     model_matrix = src.model_matrix; // copy
+    object_color = src.object_color;
 
 }
 
@@ -352,6 +354,7 @@ GraphicsObject & GraphicsObject::operator=(const GraphicsObject & src) {
     buffer_data = src.buffer_data;
     shader = src.shader;
     model_matrix = src.model_matrix;
+    object_color = src.object_color;
 
 
     return *this;
@@ -361,6 +364,7 @@ GraphicsObject::GraphicsObject(GraphicsObject && src) {
     buffer_data = std::move(src.buffer_data);
     shader = src.shader;
     model_matrix = src.model_matrix;
+    object_color = src.object_color;
 
     src.shader = nullptr;
 }
@@ -371,6 +375,7 @@ GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
     buffer_data = std::move(src.buffer_data);
     shader = src.shader;
     model_matrix = src.model_matrix;
+    object_color = src.object_color;
 
     src.shader = nullptr;
 
@@ -380,5 +385,6 @@ GraphicsObject & GraphicsObject::operator=(GraphicsObject && src) {
 void GraphicsObject::draw() const {
     shader->use();
     shader->set_uniform("model",model_matrix);
+    if (object_color) shader->set_uniform("object_color", *object_color);
     buffer_data->bind_vao_and_draw();
 }
