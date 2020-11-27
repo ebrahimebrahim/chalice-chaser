@@ -22,14 +22,18 @@ void make_star_mesh(std::vector<GLfloat> & vertices, std::vector<GLuint> & indic
     std::mt19937 gen(seed);
 
     const float radius = float_dist(0.3,0.5)(gen);
+
     float inset_radius;
+    int n_segs;
     if (gen()%3) {
         inset_radius = float_dist(0.1, radius)(gen);
+        n_segs = 2 * int_dist(2,10)(gen);
     }
-    else
+    else {
         inset_radius = radius;
+        n_segs = 2 * int_dist(2,32)(gen);
+    }
     const float thickness = float_dist(0.05,0.2)(gen);
-    const int n_segs = 2 * int_dist(2,20)(gen);
     const float phase = float_dist(0.0,TAU)(gen);
 
     const float front_face_z = thickness/2.0;

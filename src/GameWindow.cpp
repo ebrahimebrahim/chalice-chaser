@@ -260,8 +260,9 @@ GraphicsObjectBufferData::GraphicsObjectBufferData(const GraphicsData & graphics
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-            graphics_data.texture->get_width(), graphics_data.texture->get_height(),
-            0, GL_RGB, GL_UNSIGNED_BYTE, graphics_data.texture->get_data()
+            graphics_data.texture->get_width(), graphics_data.texture->get_height(), 0,
+            GL_RGB ,
+            GL_UNSIGNED_BYTE, graphics_data.texture->get_data()
         );
         glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -317,6 +318,10 @@ GraphicsObjectBufferData::~GraphicsObjectBufferData() {
 }
 
 void GraphicsObjectBufferData::bind_vao_and_draw() const {
+    if (tex!=0) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, tex);
+    }
     glBindVertexArray(vao);
     glDrawElements(draw_mode, num_indices, GL_UNSIGNED_INT, 0);
 }

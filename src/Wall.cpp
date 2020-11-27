@@ -29,7 +29,7 @@ GraphicsData Wall::create_graphics_data() {
     d.indices = { 0,1,2,3,6,7,4,5,0,1 };
     d.shader_choice = SHADER_TEXTURE;
     d.draw_mode = GL_TRIANGLE_STRIP;
-    d.texture = std::make_shared<StbImage>("images/brick.png");
+    d.texture = std::make_shared<StbImage>("images/lose.png");
     return d;
     
 }
