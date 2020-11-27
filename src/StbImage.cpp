@@ -2,7 +2,6 @@
 #include <stb_image.h>
 #include <StbImage.h>
 #include <stdexcept>
-#include <iostream>
 
 StbImage::StbImage(const char * filename) {
 
@@ -14,16 +13,6 @@ StbImage::StbImage(const char * filename) {
     if (!data) {
         throw std::runtime_error(std::string("Failed to open image: ")+filename);
     }
-
-    std::cout << "Loaded image: " << filename << " which is " << width << " x " << height << " and has "
-        << num_channels << " channels but would have had " << num_channels_inherent_to_file <<std::endl;
-    std::cout << "Here's the 1st two pixels, which should be bottom left:\n";
-    std::cout << int(data[0]) << " "
-        << int(data[1]) << " "
-        << int(data[2]) << "\n"
-        << int(data[3]) << " "
-        << int(data[4]) << " "
-        << int(data[5]) << "\n";
 }
 
 StbImage & StbImage::operator=(StbImage && src) {
