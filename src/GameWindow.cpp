@@ -259,6 +259,8 @@ GraphicsObjectBufferData::GraphicsObjectBufferData(const GraphicsData & graphics
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // needed because stb_image doesn't perform any row alignment of pixel data. see https://www.khronos.org/opengl/wiki/Pixel_Transfer#Pixel_layout
+        assert(graphics_data.texture->get_num_channels()==3);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
             graphics_data.texture->get_width(), graphics_data.texture->get_height(), 0,
             GL_RGB ,
