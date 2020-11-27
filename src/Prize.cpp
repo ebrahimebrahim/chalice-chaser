@@ -9,6 +9,24 @@
 
 std::optional<GraphicsData> Prize::graphics_data{}; // start as std::null_opt
 
+const std::vector<glm::vec3> Prize::gem_colors = {
+    glm::vec3(0.498, 1.000, 0.831),
+    glm::vec3(0.251, 0.878, 0.816),
+    glm::vec3(0.255, 0.412, 0.882),
+    glm::vec3(0.863, 0.078, 0.235),
+    glm::vec3(1.000, 0.271, 0.000),
+    glm::vec3(1.000, 0.549, 0.000),
+    glm::vec3(1.000, 1.000, 0.941),
+    glm::vec3(0.180, 0.545, 0.341)
+};
+const std::vector<glm::vec3> Prize::star_colors = {
+    glm::vec3(1.000, 0.843, 0.000),
+    glm::vec3(1.000, 1.000, 0.000),
+    glm::vec3(0.000, 1.000, 1.000),
+    glm::vec3(0.824, 0.412, 0.118),
+    glm::vec3(0.957, 0.643, 0.376),
+};
+
 typedef std::uniform_real_distribution<float> float_dist;
 typedef std::uniform_int_distribution<int> int_dist;
 
@@ -168,24 +186,27 @@ void make_gem_mesh(std::vector<GLfloat> & vertices, std::vector<GLuint> & indice
 static GraphicsData generate_prize_graphics_data() {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
+    auto color_noise = float_dist(-0.06f, 0.06f);
 
     GraphicsData d;
 
     switch(gen()%3) {
         case 0: 
             make_star_mesh(d.vertices, d.indices);
+            d.object_color = Prize::star_colors[gen()%Prize::star_colors.size()];
             break;    
         case 1: // chalices
             make_chalice_mesh(d.vertices, d.indices);
+            d.object_color = glm::vec3(0.702 + color_noise(gen), 0.686 + color_noise(gen), 0.267 + color_noise(gen));
             break;
         case 2: // gems
             make_gem_mesh(d.vertices, d.indices);
+            d.object_color = Prize::gem_colors[gen()%Prize::gem_colors.size()];
             break;
     }
 
     d.draw_mode = GL_TRIANGLES;
     d.shader_choice = ShaderChoice::SHADER_DEFAULT;
-    d.object_color = glm::vec3(0.702,0.686,0.267);
     
     return d;
 }

@@ -6,6 +6,7 @@
 
 class Prize : public GraphicalEntity {
     static std::optional<GraphicsData> graphics_data;
+
 public:
     Prize(GameWindow * game_window);
 
@@ -19,6 +20,9 @@ public:
      * */ 
     static GraphicsData get_graphics_data();
     static void reset_graphics_data();
+    
+    static const std::vector<glm::vec3> star_colors;
+    static const std::vector<glm::vec3> gem_colors;
 };
 
 #endif // PRIZE_H
