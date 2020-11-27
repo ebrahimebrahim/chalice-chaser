@@ -19,14 +19,16 @@ GraphicsData Wall::create_graphics_data() {
     d.vertices ={
         0.0f, 0.0f, 0.0f ,          0.0f, 0.0f,
         0.0f, wall_height, 0.0f ,   0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f ,          1.0f, 0.0f,
-        1.0f, wall_height, 0.0f ,   1.0f, 1.0f,
-        0.0f, 0.0f, 1.0f ,          0.0f, 0.0f,
-        0.0f, wall_height, 1.0f ,   0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f ,          1.0f, 0.0f,
-        1.0f, wall_height, 1.0f ,   1.0f, 1.0f
+        1.0f, 0.0f, 0.0f ,          0.25f, 0.0f,
+        1.0f, wall_height, 0.0f ,   0.25f, 1.0f,
+        0.0f, 0.0f, 1.0f ,          0.75f, 0.0f,
+        0.0f, wall_height, 1.0f ,   0.75f, 1.0f,
+        1.0f, 0.0f, 1.0f ,          0.5f, 0.0f,
+        1.0f, wall_height, 1.0f ,   0.5f, 1.0f,
+        0.0f, 0.0f, 0.0f ,          1.0f, 0.0f,
+        0.0f, wall_height, 0.0f ,   1.0f, 1.0f,
     };
-    d.indices = { 0,1,2,3,6,7,4,5,0,1 };
+    d.indices = { 0,1,2,3,6,7,4,5,8,9 };
     d.shader_choice = SHADER_TEXTURE;
     d.draw_mode = GL_TRIANGLE_STRIP;
     d.texture = std::make_shared<StbImage>("images/brick.png");
