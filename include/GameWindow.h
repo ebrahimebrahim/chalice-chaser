@@ -8,11 +8,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Shader.h>
+#include <StbImage.h>
 #include <glm/glm.hpp>
 
 class GraphicsObject;
 struct GraphicsData;
-enum ShaderChoice {SHADER_DEFAULT, SHADER_HUD, SHADER_PORTAL};
+enum ShaderChoice {SHADER_DEFAULT, SHADER_HUD, SHADER_PORTAL, SHADER_TEXTURE};
 
 /**
  *  Holds a GLFW window and associated OpenGL context
@@ -127,10 +128,18 @@ public:
  * mainly to be passed into the constructor of GraphicsObject.
  */
 struct GraphicsData{
+    
+    /**Each three floats is one 3d vertex... unless a texture is specified (see below),
+     * in which case each 5 floats is a 3d vertex followed by a 2d texture coordinate.
+     */
     std::vector<GLfloat> vertices;
+    
     std::vector<GLuint> indices;
     GLenum draw_mode;
     ShaderChoice shader_choice;
+
+    /** It's optional to specify a texture. If it's left null, then there's no texture. */
+    std::shared_ptr<StbImage> texture; 
 };
 
 /**
@@ -144,6 +153,7 @@ class GraphicsObjectBufferData{
     GLuint vao{};
     GLuint vbo{};
     GLuint ebo{};
+    GLuint tex{}; // texture name will be set and used only if there's a texture. 0 means there isn't.
     
     GLenum draw_mode{}; /** e.g. GL_TRIANGLES */
     size_t num_indices{}; /** Number of indices in EBO */

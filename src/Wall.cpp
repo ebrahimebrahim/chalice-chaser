@@ -17,18 +17,19 @@ Wall::Wall(GameWindow * game_window) : GraphicalEntity(game_window) {
 GraphicsData Wall::create_graphics_data() {
     GraphicsData d;
     d.vertices ={
-        0.0f, 0.0f, 0.0f ,
-        0.0f, wall_height, 0.0f ,
-        1.0f, 0.0f, 0.0f ,
-        1.0f, wall_height, 0.0f ,
-        0.0f, 0.0f, 1.0f ,
-        0.0f, wall_height, 1.0f ,
-        1.0f, 0.0f, 1.0f ,
-        1.0f, wall_height, 1.0f ,
+        0.0f, 0.0f, 0.0f ,          0.0f, 0.0f,
+        0.0f, wall_height, 0.0f ,   0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f ,          1.0f, 0.0f,
+        1.0f, wall_height, 0.0f ,   1.0f, 1.0f,
+        0.0f, 0.0f, 1.0f ,          0.0f, 0.0f,
+        0.0f, wall_height, 1.0f ,   0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f ,          1.0f, 0.0f,
+        1.0f, wall_height, 1.0f ,   1.0f, 1.0f
     };
     d.indices = { 0,1,2,3,6,7,4,5,0,1 };
-    d.shader_choice = SHADER_DEFAULT;
+    d.shader_choice = SHADER_TEXTURE;
     d.draw_mode = GL_TRIANGLE_STRIP;
+    d.texture = std::make_shared<StbImage>("images/brick.png");
     return d;
     
 }

@@ -93,9 +93,10 @@ GameWindow::GameWindow(int windowed_width, int windowed_height, const char * tit
         }
     );
 
-    shaders[SHADER_DEFAULT] = new Shader("src/shader.vert", "src/shader.frag");
-    shaders[SHADER_HUD] = new Shader("src/hud_shader.vert", "src/hud_shader.frag");
-    shaders[SHADER_PORTAL] = new Shader("src/portal_shader.vert", "src/portal_shader.frag");
+    shaders[SHADER_DEFAULT] = new Shader("src/shaders/shader.vert", "src/shaders/shader.frag");
+    shaders[SHADER_HUD] = new Shader("src/shaders/hud_shader.vert", "src/shaders/hud_shader.frag");
+    shaders[SHADER_PORTAL] = new Shader("src/shaders/portal_shader.vert", "src/shaders/portal_shader.frag");
+    shaders[SHADER_TEXTURE] = new Shader("src/shaders/shader_texture.vert", "src/shaders/shader_texture.frag");
 
     calculate_projection_matrix();
 
@@ -206,18 +207,18 @@ void GameWindow::draw(int id) {
 
 void GameWindow::set_view_matrix(const glm::mat4 & view) {
     view_matrix = view;
-    shaders[SHADER_DEFAULT]->use();
-    shaders[SHADER_DEFAULT]->set_uniform("view", view_matrix);
-    shaders[SHADER_PORTAL]->use();
-    shaders[SHADER_PORTAL]->set_uniform("view", view_matrix);
+    for (auto shader_index : {SHADER_DEFAULT, SHADER_PORTAL, SHADER_TEXTURE}){
+        shaders[shader_index]->use();
+        shaders[shader_index]->set_uniform("view", view_matrix);
+    }
 }
 
 void GameWindow::set_projection_matrix(const glm::mat4 & projection) {
     projection_matrix = projection;
-    shaders[SHADER_DEFAULT]->use();
-    shaders[SHADER_DEFAULT]->set_uniform("projection", projection_matrix);
-    shaders[SHADER_PORTAL]->use();
-    shaders[SHADER_PORTAL]->set_uniform("projection", projection_matrix);
+    for (auto shader_index : {SHADER_DEFAULT, SHADER_PORTAL, SHADER_TEXTURE}){
+        shaders[shader_index]->use();
+        shaders[shader_index]->set_uniform("projection", projection_matrix);
+    }
 }
 
 void GameWindow::set_object_model_matrix(int id, const glm::mat4 & model) {
@@ -234,8 +235,11 @@ GraphicsObjectBufferData::GraphicsObjectBufferData(const GraphicsData & graphics
     num_indices{graphics_data.indices.size()},
     draw_mode{graphics_data.draw_mode}
 {
-    if (graphics_data.vertices.size()%3)
+    if ( !graphics_data.texture && graphics_data.vertices.size()%3 )
         throw std::runtime_error("Invalid vector of vertices passed to GraphicObjectBufferData. Each three elements should represent one vertex.");
+    else if ( graphics_data.texture && graphics_data.vertices.size()%5 )
+        throw std::runtime_error("Invalid vector of vertices passed to GraphicObjectBufferData. Each five elements should represent a vertex and its texture coord.");
+
 
     glGenVertexArrays(1,&vao);
     glBindVertexArray(vao);
@@ -248,17 +252,40 @@ GraphicsObjectBufferData::GraphicsObjectBufferData(const GraphicsData & graphics
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, graphics_data.indices.size() * sizeof(GLuint) * 1, graphics_data.indices.data(),  GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(0);
+    if (graphics_data.texture) {
+        glGenTextures(1,&tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+            graphics_data.texture->get_width(), graphics_data.texture->get_height(),
+            0, GL_RGB, GL_UNSIGNED_BYTE, graphics_data.texture->get_data()
+        );
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (void*) (0*sizeof(GLfloat)));
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (void*) (3*sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+    }
+    else {
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+    }
+
 }
 
 GraphicsObjectBufferData::GraphicsObjectBufferData(GraphicsObjectBufferData && src) {
     vbo = src.vbo;
     ebo = src.ebo;
     vao = src.vao;
+    tex = src.tex;
     src.vbo = 0;
     src.ebo = 0;
     src.vao = 0;
+    src.tex = 0;
 
     draw_mode = src.draw_mode;
     num_indices = src.num_indices;
@@ -270,9 +297,11 @@ GraphicsObjectBufferData & GraphicsObjectBufferData::operator=(GraphicsObjectBuf
     vbo = src.vbo;
     ebo = src.ebo;
     vao = src.vao;
+    tex = src.tex;
     src.vbo = 0;
     src.ebo = 0;
     src.vao = 0;
+    src.tex = 0;
 
     draw_mode = src.draw_mode;
     num_indices = src.num_indices;
@@ -284,6 +313,7 @@ GraphicsObjectBufferData::~GraphicsObjectBufferData() {
     glDeleteVertexArrays(1,&vao);
     glDeleteBuffers(1,&ebo);
     glDeleteBuffers(1,&vbo);
+    if (tex!=0) glDeleteTextures(1,&tex);
 }
 
 void GraphicsObjectBufferData::bind_vao_and_draw() const {
