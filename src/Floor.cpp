@@ -3,8 +3,9 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-Floor::Floor(GameWindow * game_window, float xdim, float zdim) :
+Floor::Floor(GameWindow * game_window, const char * texture_filename, float xdim, float zdim) :
     GraphicalEntity(game_window),
+    texture_filename(texture_filename),
     xdim(xdim), zdim(zdim)
 {
     add_self_to_game_window();
@@ -21,7 +22,7 @@ GraphicsData Floor::create_graphics_data() {
     d.indices = { 0,1,3, 0,3,2 };
     d.shader_choice = SHADER_TEXTURE;
     d.draw_mode = GL_TRIANGLES;
-    d.texture = std::make_shared<StbImage>("images/lose.png");
+    d.texture = std::make_shared<StbImage>(texture_filename.c_str());
     return d;
     
 }

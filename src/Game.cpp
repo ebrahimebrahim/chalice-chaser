@@ -118,7 +118,8 @@ void Game::create_game_objects() {
 
     // Make walls, floor, and ceiling, and place prize
     Wall * prototype_wall = new Wall(window.get());
-    Floor * prototype_floor = new Floor(window.get(), 1.0f, 1.0f);
+    Floor * prototype_floor = new Floor(window.get(), "images/floor.png", 1.0f, 1.0f);
+    Floor * prototype_ceiling = new Floor(window.get(), "images/ceiling.png", 1.0f, 1.0f);
     for (int i=0; i<LevelGen::TILEMAP_SIZE; ++i) {
         for (int j=0; j<LevelGen::TILEMAP_SIZE; ++j) {
             auto location = LevelGen::vec(i,j);
@@ -129,7 +130,7 @@ void Game::create_game_objects() {
                 Floor * floor = new Floor(*prototype_floor);
                 floor->set_pos(glm::vec3(float(i),0,float(j)));
                 entities.emplace_back(floor);
-                Floor * ceiling = new Floor(*prototype_floor);
+                Floor * ceiling = new Floor(*prototype_ceiling);
                 ceiling->set_pos(glm::vec3(float(i),Wall::wall_height,float(j)));
                 entities.emplace_back(ceiling);
             }
@@ -158,6 +159,7 @@ void Game::create_game_objects() {
     }
     delete prototype_wall;
     delete prototype_floor;
+    delete prototype_ceiling;
 
     // Create HUD
     hud = std::make_unique<Hud>(window.get(), player, timer);
