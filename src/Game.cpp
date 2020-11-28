@@ -81,7 +81,7 @@ int Game::run() {
         }
 
         window->poll_events();
-        last_frame_mouse_delta = window->cursor - frame_start_cursor;
+        // last_frame_mouse_delta = window->cursor - frame_start_cursor; // COMMENTED OUT FOR UDACITY WORKSPACE CONTROLS
         last_frame_time = glfwGetTime() - frame_start_time;
         update_lag += last_frame_time;
 
@@ -101,7 +101,7 @@ void Game::create_game_objects() {
     std::cout << std::endl;
 
     // Make timer
-    timer = new Timer(0.013 * glm::pow( float(LevelGen::TILEMAP_SIZE) , 2) ); // argument is in seconds
+    timer = new Timer(0.025 * glm::pow( float(LevelGen::TILEMAP_SIZE) , 2) ); // argument is in seconds
     entities.emplace_back(timer);
 
     // Make player
@@ -204,6 +204,21 @@ void Game::handle_input() {
     }
     else
         player->set_not_walking();
+
+    // ----- UDACITY WORKSPACE CONTROLS ------
+
+    const float arrow_sensitivity = 28.0;
+    last_frame_mouse_delta = glm::vec2{0.0f,0.0f};
+    if (window->key_pressed(GLFW_KEY_UP))
+        last_frame_mouse_delta += glm::vec2{0.0f,-arrow_sensitivity};
+    if (window->key_pressed(GLFW_KEY_DOWN))
+        last_frame_mouse_delta += glm::vec2{0.0f,arrow_sensitivity};
+    if (window->key_pressed(GLFW_KEY_RIGHT))
+        last_frame_mouse_delta += glm::vec2{arrow_sensitivity,0.0f};
+    if (window->key_pressed(GLFW_KEY_LEFT))
+        last_frame_mouse_delta += glm::vec2{-arrow_sensitivity,0.0f};
+
+    // ----- END UDACITY WORKSPACE CONTROLS ------
 }
 
 
