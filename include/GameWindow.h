@@ -22,11 +22,11 @@ enum ShaderChoice {SHADER_DEFAULT, SHADER_HUD, SHADER_PORTAL, SHADER_TEXTURE, SH
 class GameWindow {
 
     GLFWwindow * window{};
-    int windowed_width{}; /** Width to be used in windowed mode */
-    int windowed_height{}; /** Height to be used in windowed mode */
-    GLFWmonitor * monitor{}; /** The primary monitor of the user */
-    const GLFWvidmode * video_mode{}; /** The video mode of the primary monitor, saved at the start so we can do "windowed fullscreen" */
-    bool fullscreen{}; /** Whether we are currently in fullscreen mode */
+    int windowed_width{}; /**< Width to be used in windowed mode */
+    int windowed_height{}; /**< Height to be used in windowed mode */
+    GLFWmonitor * monitor{}; /**< The primary monitor of the user */
+    const GLFWvidmode * video_mode{}; /**< The video mode of the primary monitor, saved at the start so we can do "windowed fullscreen" */
+    bool fullscreen{}; /**< Whether we are currently in fullscreen mode */
     std::unordered_map<int,GraphicsObject*> id_to_graphics_object;
     
     /** Shaders are indeed owned by GameWindow.
@@ -36,12 +36,12 @@ class GameWindow {
      */
     std::unordered_map<int,Shader*> shaders;
 
-    glm::mat4 projection_matrix; /** Perspective projection matrix. */
-    glm::mat4 view_matrix; /** The matrix that transforms world coords to camera coords */
+    glm::mat4 projection_matrix; /**< Perspective projection matrix. */
+    glm::mat4 view_matrix; /**< The matrix that transforms world coords to camera coords */
 
 
     void switch_fullscreen();
-    void calculate_projection_matrix(); /**Compute and set the matrix used for perspective projection*/
+    void calculate_projection_matrix(); /**< Compute and set the matrix used for perspective projection*/
 
 
 
@@ -50,7 +50,7 @@ public:
     ~GameWindow();
     GameWindow(const GameWindow &) = delete; // no copy
     GameWindow & operator=(const GameWindow &) = delete;
-    GameWindow(GameWindow &&); /** move is okay, passes ownership of window */
+    GameWindow(GameWindow &&); /**< move is okay, passes ownership of window */
     GameWindow & operator=(GameWindow &&);
 
     /** Return the value of the GLFW close flag of the window  */
@@ -158,10 +158,10 @@ class GraphicsObjectBufferData{
     GLuint vao{};
     GLuint vbo{};
     GLuint ebo{};
-    GLuint tex{}; // texture name will be set and used only if there's a texture. 0 means there isn't.
+    GLuint tex{}; /**< texture name will be set and used only if there's a texture. 0 means there isn't. */
     
-    GLenum draw_mode{}; /** e.g. GL_TRIANGLES */
-    size_t num_indices{}; /** Number of indices in EBO */
+    GLenum draw_mode{}; /**< e.g. GL_TRIANGLES */
+    size_t num_indices{}; /**< Number of indices in EBO */
 
 public:
 
@@ -181,9 +181,9 @@ public:
 */
 class GraphicsObject {
     std::shared_ptr<GraphicsObjectBufferData> buffer_data;
-    Shader * shader; // handle to shader, not owned by GraphicsObject
-    glm::mat4 model_matrix{}; /** The matrix that transforms object coords to world coords, placing an object in the world. */
-    std::optional<glm::vec3> object_color; /** Optional color, which if present will be set as a uniform "object_color" in the shader */
+    Shader * shader; /**< handle to shader, not owned by GraphicsObject */
+    glm::mat4 model_matrix{}; /**< The matrix that transforms object coords to world coords, placing an object in the world. */
+    std::optional<glm::vec3> object_color; /**< Optional color, which if present will be set as a uniform "object_color" in the shader */
     
 public:
 

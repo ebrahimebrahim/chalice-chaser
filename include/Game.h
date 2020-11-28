@@ -44,10 +44,10 @@ class Game {
     std::unique_ptr<GameWindow> window;
     std::vector<std::unique_ptr<Entity>> entities;
     std::unique_ptr<Camera> camera;
-    Player * player{}; /** handle to player, which is a regular entity that should be in the std::vector of entities */
+    Player * player{}; /**< handle to player, which is a regular entity that should be in the std::vector of entities */
     LevelGen::Tilemap level;
     std::unique_ptr<Hud> hud;
-    Timer * timer; /** handle to game timer, which is a regular entity that should be in `entities` */
+    Timer * timer; /**< handle to game timer, which is a regular entity that should be in `entities` */
 
     /**Make a wall using the prototype, place it at the specified position, make player collide with it, and add it to the list of entities.
      * Note that `Game::player` *must* be initialized before this is used.

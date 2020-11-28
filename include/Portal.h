@@ -5,7 +5,7 @@
 
 
 class Portal : public GraphicalEntity {
-    float phase{}; /** used for animation in shader */
+    float phase{}; /**< used for animation in shader */
 public:
     Portal(GameWindow * game_window);
 

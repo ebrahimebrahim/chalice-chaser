@@ -6,8 +6,8 @@
 class Timer : public Entity {
     bool started{false};
     bool timed_out_{false};
-    float time_remaining{}; /** seconds remaining */
-    float initial_time_remaining{}; /** seconds chosen on timer when it was initially created */
+    float time_remaining{}; /**< seconds remaining */
+    float initial_time_remaining{}; /**< seconds chosen on timer when it was initially created */
 
 public:
 
