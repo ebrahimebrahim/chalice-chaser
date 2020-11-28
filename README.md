@@ -28,7 +28,7 @@ This is done automatically in `/home/workspace/.student_bashrc`.
 
 Finally, build the project:
 ```
-cd /home/workspace/symmetrical-garbanzo
+cd /home/workspace/chalice-chaser
 mkdir build
 cd build
 cmake ..
@@ -38,7 +38,7 @@ make
 ## Playing
 
 ```
-cd /home/workspace/symmetrical-garbanzo
+cd /home/workspace/chalice-chaser
 ./run.sh
 ```
 
@@ -61,7 +61,7 @@ The timer starts as soon as you grab the treasure.
 ## Generating Documentation
 
 ```
-cd /home/workspace/symmetrical-garbanzo
+cd /home/workspace/chalice-chaser
 apt install doxygen graphviz
 doxygen doxygen_settings.cfg
 ```
