@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include <optional>
+#include <experimental/optional>
 #include <CollisionBox.h>
 
 class Entity {
@@ -13,7 +13,7 @@ class Entity {
 protected:
     glm::vec3 pos{0.0f,0.0f,0.0f};
     std::vector<Entity *> collides_with_list; /** what other entities this entity collides with */
-    std::optional<CollisionBox> collision_box;
+    std::experimental::optional<CollisionBox> collision_box;
 
 public:
     Entity() {id = next_id++;}

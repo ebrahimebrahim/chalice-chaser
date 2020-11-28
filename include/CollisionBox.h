@@ -2,7 +2,7 @@
 #define COLLISION_BOX_H
 
 #include <glm/glm.hpp>
-#include <optional>
+#include <experimental/optional>
 
 struct CollisionData {
 
@@ -33,7 +33,7 @@ public:
      * 
      * The normal vector is guaranteed to be a unit vector.
     */
-    std::optional<CollisionData> collision_with(glm::vec3 my_pos, glm::vec3 other_pos, CollisionBox other_box);
+    std::experimental::optional<CollisionData> collision_with(glm::vec3 my_pos, glm::vec3 other_pos, CollisionBox other_box);
     
     
 

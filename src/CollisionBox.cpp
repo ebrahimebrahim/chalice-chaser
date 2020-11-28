@@ -5,7 +5,7 @@ const glm::vec3 Y_DIR{0.0f, 1.0f, 0.0f};
 const glm::vec3 Z_DIR{0.0f, 0.0f, 1.0f};
 const glm::vec3 UNIT_VECTOR[3] = {X_DIR, Y_DIR, Z_DIR};
 
-std::optional<CollisionData> CollisionBox::collision_with(glm::vec3 my_pos, glm::vec3 other_pos, CollisionBox other_box) {
+std::experimental::optional<CollisionData> CollisionBox::collision_with(glm::vec3 my_pos, glm::vec3 other_pos, CollisionBox other_box) {
     
     // displacement vector from my center to other center, in the world coords
     glm::vec3 d = other_pos + other_box.center - (my_pos + center);
@@ -30,5 +30,5 @@ std::optional<CollisionData> CollisionBox::collision_with(glm::vec3 my_pos, glm:
         };
     }
  
-    return std::nullopt; // no collision
+    return std::experimental::nullopt; // no collision
 }

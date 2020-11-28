@@ -7,7 +7,7 @@
 #include <random>
 #include <chrono>
 
-std::optional<GraphicsData> Prize::graphics_data{}; // start as std::null_opt
+std::experimental::optional<GraphicsData> Prize::graphics_data{}; // start as std::null_opt
 
 const std::vector<glm::vec3> Prize::gem_colors = {
     glm::vec3(0.498, 1.000, 0.831),
@@ -233,7 +233,7 @@ GraphicsData Prize::get_graphics_data() {
 }
 
 void Prize::reset_graphics_data() {
-    graphics_data = std::nullopt;
+    graphics_data = std::experimental::nullopt;
 }
 
 void Prize::update(double delta) {

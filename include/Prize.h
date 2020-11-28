@@ -5,7 +5,7 @@
 
 
 class Prize : public GraphicalEntity {
-    static std::optional<GraphicsData> graphics_data;
+    static std::experimental::optional<GraphicsData> graphics_data;
 
 public:
     Prize(GameWindow * game_window);
