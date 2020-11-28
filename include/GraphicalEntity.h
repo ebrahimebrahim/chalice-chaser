@@ -20,9 +20,9 @@ struct GraphicsData;
 class GraphicalEntity : public Entity {
     glm::mat4 model_matrix;
     glm::mat4 model_matrix_without_translation;
-    void update_model_matrix(); // Update the model matrix by combining `pos` and `model_matrix_without_translation` and carrying out the translation
+    void update_model_matrix(); /**< Update the model matrix by combining `pos` and `model_matrix_without_translation` and carrying out the translation */
 protected:
-    GameWindow * game_window; /** handle to game window, non-owned */
+    GameWindow * game_window; /**< handle to game window, non-owned */
     void add_self_to_game_window();
 public:
     auto get_model_matrix() const {return model_matrix;}

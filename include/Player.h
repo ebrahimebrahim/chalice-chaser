@@ -8,22 +8,22 @@
 
 class Player : public Entity {
 
-    bool walking = false; /** player movement state, intended to be set on each frame by some outside input handler */
+    bool walking = false; /**< player movement state, intended to be set on each frame by some outside input handler */
     
     /** Current player movement direction vector, intended to be set on each frame by some outside input handler.
      *  It is typically a unit vector, but `resolve_collisions` can make it smaller.
      */
     glm::vec3 move_dir{0.0f,0.0f,0.0f};
 
-    Timer * timer; /** handle to the game timer */
+    Timer * timer; /**< handle to the game timer */
     
 
 public:
     
     Player(Timer * timer);
 
-    const float head_height = 1.5f; /** The position of a player is the position of the player's feet. */
-    const float walk_speed = 10.0f; /** world coord units per second */
+    const float head_height = 1.5f; /**< The position of a player is the position of the player's feet. */
+    const float walk_speed = 10.0f; /**< world coord units per second */
     const float girth = 0.2f;
 
     void update(double delta) override;

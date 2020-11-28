@@ -14,7 +14,7 @@ class MessageHud;
 
 
 class Hud {
-    GameWindow * game_window; /** handle to game window, non-owned */
+    GameWindow * game_window; /**< handle to game window, non-owned */
     std::unique_ptr<PrizeHud> prize_hud;
     std::unique_ptr<TimerHud> timer_hud;
     std::unique_ptr<MessageHud> message_hud;
@@ -35,7 +35,7 @@ public:
 
 
 class PrizeHud : public Entity {
-    GameWindow * game_window; /** handle to game window, non-owned */
+    GameWindow * game_window; /**< handle to game window, non-owned */
 public:
     PrizeHud(GameWindow * game_window);
     ~PrizeHud(); // TODO: implement/delete rest of the big 5
@@ -46,7 +46,7 @@ public:
 };
 
 class TimerHud : public Entity {
-    GameWindow * game_window; /** handle to game window, non-owned */
+    GameWindow * game_window; /**< handle to game window, non-owned */
     glm::mat4 scale{1.0f}; // gets updated in `update`
     glm::mat4 translate{0.0f}; // bogus matrix, it's actually initialized in ctor
     float fraction; // the current fraction of this progress bar, from 0.0 to 1.0
@@ -59,16 +59,16 @@ public:
     void update(double delta) override {}
     void update(); // Not an override!
 
-    float max_width{0.3}; /** In normal window coords, -1 to 1 being from left to right edge of window */
-    float height{0.1}; /** In normal window coords */
-    glm::vec2 botleft_pos{0.6,0.8}; /** In normal window coords, location of bottom left corner */
+    float max_width{0.3}; /**< In normal window coords, -1 to 1 being from left to right edge of window */
+    float height{0.1}; /**< In normal window coords */
+    glm::vec2 botleft_pos{0.6,0.8}; /**< In normal window coords, location of bottom left corner */
 
     void set_fraction(float frac) {fraction=frac;}
 };
 
 /** A display of a texture in the middle of the screen. */
 class MessageHud : public Entity {
-    GameWindow * game_window; /** handle to game window, non-owned */
+    GameWindow * game_window; /**< handle to game window, non-owned */
     float width{};
     float height{};
 
