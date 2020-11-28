@@ -36,3 +36,5 @@ You will spawn in front of a portal in a randomly generated level.
 The level has a treasure in it. Find the treasue, and then get back to
 the portal before the timer runs out!
 The timer starts as soon as you grab the treasure.
+
+![screenshot](images/screenshot.png)
