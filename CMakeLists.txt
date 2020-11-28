@@ -14,11 +14,3 @@ add_executable(garbanzo src/main.cpp src/Game.cpp src/GameWindow.cpp src/Shader.
 target_include_directories(garbanzo PUBLIC include lib ${GLAD_DIR}/include)
 target_compile_features(garbanzo PUBLIC cxx_std_17)
 target_link_libraries(garbanzo glfw glad ${CMAKE_DL_LIBS})
-
-# The following target should be deleted eventually.
-# It is to help experiment with rendering so I can understand the pipeline better
-# before setting up my graphics classes architecture
-add_executable(experiment src/experiment.cpp src/Shader.cpp)
-target_include_directories(experiment PUBLIC include lib ${GLAD_DIR}/include)
-target_compile_features(experiment PUBLIC cxx_std_17)
-target_link_libraries(experiment glfw glad ${CMAKE_DL_LIBS})
