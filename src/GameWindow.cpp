@@ -97,6 +97,7 @@ GameWindow::GameWindow(int windowed_width, int windowed_height, const char * tit
     shaders[SHADER_HUD] = new Shader("src/shaders/hud_shader.vert", "src/shaders/hud_shader.frag");
     shaders[SHADER_PORTAL] = new Shader("src/shaders/portal_shader.vert", "src/shaders/portal_shader.frag");
     shaders[SHADER_TEXTURE] = new Shader("src/shaders/shader_texture.vert", "src/shaders/shader_texture.frag");
+    shaders[SHADER_HUD_TEXTURE] = new Shader("src/shaders/hud_shader_texture.vert", "src/shaders/hud_shader_texture.frag");
 
     calculate_projection_matrix();
 

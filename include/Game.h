@@ -36,6 +36,8 @@ class Game {
     /** Time spent on the last frame of rendering, in seconds. */
     double last_frame_time{};
 
+    bool paused{false};
+
     /** Mouse movement vector on the last frame of rendering */
     glm::vec2 last_frame_mouse_delta{0.0f,0.0f};
 

@@ -33,7 +33,7 @@ int Game::run() {
 
         handle_input();
         
-        while (update_lag >= time_per_update) {
+        while (update_lag >= time_per_update && !paused) {
             // Update game state by one time_per_update
 
             // First resolve all collisions
@@ -71,13 +71,13 @@ int Game::run() {
         }
         else if (player->won) {
             // TODO: make hud display "you won!" and "press enter to restart" and wait for enter
-            reset_game();
-            create_game_objects();
+            hud->show_message("images/win.png");
+            paused = true;
         }
         else if (player->lost) {
             // TODO: make hud display "you lost!" and "press enter to restart" and wait for enter
-            reset_game();
-            create_game_objects();
+            hud->show_message("images/lose.png");
+            paused = true;
         }
 
         window->poll_events();
@@ -101,7 +101,7 @@ void Game::create_game_objects() {
     std::cout << std::endl;
 
     // Make timer
-    timer = new Timer(2.0f); // argument is in seconds
+    timer = new Timer(42.0f); // argument is in seconds
     entities.emplace_back(timer);
 
     // Make player
@@ -174,6 +174,7 @@ void Game::create_game_objects() {
 
 void Game::reset_game() {
     entities.clear();
+    paused = false;
     Prize::reset_graphics_data();
 }
 
