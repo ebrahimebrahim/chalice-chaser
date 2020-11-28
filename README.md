@@ -1,4 +1,4 @@
-# symmetrical-garbanzo
+# Chalice Chaser
 
 ## Building
 

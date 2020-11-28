@@ -91,7 +91,7 @@ int Game::run() {
 }
 
 void Game::init_window() {
-    window = std::make_unique<GameWindow>(1066, 600, "Garbanzo");
+    window = std::make_unique<GameWindow>(1066, 600, "Chalice Chaser");
 }
 
 void Game::create_game_objects() {
