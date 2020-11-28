@@ -3,7 +3,7 @@
 # This script ensures that the game executable is run from the correct working directory,
 # so that the relative asset paths expected by the game work.
 
-EXE=build/garbanzo
+EXE=build/chalice_chaser
 SCRIPT_DIR=`dirname $0`
 
 cd $SCRIPT_DIR
