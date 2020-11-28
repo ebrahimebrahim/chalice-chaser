@@ -20,6 +20,8 @@ Generate documentation:
 doxygen doxygen_settings.cfg
 ```
 
+(you would need to install doxygen and graphviz: `apt-get install doxygen graphviz`)
+
 ## Playing
 
 Execute `run.sh`.
