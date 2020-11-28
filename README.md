@@ -5,6 +5,12 @@ This branch of the project is specifically made to run in the Udacity workspace,
 which has some limitations.
 Look at the main branch for the actual game.
 
+Limitations of the udacity workspace version of the game:
+- Arrow keys control camera movement rather than the mouse. This is awkward.
+The udacity virtual machine is not happy with having the mouse captured.
+- The level generated is very small, so that it can run in the virtual machine.
+
+
 ## Building
 
 Install opengl dependencies on linux:
@@ -40,7 +46,7 @@ cd /home/workspace/symmetrical-garbanzo
 |-------------------|----------------|
 | quit              | esc            |
 | move              | WASD           |
-| look              | mouse movement |
+| look              | arrow keys     |
 | restart           | R              |
 | toggle fullscreen | F              |
 
