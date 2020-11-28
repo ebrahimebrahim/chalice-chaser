@@ -33,7 +33,7 @@ Execute `run.sh`.
 | toggle fullscreen | F              |
 
 You will spawn in front of a portal in a randomly generated level.
-The level has a treasure in it. Find the treasue, and then get back to
+The level has a treasure in it. Find the treasure, and then get back to
 the portal before the timer runs out!
 The timer starts as soon as you grab the treasure.
 
