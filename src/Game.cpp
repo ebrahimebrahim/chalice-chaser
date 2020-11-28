@@ -101,7 +101,7 @@ void Game::create_game_objects() {
     std::cout << std::endl;
 
     // Make timer
-    timer = new Timer(42.0f); // argument is in seconds
+    timer = new Timer(0.01 * glm::pow( float(LevelGen::TILEMAP_SIZE) , 2) ); // argument is in seconds
     entities.emplace_back(timer);
 
     // Make player
