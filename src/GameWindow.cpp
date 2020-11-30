@@ -76,6 +76,9 @@ GameWindow::GameWindow(int windowed_width, int windowed_height, const char * tit
                 case GLFW_KEY_R:
                     gw->restart_pressed = true;
                     return;
+                case GLFW_KEY_P:
+                    gw->pause_pressed = true;
+                    return;
             }
         }
     );

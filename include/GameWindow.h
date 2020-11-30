@@ -71,8 +71,10 @@ public:
     /** Position of mouse cursor, updated regularly as polling occurs (updates on a glfwSetCursorPosCallback) */
     glm::vec2 cursor;
 
-    /** whether a game restart has been triggered by player input */
+    /** whether a game restart has been triggered by player input. `Game` should handle this flag and then unset it. */
     bool restart_pressed{false}; 
+    /** whether a game pause/unpause has been triggered by player input. `Game` should handle this flag and then unset it. */
+    bool pause_pressed{false}; 
 
     /** Add an object with a given id, creating the GraphicsObject.
      *  Once you do this, it becomes possible to call `draw` and pass in the id.

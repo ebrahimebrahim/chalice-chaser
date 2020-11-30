@@ -69,6 +69,10 @@ int Game::run() {
             reset_game();
             create_game_objects();
         }
+        else if (window->pause_pressed) {
+            window->pause_pressed = false;
+            paused = !paused;
+        }
         else if (player->won) {
             // TODO: make hud display "you won!" and "press enter to restart" and wait for enter
             hud->show_message("images/win.png");
@@ -83,7 +87,7 @@ int Game::run() {
         window->poll_events();
         last_frame_mouse_delta = window->cursor - frame_start_cursor;
         last_frame_time = glfwGetTime() - frame_start_time;
-        update_lag += last_frame_time;
+        if (!paused) update_lag += last_frame_time;
 
     } // end game loop
 
