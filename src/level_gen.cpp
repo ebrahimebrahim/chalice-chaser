@@ -24,8 +24,8 @@ bool within_grid(const vec & location) {
 
 
 void Tilemap::print() const {
-    for (int i=0; i < TILEMAP_SIZE; ++i){
-        for (int j=0; j<TILEMAP_SIZE; ++j) {
+    for (int i=TILEMAP_SIZE-1; i >= 0; --i){
+        for (int j=TILEMAP_SIZE-1; j >= 0; --j) {
             std::cout << tile_to_char(vec(j,i));
         }
         std::cout << '\n';
@@ -65,13 +65,13 @@ bool Tilemap::is_start(const vec & location) const {
 
 
 bool Tilemap::wall_left(const vec & location) const {
-    if (location[0] <= 0) return true; // if this is the left edge of map, then true
-    return !get_tile(location + vec(-1,0));
+    if (location[0] >= TILEMAP_SIZE-1) return true; // if this is the right edge of map, then true
+    return !get_tile(location + vec(1,0));
 }
 
 bool Tilemap::wall_right(const vec & location) const {
-    if (location[0] >= TILEMAP_SIZE-1) return true; // if this is the right edge of map, then true
-    return !get_tile(location + vec(1,0));
+    if (location[0] <= 0) return true; // if this is the left edge of map, then true
+    return !get_tile(location + vec(-1,0));
 }
 
 bool Tilemap::wall_above(const vec & location) const {
