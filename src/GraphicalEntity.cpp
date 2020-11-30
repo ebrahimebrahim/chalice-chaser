@@ -75,7 +75,9 @@ void GraphicalEntity::set_pos(const glm::vec3 new_pos) {
     update_model_matrix();
 }
 
-void GraphicalEntity::rotate(float angle, glm::vec3 axis) {
+void GraphicalEntity::rotate(float angle, glm::vec3 axis, glm::vec3 rotation_center) {
+    model_matrix_without_translation = glm::translate(-rotation_center) * model_matrix_without_translation;
     model_matrix_without_translation = glm::rotate(angle, axis) * model_matrix_without_translation;
+    model_matrix_without_translation = glm::translate(rotation_center) * model_matrix_without_translation;
     update_model_matrix();
 }

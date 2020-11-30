@@ -27,7 +27,11 @@ protected:
 public:
     auto get_model_matrix() const {return model_matrix;}
     void set_pos(const glm::vec3 new_pos) override;
-    void rotate(float angle, glm::vec3 axis);
+
+    /** Rotate the object by a given angle about the given axis.
+     *  If specified, `rotation_center` is the center of rotation in object coordinates.
+     */
+    void rotate(float angle, glm::vec3 axis, glm::vec3 rotation_center = glm::vec3(0.0,0.0,0.0));
 
     GraphicalEntity(GameWindow * game_window);
     GraphicalEntity(const GraphicalEntity &);

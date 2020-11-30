@@ -12,6 +12,9 @@
 #include <Hud.h>
 #include <Timer.h>
 
+/** FRONT is +z, BACK is -z, LEFT is +x, RIGHT is -x*/
+enum class WallOrientation {FRONT, BACK, LEFT, RIGHT};
+
 /**
     The game loop
 */
@@ -52,8 +55,10 @@ class Game {
     /**Make a wall using the prototype, place it at the specified position, make player collide with it, and add it to the list of entities.
      * Note that `Game::player` *must* be initialized before this is used.
      * The purpose of the prototype is to copy it so that opengl geometry data can be shared among wall instances.
+     * The created wall is rotated according to the given `WallOrientation`.
+     * FRONT is +z, BACK is -z, LEFT is +x, RIGHT is -x
     */
-    void place_wall(const glm::vec3 & pos, Wall * prototype_wall);
+    void place_wall(const glm::vec3 & pos, Wall * prototype_wall, WallOrientation orientation);
 
 public:
     /** Run the game, returning return code on exit. 0 means no errors. */

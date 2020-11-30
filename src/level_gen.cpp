@@ -64,24 +64,24 @@ bool Tilemap::is_start(const vec & location) const {
 }
 
 
-bool Tilemap::wall_left(const vec & location) const {
-    if (location[0] >= TILEMAP_SIZE-1) return true; // if this is the right edge of map, then true
-    return !get_tile(location + vec(1,0));
+bool Tilemap::open_left(const vec & location) const {
+    if (location[0] >= TILEMAP_SIZE-1) return false; // if this is the left edge of map, then false
+    return get_tile(location + vec(1,0));
 }
 
-bool Tilemap::wall_right(const vec & location) const {
-    if (location[0] <= 0) return true; // if this is the left edge of map, then true
-    return !get_tile(location + vec(-1,0));
+bool Tilemap::open_right(const vec & location) const {
+    if (location[0] <= 0) return false; // if this is the right edge of map, then false
+    return get_tile(location + vec(-1,0));
 }
 
-bool Tilemap::wall_above(const vec & location) const {
-    if (location[1] >= TILEMAP_SIZE-1) return true; // if this is the upper edge of map, then true
-    return !get_tile(location + vec(0,1));
+bool Tilemap::open_above(const vec & location) const {
+    if (location[1] >= TILEMAP_SIZE-1) return false; // if this is the upper edge of map, then false
+    return get_tile(location + vec(0,1));
 }
 
-bool Tilemap::wall_below(const vec & location) const {
-    if (location[1] <= 0) return true; // if this is the lower edge of map, then true
-    return !get_tile(location + vec(0,-1));
+bool Tilemap::open_below(const vec & location) const {
+    if (location[1] <= 0) return false; // if this is the lower edge of map, then false
+    return get_tile(location + vec(0,-1));
 }
 
 

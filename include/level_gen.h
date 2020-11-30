@@ -50,14 +50,14 @@ struct Tilemap {
     
     bool is_treasure(const vec & location) const {return treasure_location==location;}
 
-    /** Given a location in the tilemap, this tells whether there is a wall to the left (pos x direction) of that location. */
-    bool wall_left(const vec & location) const;
-    /** Given a location in the tilemap, this tells whether there is a wall to the right (neg x direction) of that location. */
-    bool wall_right(const vec & location) const;
-    /** Given a location in the tilemap, this tells whether there is a wall above (pos z direction) that location. */
-    bool wall_above(const vec & location) const;
-    /** Given a location in the tilemap, this tells whether there is a wall below (neg z direction) that location. */
-    bool wall_below(const vec & location) const;
+    /** Given a location in the tilemap, this tells whether there isnt a wall to the left (pos x direction) of that location. */
+    bool open_left(const vec & location) const;
+    /** Given a location in the tilemap, this tells whether there isnt a wall to the right (neg x direction) of that location. */
+    bool open_right(const vec & location) const;
+    /** Given a location in the tilemap, this tells whether there isnt a wall above (pos z direction) that location. */
+    bool open_above(const vec & location) const;
+    /** Given a location in the tilemap, this tells whether there isnt a wall below (neg z direction) that location. */
+    bool open_below(const vec & location) const;
 
     vec treasure_location;
 
