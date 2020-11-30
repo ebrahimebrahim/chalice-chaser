@@ -40,6 +40,7 @@ struct Tilemap {
 
     void validate_tile(const vec & location) const;
 
+    /** Reports whether a tile is passable. So 'false' means it's a wall. */
     bool get_tile(const vec & location) const { validate_tile(location); return tiles[location[1]][location[0]]; }
     void set_tile(const vec & location, bool val) { validate_tile(location); tiles[location[1]][location[0]] = val; }
     
@@ -48,6 +49,15 @@ struct Tilemap {
     vec get_player_spawn_location() const {return middle_of_start_area;}
     
     bool is_treasure(const vec & location) const {return treasure_location==location;}
+
+    /** Given a location in the tilemap, this tells whether there is a wall to the left (neg x direction) of that location. */
+    bool wall_left(const vec & location) const;
+    /** Given a location in the tilemap, this tells whether there is a wall to the right (pos x direction) of that location. */
+    bool wall_right(const vec & location) const;
+    /** Given a location in the tilemap, this tells whether there is a wall above (pos y direction) that location. */
+    bool wall_above(const vec & location) const;
+    /** Given a location in the tilemap, this tells whether there is a wall below (neg y direction) that location. */
+    bool wall_below(const vec & location) const;
 
     vec treasure_location;
 
