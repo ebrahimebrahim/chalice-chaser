@@ -46,3 +46,6 @@ The timer starts as soon as you grab the treasure.
 Here is a high level overview of the code:
 
 ![code overview](images/overview.png)
+
+The "graphics engine" could be thought of as consisting of the four classes in the lower left:
+`GraphicsData`, `GameWindow`, `GraphicsObject`, and `GraphicsObjectBufferData`.
