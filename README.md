@@ -40,3 +40,9 @@ the portal before the timer runs out!
 The timer starts as soon as you grab the treasure.
 
 ![screenshot](images/screenshot.png)
+
+## Code
+
+Here is a high level overview of the code:
+
+![code overview](images/overview.png)
